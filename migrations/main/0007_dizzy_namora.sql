@@ -1,0 +1,1 @@
+ALTER TABLE users ADD `tg_is_premium` integer DEFAULT false NOT NULL;

@@ -1,0 +1,45 @@
+{
+  "events": {
+    "contact_new": "🤝 {{user}} just connected with you.\n\nYou can now share expenses directly.\n\nView your [tab]({{botAppUrl}})",
+    "group_created": "👨\u200d👩\u200d👧\u200d👦 {{user}} created a new group: '{{name}}'. You can view it [here]({{url}}).",
+    "sub_joined": "🔁 {{user}} joined your '{{name}}' [subscription]({{url}}).",
+    "sub_left": "🔁 {{user}} left your '{{name}}' [subscription]({{url}}.",
+    "sub_new": "🔁 {{user}} added a new [subscription]({{url}}): '{{name}}'\n\nThis costs {{amount}}",
+    "sub_reminder": {
+      "item": "\n- [{{name}}]({{url}}) on {{date}}",
+      "multiple": "🔁 **Reminder:**: The following subscriptions are renewing soon:\n",
+      "single": "🔁 **Reminder**: Your '{{name}}' [subscription]({{url}}) will renew on {{date}}."
+    },
+    "sub_removed_user": "👋 You were removed from '{{name}}' [subscription]({{url}}).",
+    "tx_archived": {
+      "default": "📦 {{user}} archived '{{description}}'.",
+      "no_desc": "📦 {{user}} archived an expense."
+    },
+    "tx_joined": {
+      "default": "👥 {{user}} joined your '{{description}}' [expense]({{url}}).",
+      "no_desc": "👥 {{user}} joined your [expense]({{url}})."
+    },
+    "tx_left": {
+      "default": "👋 {{user}} left your '{{description}}' [expense]({{url}}).",
+      "no_desc": "👋 {{user}} left your [expense]({{url}})."
+    },
+    "tx_new": {
+      "default": "📝 {{user}} added a [new expense]({{url}}): {{amount}} for '{{description}}'.",
+      "no_desc": "📝 {{user}} added a [new expense]({{url}}): {{amount}}."
+    },
+    "tx_removed_user": {
+      "default": "👋 You were removed from '{{description}}' [expense]({{url}}).",
+      "no_desc": "👋 You were removed from an [expense]({{url}})."
+    },
+    "tx_settle": "⚖️ {{user}} marked {{amount}} as settled."
+  },
+  "privacy": "You can view our privacy policy [here]({{url}}).",
+  "share_bot": "@{{bot}} - split bills & track subscriptions.",
+  "share_profile": "Let's connect on @{{bot}}\n\nHere is a link to my [profile]({{url}}).",
+  "share_tx": "Here is a link to the [expense]({{url}}) we shared.",
+  "start": "Tab below to open the [app]({{botAppUrl}})",
+  "start_first": "Welcome to @{{bot}}\n\nHere you can:\n\n💸 **Split bills & expenses** with anyone\n\n🔁 **Track your subscriptions** in one place and share them\n\n📊 **View your balance** with friends and spending across subscriptions\n\nAccess your [tab]({{botAppUrl}}) below.",
+  "start_group": "Here is your group's [tab]({{url}}).",
+  "start_group_first": "Here is a [tab for your group]({{url}}). You can use it to split bills & share expenses.\n\nExisting members need to follow the link to join the group, new members will be added automatically.",
+  "start_supergroup": "Here is a [tab for your group]({{url}}). You can use it to split bills & share expenses.\n\nUse the link to join the group."
+}

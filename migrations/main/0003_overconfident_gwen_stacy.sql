@@ -1,0 +1,1 @@
+ALTER TABLE connections ADD `to_user_nickname` text;

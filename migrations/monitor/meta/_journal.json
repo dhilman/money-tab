@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1713473115954,
+      "tag": "0000_daffy_maria_hill",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1713647725487,
+      "tag": "0001_polite_domino",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1714675861379,
+      "tag": "0002_melted_virginia_dare",
+      "breakpoints": true
+    }
+  ]
+}

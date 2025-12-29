@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* override with telegram colors */
+    --canvas: 240 14% 95%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --hint: 0 0% 60%;
+    --primary: 207 70% 47%;
+    --primary-foreground: 0 0% 100%;
+    --link: 207 70% 47%;
+
+    /* none telegram colors */
+    /* --tertiary: 240 5% 48% / 0.12; */
+    --tertiary: 240 3.23% 93.9%;
+    --tertiary-foreground: 0 0% 0%;
+    --border: 255 4% 79%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --canvas: 240 14% 15%;
+    --background: 0 0% 10%;
+    --foreground: 0 0% 100%;
+    --hint: 0 0% 60%;
+    --primary: 207 70% 47%;
+    --primary-foreground: 0 0% 100%;
+    --link: 207 70% 47%;
+
+    /* --tertiary: 240 4% 48% / 0.24; */
+    --tertiary: 238.66 2.3456% 20.059%;
+    --tertiary-foreground: 0 0% 100%;
+    --border: 240 2% 24%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply isolate h-full w-full;
+  }
+  body {
+    @apply isolate !h-full !w-full bg-canvas text-foreground antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+  }
+  #__next {
+    @apply relative isolate flex !h-full !min-h-[100svh] flex-col;
+    --webkit-app-region: no-grag;
+  }
+}
+
+input,
+textarea,
+button,
+select,
+a {
+  @apply bg-inherit outline-none focus:outline-none focus-visible:outline-none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 0px;
+}
+
+strong {
+  @apply font-semibold;
+}
+
+.drag {
+  --webkit-app-region: drag;
+}
+
+.no-drag {
+  --webkit-app-region: no-drag;
+}
+
+/* Hide spinner buttons for Chrome, Safari, Edge, Opera */
+input.no-spinner::-webkit-outer-spin-button,
+input.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide spinner buttons for Firefox */
+input.no-spinner[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
