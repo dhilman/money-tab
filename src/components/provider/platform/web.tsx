@@ -12,7 +12,7 @@ function noop() {
 }
 
 function useMainButton() {
-  const callback = useRef<() => void>();
+  const callback = useRef<() => void>(undefined);
 
   return {
     setOnMain: (onMain?: () => void) => {
@@ -48,7 +48,7 @@ function useMainButton() {
 
 function useBackButton() {
   const router = useWebAppRouter();
-  const onBack = React.useRef<() => void>();
+  const onBack = React.useRef<() => void>(undefined);
 
   function back() {
     if (onBack.current) {

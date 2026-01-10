@@ -9,7 +9,7 @@ interface DataItem {
 
 interface Props {
   items: DataItem[];
-  labelFormatter?: (label: string) => React.ReactElement;
+  labelFormatter?: (label: string) => React.ReactElement<any>;
   header: string;
 }
 

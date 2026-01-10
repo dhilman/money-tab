@@ -102,7 +102,7 @@ export const useTelegram = (ready: boolean): Platform | null => {
 };
 
 const useMainButton = (webApp: WebAppOrNull) => {
-  const callback = useRef<() => void>();
+  const callback = useRef<() => void>(undefined);
 
   return {
     setOnMain: (onMain?: () => void) => {
@@ -184,7 +184,7 @@ const useSettingsButton = (webApp: WebAppOrNull) => {
 };
 
 const useBackButton = (webApp: WebAppOrNull) => {
-  const callback = useRef<() => void>();
+  const callback = useRef<() => void>(undefined);
   const router = useRouter();
   const shown = useRef(false);
   const { back } = useWebAppRouter();
