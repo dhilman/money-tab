@@ -8,7 +8,10 @@ function Page() {
   const router = useRouter();
   const { id } = router.query;
 
-  if (typeof id !== "string" || !id) return null;
+  if (typeof id !== "string" || !id) {
+    console.log("Invalid user ID query parameter", id);
+    return null;
+  }
 
   return (
     <UserProvider shortUserId={id}>
