@@ -235,7 +235,7 @@ composer.on("chosen_inline_result", async (ctx) => {
   });
   if (!user) return;
 
-  ctx.logger.info("creating tx from decoded query id", queryId);
+  ctx.logger.info({ queryId }, "creating tx from decoded query id");
 
   // await mutate.tx.create({
   //   txId: queryId.txid,

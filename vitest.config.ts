@@ -51,6 +51,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "~/": join(__dirname, "./src/"),
+      "public/": join(__dirname, "./public/"),
     },
   },
 });
