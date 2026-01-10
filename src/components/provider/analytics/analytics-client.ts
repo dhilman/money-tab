@@ -122,7 +122,7 @@ export class Analytics {
   private firstPageview() {
     if (document.readyState === "complete") {
       const [entry] = performance.getEntriesByType(
-        "navigation"
+        "navigation",
       ) as PerformanceNavigationTiming[];
       this._pageview(this.getTiming(entry));
       return;
@@ -133,7 +133,7 @@ export class Analytics {
         return;
       }
       const [entry] = performance.getEntriesByType(
-        "navigation"
+        "navigation",
       ) as PerformanceNavigationTiming[];
       this._pageview(this.getTiming(entry));
       window.removeEventListener("load", loadListener);

@@ -37,7 +37,7 @@ async function subsReminderCron() {
   // Check if the reminder is due based on the user's timezone
   const candidates = await queries.sub.remindCandidates();
   const subs = candidates.filter((sub) =>
-    isReminderDue({ reminderDate: sub.reminderDate, timezone: sub.timezone })
+    isReminderDue({ reminderDate: sub.reminderDate, timezone: sub.timezone }),
   );
 
   const subsByUser = toMapGrouped(subs, "userId");
@@ -48,7 +48,7 @@ async function subsReminderCron() {
       subs: subs.length,
       users: subsByUser.size,
     },
-    "sending reminders"
+    "sending reminders",
   );
 
   // Increase the message delay by 1sec for each user
@@ -82,7 +82,7 @@ async function notifyUser(subs: SubData[], delay: number) {
     },
     {
       delay,
-    }
+    },
   );
 
   await db.batch([
@@ -94,7 +94,7 @@ async function notifyUser(subs: SubData[], delay: number) {
       mutate.sub.updateReminder({
         contribId: sub.contribId,
         reminderDate: calcNewReminderDate(sub),
-      })
+      }),
     ),
   ]);
 }
@@ -106,6 +106,6 @@ function calcNewReminderDate(sub: SubData) {
       cycle: { unit: sub.cycleUnit, value: sub.cycleValue },
       endDate: sub.endDate,
       leadTime: sub.reminder,
-    })
+    }),
   );
 }

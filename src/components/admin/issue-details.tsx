@@ -34,7 +34,7 @@ export const IssueDetails = ({ issue, instances }: Props) => {
         <Bento>
           <BentoHeader>Stack</BentoHeader>
           <BentoContent>
-            <pre className="overflow-x-auto whitespace-pre p-2 text-sm">
+            <pre className="overflow-x-auto p-2 text-sm whitespace-pre">
               {issue.stack}
             </pre>
           </BentoContent>
@@ -106,7 +106,7 @@ const IssueStack = ({ stack }: { stack: string | null }) => {
         </Button>
       </div>
       {expanded && (
-        <pre className="overflow-x-auto whitespace-pre p-2 text-sm">
+        <pre className="overflow-x-auto p-2 text-sm whitespace-pre">
           {stack}
         </pre>
       )}
@@ -132,7 +132,7 @@ const IssueProperties = ({ properties }: { properties: unknown }) => {
         </Button>
       </div>
       {expanded && (
-        <pre className="overflow-x-auto whitespace-pre-wrap text-sm">
+        <pre className="overflow-x-auto text-sm whitespace-pre-wrap">
           {JSON.stringify(properties, null, 2)}
         </pre>
       )}

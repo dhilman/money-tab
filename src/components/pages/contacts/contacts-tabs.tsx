@@ -56,7 +56,7 @@ const TabContentContacts = () => {
 
   if (connections.length === 0) {
     return (
-      <div className="flex w-full flex-col items-center px-7 pb-8 pt-4">
+      <div className="flex w-full flex-col items-center px-7 pt-4 pb-8">
         <AnimatedImageContainer>
           <AnimatedImage name="bust" />
         </AnimatedImageContainer>
@@ -82,7 +82,7 @@ const TabContentGroups = () => {
 
   if (groups.length === 0) {
     return (
-      <div className="flex w-full flex-col items-center px-7 pb-8 pt-4">
+      <div className="flex w-full flex-col items-center px-7 pt-4 pb-8">
         <AnimatedImageContainer>
           <AnimatedImage name="busts" />
         </AnimatedImageContainer>

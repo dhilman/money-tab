@@ -24,7 +24,7 @@ export const UserBalance = () => {
           <span role="img" aria-label="scales" className="text-xl">
             ⚖️
           </span>
-          <div className="text-sm font-medium capitalize text-hint">
+          <div className="text-sm font-medium text-hint capitalize">
             {t("no_outstanding_balance")}
           </div>
         </BentoContent>

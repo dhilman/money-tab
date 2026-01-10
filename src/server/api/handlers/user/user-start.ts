@@ -17,7 +17,7 @@ export const userStartHandler = privateProcedure.query(async ({ ctx }) => {
       queries.tx.list(
         ctx,
         { userId: ctx.userId, limit: 10 },
-        { contribs: true }
+        { contribs: true },
       ),
       queries.sub.list(ctx, { userId: ctx.userId }, { contribs: true }),
       queries.group.list(ctx, { userId: ctx.userId }, {}),
@@ -29,7 +29,7 @@ export const userStartHandler = privateProcedure.query(async ({ ctx }) => {
   const balances = arrCombine(
     [txBalances, subBalances],
     (v) => v.userId + v.currencyCode,
-    (a, b) => ({ ...a, amount: a.amount + b.amount })
+    (a, b) => ({ ...a, amount: a.amount + b.amount }),
   );
 
   const mostRecentContributorIds = transactions.reduce((acc, tx) => {

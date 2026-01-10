@@ -21,7 +21,7 @@ export const TxDropdown = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="absolute right-4 top-4">
+        <button className="absolute top-4 right-4">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-hint/10">
             <DotsVerticalIcon className="h-5 w-5 text-hint" />
           </div>

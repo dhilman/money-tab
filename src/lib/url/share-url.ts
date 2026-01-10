@@ -23,7 +23,7 @@ export function getTgShareUrl(url: string, text?: string): string {
 
 export function getTgWebAppShareUrl(
   path: ParsedUrlPath,
-  text?: string
+  text?: string,
 ): string {
   const url = getTgWebAppUrl(path);
   return getTgShareUrl(url, text);

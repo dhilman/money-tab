@@ -51,7 +51,7 @@ export const subUpdateHandler = privateProcedure
     await mutate.sub.contribsConfirm(
       ctx,
       sub.id,
-      successes.map((s) => s.id)
+      successes.map((s) => s.id),
     );
 
     return data.sub.id;
@@ -68,10 +68,10 @@ function validate(ctx: MyContext, input: Input, sub: SelectSubComplete) {
 function transform(
   ctx: MyContext,
   input: Input,
-  sub: SelectSubComplete
+  sub: SelectSubComplete,
 ): UpdateSubParams {
   const startDate = dayjsToSqlDate(
-    input.trial ? addCycles(input.startDate, input.trial, 1) : input.startDate
+    input.trial ? addCycles(input.startDate, input.trial, 1) : input.startDate,
   );
 
   function isChanged() {
@@ -99,8 +99,8 @@ function transform(
       return dayjsToSqlDateNullable(
         calcReminderDate(
           { startDate: startDate, cycle: input.cycle, endDate: input.endDate },
-          c.reminder
-        )
+          c.reminder,
+        ),
       );
     },
   });
@@ -127,7 +127,7 @@ function transform(
 async function notify(
   ctx: MyContext,
   events: SubChangeset["events"],
-  sub: SelectSubComplete
+  sub: SelectSubComplete,
 ) {
   const userIds = events.map((e) => e.userId);
   const notifs = [] as NotifyEventById[];
@@ -146,7 +146,7 @@ function changesetToNotifyData(
     sub: SelectSubComplete;
     userId: string;
     events: SubChangeset["events"];
-  }
+  },
 ): NotifyDataSingle | null {
   if (params.userId === ctx.userId) return null;
 

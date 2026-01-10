@@ -37,7 +37,7 @@ export const BentoIssuesList = ({ issues }: Props) => {
             resolve.mutate({ hashes: selectedHashes });
           }}
           disabled={selectedHashes.length === 0}
-          isLoading={resolve.isLoading}
+          isLoading={resolve.isPending}
         >
           Resolve {selectedHashes.length > 0 && `(${selectedHashes.length})`}
         </NavButtonRight>
@@ -57,7 +57,7 @@ export const BentoIssuesList = ({ issues }: Props) => {
                       setSelectedHashes((prev) =>
                         prev.includes(issue.hash)
                           ? prev.filter((hash) => hash !== issue.hash)
-                          : [...prev, issue.hash]
+                          : [...prev, issue.hash],
                       );
                     }}
                   />
@@ -85,7 +85,7 @@ const IssueListItem = ({ issue, selected, onToggle }: IssueListItemProps) => {
     <div className="relative flex w-full flex-col gap-1.5 rounded-lg px-2 py-2">
       <MyLink
         route={{ pathname: "/admin/issue/[hash]", query: { hash: issue.hash } }}
-        className="absolute left-0 top-0 z-10 h-full w-3/4"
+        className="absolute top-0 left-0 z-10 h-full w-3/4"
       />
       <div className="flex w-full items-center justify-between gap-2 text-sm text-hint">
         <div className="inline-flex items-center gap-1.5">

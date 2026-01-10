@@ -40,7 +40,7 @@ export function useTxApi(params: Params) {
       void ctx.tx.get.invalidate(params);
       void ctx.user.start.invalidate();
     },
-    [ctx.tx.get, ctx.user.start, params]
+    [ctx.tx.get, ctx.user.start, params],
   );
 
   const txId = data?.id || "";

@@ -45,7 +45,7 @@ export const CustomCycleInput = ({
           onChange={onTextChange}
           className={cn(
             "no-spinner ml-auto h-8 w-10 rounded-md bg-canvas text-center",
-            !isValid && "bg-red-500/20"
+            !isValid && "bg-red-500/20",
           )}
           placeholder="0"
           onKeyDown={(e) => {

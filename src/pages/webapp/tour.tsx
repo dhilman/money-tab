@@ -29,8 +29,8 @@ const Tour = () => {
   return (
     <>
       <PageContent />
-      <div className="fixed left-0 top-0 z-10 h-full w-1/3" onClick={onPrev} />
-      <div className="fixed right-0 top-0 z-10 h-full w-2/3" onClick={onNext} />
+      <div className="fixed top-0 left-0 z-10 h-full w-1/3" onClick={onPrev} />
+      <div className="fixed top-0 right-0 z-10 h-full w-2/3" onClick={onNext} />
     </>
   );
 };

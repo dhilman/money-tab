@@ -61,7 +61,6 @@ export const ShareButton = () => {
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface MoreButtonProps {}
 
 export const MoreButton = React.forwardRef<HTMLButtonElement, MoreButtonProps>(
@@ -83,6 +82,6 @@ export const MoreButton = React.forwardRef<HTMLButtonElement, MoreButtonProps>(
         <div>{t("more")}</div>
       </ButtonV1>
     );
-  }
+  },
 );
 MoreButton.displayName = "MoreButton";

@@ -53,7 +53,7 @@ export function addCookie(
   headers: Headers,
   type: CookieType,
   value: string,
-  opts?: CookieOptions
+  opts?: CookieOptions,
 ) {
   headers.append("Set-Cookie", createCookie(type, value, opts));
 }
@@ -61,7 +61,7 @@ export function addCookie(
 export function createCookie(
   type: CookieType,
   value: string,
-  opts?: CookieOptions
+  opts?: CookieOptions,
 ): string {
   function create(name: string, maxAge: number) {
     return serialize(name, value, {

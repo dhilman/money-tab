@@ -18,7 +18,7 @@ export function id(id: string) {
 
 export function exists<T>(
   item: T | null | undefined,
-  message = "Not found"
+  message = "Not found",
 ): asserts item is T {
   if (!item) {
     throw new TRPCError({
@@ -31,7 +31,7 @@ export function exists<T>(
 export function isCreator(
   ctx: MyContext,
   creatorId: string,
-  message = "Access denied"
+  message = "Access denied",
 ) {
   if (ctx.user.id !== creatorId) {
     throw new TRPCError({
@@ -44,7 +44,7 @@ export function isCreator(
 export function notCreator(
   ctx: MyContext,
   creatorId: string,
-  message = "Can not perform action as creator"
+  message = "Can not perform action as creator",
 ) {
   if (ctx.user.id === creatorId) {
     throw new TRPCError({
@@ -75,7 +75,7 @@ export function contribAmounts(
   contribs: {
     amountPaid: number;
     amountOwed: number;
-  }[]
+  }[],
 ) {
   if (contribs.some((c) => c.amountPaid < 0 || c.amountOwed < 0)) {
     throw new TRPCError({
@@ -113,7 +113,7 @@ export function contribAmounts(
  */
 export function contribUserIds(
   ctx: MyContext,
-  contribs: { userId: string | null }[]
+  contribs: { userId: string | null }[],
 ) {
   const userIds = contribs
     .filter((c) => c.userId)
@@ -141,7 +141,7 @@ export function contribUserIds(
 export async function inGroup(
   ctx: MyContext,
   groupId: string,
-  userIds: string[]
+  userIds: string[],
 ) {
   const members = await ctx.db.query.membership.findMany({
     columns: { userId: true },
@@ -204,7 +204,7 @@ export async function contactOrShareGroup(ctx: MyContext, userId: string) {
 export async function contactsOrInGroup(
   ctx: MyContext,
   userIds: string[],
-  groupId: string | null
+  groupId: string | null,
 ) {
   const filteredUserIds = userIds.filter((id) => id !== ctx.userId);
   if (filteredUserIds.length === 0) return;
@@ -216,7 +216,7 @@ export async function contactsOrInGroup(
   });
 
   const notConnectedIds = filteredUserIds.filter(
-    (id) => !connections.some((c) => c.userId === id)
+    (id) => !connections.some((c) => c.userId === id),
   );
   if (notConnectedIds.length === 0) {
     return;
@@ -238,7 +238,7 @@ export async function joinable(
     createdAt: string;
     visibility: Visibility;
     groupId: string | null;
-  }
+  },
 ) {
   const joinable = calcIsPublic(params);
   if (joinable) return;
@@ -252,7 +252,7 @@ export async function joinable(
 
 export function isParticipant<T extends { userId: string | null }>(
   ctx: MyContext,
-  contribs: T[]
+  contribs: T[],
 ) {
   const contrib = contribs.find((v) => v.userId === ctx.userId);
   if (!contrib) {

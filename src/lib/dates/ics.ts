@@ -49,7 +49,7 @@ export function getGoogleCalendarLink(params: IcsParams) {
 
 export function getOutlookCalendarLink(params: IcsParams) {
   const start = dayjs(params.start, { utc: true }).format(
-    "YYYY-MM-DDTHH:mm:ss"
+    "YYYY-MM-DDTHH:mm:ss",
   );
   const end = dayjs(params.end, { utc: true }).format("YYYY-MM-DDTHH:mm:ss");
   const title = encodeURIComponent(params.title);

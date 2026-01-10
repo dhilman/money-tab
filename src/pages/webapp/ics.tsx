@@ -27,7 +27,7 @@ export default function Page() {
               <div className="text-xl font-bold">
                 {query.title || t("no_desc")}
               </div>
-              <div className="text-base font-medium capitalize text-hint">
+              <div className="text-base font-medium text-hint capitalize">
                 {formatEventDate(query.start)}
               </div>
             </div>

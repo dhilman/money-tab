@@ -32,7 +32,7 @@ export const IconV1 = ({
       className={cn(
         "flex shrink-0 items-center justify-center",
         iconContainerSizes[size],
-        className
+        className,
       )}
     >
       <Icon className={iconSizes[size]} />

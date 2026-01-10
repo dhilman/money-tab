@@ -46,7 +46,7 @@ export function users(params: UsersListParams) {
     .leftJoin(schema.connection, eq(schema.connection.ownerId, schema.user.id))
     .leftJoin(
       schema.contribution,
-      eq(schema.contribution.userId, schema.user.id)
+      eq(schema.contribution.userId, schema.user.id),
     )
     .leftJoin(schema.subContrib, eq(schema.subContrib.userId, schema.user.id))
     .orderBy(desc(schema.user.createdAt))
@@ -67,7 +67,7 @@ export function userStats(id: string) {
     .leftJoin(schema.connection, eq(schema.connection.ownerId, schema.user.id))
     .leftJoin(
       schema.contribution,
-      eq(schema.contribution.userId, schema.user.id)
+      eq(schema.contribution.userId, schema.user.id),
     )
     .leftJoin(schema.subContrib, eq(schema.subContrib.userId, schema.user.id))
     .leftJoin(schema.membership, eq(schema.membership.userId, schema.user.id))
@@ -85,8 +85,8 @@ export const languageCodesSince = (params: DateRangeParams) => {
     .where(
       and(
         gt(schema.user.createdAt, params.startDate),
-        lt(schema.user.createdAt, params.endDate)
-      )
+        lt(schema.user.createdAt, params.endDate),
+      ),
     )
     .groupBy(schema.user.languageCode);
 };
@@ -98,8 +98,8 @@ export function usersSince(params: DateRangeParams) {
     .where(
       and(
         gt(schema.user.createdAt, params.startDate),
-        lt(schema.user.createdAt, params.endDate)
-      )
+        lt(schema.user.createdAt, params.endDate),
+      ),
     );
 }
 
@@ -110,8 +110,8 @@ export function txsSince(params: DateRangeParams) {
     .where(
       and(
         gt(schema.transaction.createdAt, params.startDate),
-        lt(schema.transaction.createdAt, params.endDate)
-      )
+        lt(schema.transaction.createdAt, params.endDate),
+      ),
     );
 }
 
@@ -122,8 +122,8 @@ export function subsSince(params: DateRangeParams) {
     .where(
       and(
         gt(schema.subscription.createdAt, params.startDate),
-        lt(schema.subscription.createdAt, params.endDate)
-      )
+        lt(schema.subscription.createdAt, params.endDate),
+      ),
     );
 }
 
@@ -134,8 +134,8 @@ export function connectionsSince(params: DateRangeParams) {
     .where(
       and(
         gt(schema.connection.createdAt, params.startDate),
-        lt(schema.connection.createdAt, params.endDate)
-      )
+        lt(schema.connection.createdAt, params.endDate),
+      ),
     );
 }
 
@@ -146,8 +146,8 @@ export function groupsSince(params: DateRangeParams) {
     .where(
       and(
         gt(schema.group.createdAt, params.startDate),
-        lt(schema.group.createdAt, params.endDate)
-      )
+        lt(schema.group.createdAt, params.endDate),
+      ),
     );
 }
 
@@ -165,8 +165,8 @@ export function eventsPerDay(params: {
       and(
         gt(schema.event.createdAt, params.range.startDate),
         lt(schema.event.createdAt, params.range.endDate),
-        eq(schema.event.name, params.event as EventName).if(params.event)
-      )
+        eq(schema.event.name, params.event as EventName).if(params.event),
+      ),
     )
     .groupBy(sql`DATE(${schema.event.createdAt})`);
 }
@@ -185,8 +185,8 @@ export function eventsPerUser(params: {
       and(
         eq(schema.event.name, params.event as EventName).if(params.event),
         gt(schema.event.createdAt, params.range.startDate),
-        lt(schema.event.createdAt, params.range.endDate)
-      )
+        lt(schema.event.createdAt, params.range.endDate),
+      ),
     )
     .groupBy(schema.event.createdById);
 }
@@ -209,8 +209,8 @@ export function eventsPerUserWithUserCreation(params: {
         gt(schema.event.createdAt, params.eventRange.startDate),
         lt(schema.event.createdAt, params.eventRange.endDate),
         gt(schema.user.createdAt, params.userRange.startDate),
-        lt(schema.user.createdAt, params.userRange.endDate)
-      )
+        lt(schema.user.createdAt, params.userRange.endDate),
+      ),
     )
     .groupBy(schema.event.createdById)
     .orderBy(desc(count()));

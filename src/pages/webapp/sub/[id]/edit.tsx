@@ -11,7 +11,7 @@ function Page() {
     { id },
     {
       enabled: !!id,
-    }
+    },
   );
 
   if (!data) return null;

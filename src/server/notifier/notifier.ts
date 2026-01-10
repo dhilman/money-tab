@@ -62,16 +62,16 @@ export const notifyBatchSync = async (events: NotifyEvent[]) => {
     filtered.map(async (e) => ({
       success: await tgNotify(e.user, e.data),
       id: e.user.id,
-    }))
+    })),
   );
 
   const failed = results.filter((r) => !r.success);
   if (failed.length > 0) {
     const failedUsers = filtered.filter((e) =>
-      failed.some((f) => f.id === e.user.id)
+      failed.some((f) => f.id === e.user.id),
     );
     await queueClient.notificationBatch(
-      failedUsers.map((e) => ({ sendTo: e.user, data: e.data }))
+      failedUsers.map((e) => ({ sendTo: e.user, data: e.data })),
     );
   }
 
@@ -84,7 +84,7 @@ export const notifyBatchSync = async (events: NotifyEvent[]) => {
 export const manyByIds = async (
   ctx: DbCtx,
   userIds: string[],
-  data: NotifyDataSingle
+  data: NotifyDataSingle,
 ) => {
   if (userIds.length === 0) return { results: [], successes: [] };
   const users = await queries.user.byIdsForNotify(ctx, userIds);
@@ -92,14 +92,14 @@ export const manyByIds = async (
 
   const filtered = filterNotifiable(users.map((u) => ({ user: u, data })));
   await queueClient.notificationBatch(
-    filtered.map((e) => ({ sendTo: e.user, data: e.data }))
+    filtered.map((e) => ({ sendTo: e.user, data: e.data })),
   );
 };
 
 export const manyByIdsSync = async (
   ctx: DbCtx,
   userIds: string[],
-  data: NotifyDataSingle
+  data: NotifyDataSingle,
 ) => {
   if (userIds.length === 0) return { results: [], successes: [] };
   const users = await queries.user.byIdsForNotify(ctx, userIds);
@@ -111,7 +111,7 @@ export const manyByIdsSync = async (
 export const singleById = async (
   ctx: DbCtx,
   userId: string,
-  data: NotifyDataSingle
+  data: NotifyDataSingle,
 ) => {
   const user = await queries.user.byIdForNotify(ctx, userId);
   if (!user) return { success: false, userTgId: null };
@@ -122,7 +122,7 @@ export const singleById = async (
 export const singleByIdSync = async (
   ctx: DbCtx,
   userId: string,
-  data: NotifyDataSingle
+  data: NotifyDataSingle,
 ) => {
   const user = await queries.user.byIdForNotify(ctx, userId);
   if (!user) return { success: false, userTgId: null };
@@ -135,7 +135,7 @@ export const batchByIdsSync = async (ctx: DbCtx, events: NotifyEventById[]) => {
 
   const users = await queries.user.byIdsForNotify(
     ctx,
-    events.map((e) => e.userId)
+    events.map((e) => e.userId),
   );
   if (users.length === 0) return { results: [], successes: [] };
 

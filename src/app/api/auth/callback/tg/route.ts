@@ -41,7 +41,7 @@ async function handler(req: NextRequest) {
       firstName: data.first_name,
       lastName: data.last_name,
       username: data.username,
-    }
+    },
   );
 
   const cookieValue = await createAuthJWT(user);

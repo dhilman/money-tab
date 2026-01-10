@@ -38,7 +38,7 @@ export const TxHeader = () => {
       <div
         className={cn(
           "mt-1.5 px-4 text-center font-rounded text-xl font-semibold",
-          desc || "text-hint"
+          desc || "text-hint",
         )}
       >
         <LoadingProvider

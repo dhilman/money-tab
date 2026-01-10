@@ -70,7 +70,7 @@ export const decodeQueryId = (queryId: string): QueryId | null => {
   if (!txid || !amount || !currency || !type) return null;
 
   const t = Object.entries(QUERY_ID_TYPE_MAP).find(
-    ([_k, v]) => v === type
+    ([_k, v]) => v === type,
   )?.[0];
   if (!t) return null;
 
@@ -213,7 +213,6 @@ const calculateContributions = (userId: string, queryId: QueryId) => {
     {
       userId: userId,
       amountPaid: isPayer ? queryId.amount : 0,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       amountOwed: isPayer ? 0 : amount1!,
     },
   ];
@@ -235,7 +234,7 @@ composer.on("chosen_inline_result", async (ctx) => {
   });
   if (!user) return;
 
-  ctx.logger.info("creating tx from decoded query id", queryId);
+  ctx.logger.info({ queryId }, "creating tx from decoded query id");
 
   // await mutate.tx.create({
   //   txId: queryId.txid,

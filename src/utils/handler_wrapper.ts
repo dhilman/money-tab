@@ -5,7 +5,7 @@ import { newEdgeRequest, newNodeRequest } from "~/utils/request";
 
 type Handler = (
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) => Promise<NextApiResponse>;
 
 export function monitoredHandler(handler: Handler) {

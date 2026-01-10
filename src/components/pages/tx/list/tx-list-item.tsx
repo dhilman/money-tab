@@ -80,7 +80,7 @@ export const TxContainer = ({ transaction, children }: TxContainerProps) => {
         <div
           className={cn(
             "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
-            style.colorbg
+            style.colorbg,
           )}
         >
           <TxIcon
@@ -88,7 +88,7 @@ export const TxContainer = ({ transaction, children }: TxContainerProps) => {
             className={cn(
               "shrink-0 rounded-full bg-white stroke-[2.5px] p-1.5",
               "h-[26px] w-[26px]",
-              style.color
+              style.color,
             )}
           />
         </div>
@@ -96,7 +96,7 @@ export const TxContainer = ({ transaction, children }: TxContainerProps) => {
 
       <ListItemBody className="h-16 w-full gap-4 overflow-hidden">
         {/* Counterparty + Description */}
-        <div className="w-full truncate text-ellipsis text-left">
+        <div className="w-full truncate text-left text-ellipsis">
           {children}
         </div>
 
@@ -130,8 +130,8 @@ export const TxDescription = ({
   return (
     <div
       className={cn(
-        "w-full max-w-full truncate whitespace-nowrap text-base",
-        className
+        "w-full max-w-full truncate text-base whitespace-nowrap",
+        className,
       )}
     >
       {type === "SETTLE" ? t("settlement") : desc || t("no_desc")}
@@ -171,7 +171,7 @@ function getTransactionStyling(tr: BaseTransaction): TransactionStyling {
   if (tr.type === "SETTLE") {
     return {
       color: "text-blue-500",
-      colorbg: "bg-gradient-to-b from-cyan-300 to-blue-500",
+      colorbg: "bg-linear-to-b from-cyan-300 to-blue-500",
       icon: "settle",
     };
   }
@@ -179,7 +179,7 @@ function getTransactionStyling(tr: BaseTransaction): TransactionStyling {
   if (tr.net === 0) {
     return {
       color: "text-hint",
-      colorbg: "bg-gradient-to-b from-hint/50 to-hint/50",
+      colorbg: "bg-linear-to-b from-hint/50 to-hint/50",
       icon: "borrow",
     };
   }
@@ -187,14 +187,14 @@ function getTransactionStyling(tr: BaseTransaction): TransactionStyling {
   if (tr.net < 0) {
     return {
       color: "text-red-500",
-      colorbg: "bg-gradient-to-b from-pink-300 to-red-500",
+      colorbg: "bg-linear-to-b from-pink-300 to-red-500",
       icon: "borrow",
     };
   }
 
   return {
     color: "text-green-500",
-    colorbg: "bg-gradient-to-b from-green-300 to-green-500",
+    colorbg: "bg-linear-to-b from-green-300 to-green-500",
     icon: "lend",
   };
 }

@@ -155,7 +155,7 @@ const HelperStepCard = ({ className, children }: HelperStepCardProps) => {
     <div
       className={cn(
         "flex w-full items-center gap-3.5 rounded-2xl border border-hint/20 p-3",
-        className
+        className,
       )}
     >
       {children}
@@ -168,7 +168,7 @@ const HelperStepNumber = ({ children }: { children: React.ReactNode }) => {
     <div
       className={cn(
         "flex h-12 w-12 shrink-0 items-center justify-center rounded-full",
-        "bg-primary text-xl font-semibold text-primary-foreground"
+        "bg-primary text-xl font-semibold text-primary-foreground",
       )}
     >
       {children}

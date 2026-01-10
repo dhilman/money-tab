@@ -52,7 +52,7 @@ export type UpdateSubParams = {
 export async function update(
   ctx: DbUserCtx,
   id: string,
-  params: UpdateSubParams
+  params: UpdateSubParams,
 ) {
   await db.transaction(async (trx) => {
     if (params.isChanged) {
@@ -69,7 +69,7 @@ export async function update(
     await applyChangeset(
       { userId: ctx.userId, db: trx },
       { id: id, startDate: params.sub.startDate },
-      params.contribs
+      params.contribs,
     );
   });
 }
@@ -151,7 +151,7 @@ export function updateReminder(params: {
 
 export async function contribUpdateById(
   id: string,
-  params: Partial<Omit<SelectSubContrib, "id">>
+  params: Partial<Omit<SelectSubContrib, "id">>,
 ) {
   return db
     .update(schema.subContrib)
@@ -167,7 +167,7 @@ export async function contribUpdateById(
 export async function contribsConfirm(
   ctx: DbCtx,
   subId: string,
-  userIds: string[]
+  userIds: string[],
 ) {
   if (userIds.length === 0) return;
 
@@ -177,8 +177,8 @@ export async function contribsConfirm(
     .where(
       and(
         eq(schema.subContrib.subscriptionId, subId),
-        inArray(schema.subContrib.userId, userIds)
-      )
+        inArray(schema.subContrib.userId, userIds),
+      ),
     );
 }
 
@@ -188,13 +188,13 @@ export async function contribsChangeset(
     subId: string;
     subStartDate: string;
     changes: SubChangeset;
-  }
+  },
 ) {
   await ctx.db.transaction(async (trx) => {
     await applyChangeset(
       { userId: ctx.userId, db: trx },
       { id: params.subId, startDate: params.subStartDate },
-      params.changes
+      params.changes,
     );
   });
 }
@@ -205,7 +205,7 @@ async function applyChangeset(
     id: string;
     startDate: string;
   },
-  changes: SubChangeset
+  changes: SubChangeset,
 ) {
   function eventToDbEvent(e: SubChangeset["events"][0]): InsertEvent {
     return {
@@ -222,8 +222,8 @@ async function applyChangeset(
       .where(
         and(
           eq(schema.subContrib.subscriptionId, sub.id),
-          inArray(schema.subContrib.id, changes.deletes)
-        )
+          inArray(schema.subContrib.id, changes.deletes),
+        ),
       );
   }
   if (changes.updates.length > 0) {
@@ -232,8 +232,8 @@ async function applyChangeset(
         ctx.db
           .update(schema.subContrib)
           .set(update)
-          .where(eq(schema.subContrib.id, update.id))
-      )
+          .where(eq(schema.subContrib.id, update.id)),
+      ),
     );
   }
   if (changes.creates.length > 0) {
@@ -246,7 +246,7 @@ async function applyChangeset(
         amountOwed: v.amountOwed,
         status: v.status ?? "NOT_DELIVERED",
         joinDate: sub.startDate,
-      }))
+      })),
     );
   }
   if (changes.events.length > 0) {
@@ -257,7 +257,7 @@ async function applyChangeset(
 }
 
 function mapContribEventToEventName(
-  e: SubChangeset["events"][0]
+  e: SubChangeset["events"][0],
 ): InsertEvent["name"] {
   switch (e.type) {
     case "leave":

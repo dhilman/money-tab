@@ -9,7 +9,7 @@ const SliderThumb = React.forwardRef<
 >((props, ref) => (
   <SliderPrimitive.Thumb
     ref={ref}
-    className="focus-visible:ring-ring block h-5 w-5 rounded-full border border-hint/20 bg-background shadow ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+    className="focus-visible:ring-ring block h-5 w-5 rounded-full border border-hint/20 bg-background shadow-sm ring-offset-background transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
     {...props}
   />
 ));
@@ -38,8 +38,8 @@ const SliderRoot = React.forwardRef<
   <SliderPrimitive.Root
     ref={ref}
     className={cn(
-      "relative flex w-full touch-none select-none items-center",
-      className
+      "relative flex w-full touch-none items-center select-none",
+      className,
     )}
     {...props}
   />

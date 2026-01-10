@@ -46,7 +46,7 @@ function createContrib(
     paid?: number;
     owed?: number;
     manual?: boolean;
-  } = {}
+  } = {},
 ): ContribInput {
   return {
     userId,
@@ -96,7 +96,7 @@ describe("txs, subs, summary", () => {
       createTxData({
         value: 10,
         contributions: [createContrib(user.id, { paid: 10, owed: 0 })],
-      })
+      }),
     );
     const tx = await caller.tx.get({ id: txId });
     expect(tx.amount).toBe(10);
@@ -110,7 +110,7 @@ describe("txs, subs, summary", () => {
         startDate: "2021-01-01",
         trial: { unit: "DAY", value: 1 },
         contribs: [createContrib(user.id, { paid: 10, owed: 0 })],
-      })
+      }),
     );
     const sub = await caller.sub.get({ id });
     expect(sub.amount).toBe(10);
@@ -130,7 +130,7 @@ describe("txs, subs, summary", () => {
           createContrib(user1.id, { paid: 10, owed: 5 }),
           createContrib(user2.id, { paid: 0, owed: 5 }),
         ],
-      })
+      }),
     );
 
     const { balances: balances1 } = await caller1.user.start();
@@ -156,7 +156,7 @@ describe("txs, subs, summary", () => {
           createContrib(user1.id, { paid: 10, owed: 5 }),
           createContrib(user2.id, { paid: 0, owed: 5 }),
         ],
-      })
+      }),
     );
 
     const { balances: balances1 } = await caller1.user.start();
@@ -195,7 +195,7 @@ describe("creating and transacting in a group", async () => {
           createContrib(user1.id, { paid: 10, owed: 5 }),
           createContrib(user2.id, { paid: 0, owed: 5 }),
         ],
-      })
+      }),
     );
 
     const tx = await caller1.tx.get({ id: txId });

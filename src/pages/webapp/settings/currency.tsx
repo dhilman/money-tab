@@ -45,8 +45,8 @@ function useUserCurrency({ allowMostRecent }: { allowMostRecent: boolean }) {
         code: t("most_recent"),
         symbol: t("most_recent"),
         name: t("most_recent"),
-      } as Currency),
-    [t]
+      }) as Currency,
+    [t],
   );
 
   const options = useMemo(() => {

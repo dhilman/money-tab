@@ -200,13 +200,13 @@ function getDateRanges(start: dayjs.Dayjs, interval: Interval) {
   const startOfDay = start.startOf(intervalToStartOf(interval)).startOf("day");
   return splitDateRange(
     { start: startOfDay, end: startOfDay.add(1, interval) },
-    intervalToGap(interval)
+    intervalToGap(interval),
   );
 }
 
 function splitDateRange(
   dateRange: DateRange,
-  splitBy: "day" | "week" | "month"
+  splitBy: "day" | "week" | "month",
 ) {
   const start = dayjs(dateRange.start);
   const end = dayjs(dateRange.end);

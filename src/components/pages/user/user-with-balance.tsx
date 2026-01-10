@@ -33,7 +33,7 @@ export const UserWithBalanceLoading = () => {
         <div
           className={cn(
             avatarVariants({ size: "xl" }),
-            "animate-pulse bg-canvas/50"
+            "animate-pulse bg-canvas/50",
           )}
         />
       </ListItemLeft>
@@ -67,7 +67,7 @@ export const UserWithBalance = ({ userId }: Props) => {
         <UserAvatar size="xl" user={user} />
       </ListItemLeft>
       <ListItemBody className="gap-4 truncate">
-        <div className="w-full truncate whitespace-nowrap text-base font-medium">
+        <div className="w-full truncate text-base font-medium whitespace-nowrap">
           {user.name}
         </div>
         {balance && (
@@ -100,7 +100,7 @@ const useUserBalance = (userId: string) => {
     if (user.hideBalance) return null;
 
     const userBalances = balances.filter(
-      (b) => b.userId === userId && b.amount !== 0
+      (b) => b.userId === userId && b.amount !== 0,
     );
     const total = userBalances.reduce((acc, b) => {
       return acc + convertAmount(b.amount, b.currencyCode, currencyCode);

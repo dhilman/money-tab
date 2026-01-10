@@ -59,7 +59,7 @@ const ColorSelector = () => {
           key={i}
           className={cn(
             "h-5 w-5 rounded-full",
-            i === colorId && "ring-1 ring-foreground ring-offset-2"
+            i === colorId && "ring-1 ring-foreground ring-offset-2",
           )}
           style={{
             backgroundColor: getAccentColor(i),

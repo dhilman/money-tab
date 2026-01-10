@@ -48,8 +48,8 @@ export const BentoHeader = ({ className, children }: BentoHeaderProps) => {
     <div
       className={cn(
         "flex h-8 w-full items-center rounded-t-xl pl-2",
-        "text-sm font-medium uppercase text-hint",
-        className
+        "text-sm font-medium text-hint uppercase",
+        className,
       )}
     >
       {children}
@@ -74,10 +74,10 @@ export const EmptyBox = ({ className, children, ...props }: Props) => {
   return (
     <div
       className={cn(
-        "flex w-full select-none flex-col items-center justify-center rounded-xl",
+        "flex w-full flex-col items-center justify-center rounded-xl select-none",
         "px-3 py-5 text-center text-sm text-hint",
         "bg-background",
-        className
+        className,
       )}
       {...props}
     >

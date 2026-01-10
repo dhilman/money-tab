@@ -102,7 +102,6 @@ const ShareSelf = () => {
 };
 
 const ActionButtons = () => {
-  const { t } = useTranslation();
   const { user, isLoading, isContact } = useUserCtx();
 
   if (isLoading) {
@@ -152,7 +151,7 @@ const AddContact = () => {
           await register();
           connectMutation.mutate(user.id);
         }}
-        disabled={connectMutation.isLoading}
+        disabled={connectMutation.isPending}
       >
         <IconV1 Icon={UserPlus2Icon} />
         {t("add_contact")}

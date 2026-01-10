@@ -6,7 +6,7 @@ import type { InsertGroup } from "~/server/db/types";
 export async function updateById(
   ctx: DbCtx,
   id: string,
-  params: Partial<InsertGroup>
+  params: Partial<InsertGroup>,
 ) {
   await ctx.db
     .update(schema.group)
@@ -27,7 +27,7 @@ export async function create(
     name: string;
     accentColorId: number;
     members: MemberParams[];
-  }
+  },
 ) {
   if (params.members.length === 0) {
     throw new Error("Group must have at least one member");
@@ -49,7 +49,7 @@ export async function create(
         ...m,
         id: createId(),
         groupId: id,
-      }))
+      })),
     ),
     ctx.db.insert(schema.event).values([
       {
@@ -77,7 +77,7 @@ async function createByTgId(
     name: string;
     tgChatType: string;
     members: MemberParams[];
-  }
+  },
 ) {
   if (params.members.length === 0) {
     throw new Error("Group must have at least one member");
@@ -105,7 +105,7 @@ async function createByTgId(
         ...m,
         id: createId(),
         groupId: returnedId,
-      }))
+      })),
     );
 
     await tx.insert(schema.event).values([
@@ -148,7 +148,7 @@ export async function getOrCreateByTgId(
     name: string;
     creatorId: string;
     tgChatType: string;
-  }
+  },
 ) {
   const existing = await queries.group.getByTgId(ctx, params.telegramId);
   if (existing) return { groupId: existing.id, isNew: false };
@@ -205,7 +205,7 @@ export async function upsertMembers(
     groupId: string;
     userIds: string[];
     createdById: string;
-  }
+  },
 ) {
   if (params.userIds.length === 0) return;
 
@@ -215,7 +215,7 @@ export async function upsertMembers(
   });
 
   const missing = params.userIds.filter(
-    (userId) => !existing.some((m) => m.userId === userId)
+    (userId) => !existing.some((m) => m.userId === userId),
   );
 
   if (missing.length === 0) return;
@@ -226,7 +226,7 @@ export async function upsertMembers(
         id: createId(),
         groupId: params.groupId,
         userId,
-      }))
+      })),
     ),
     ctx.db.insert(schema.event).values(
       missing.map((userId) => ({
@@ -234,7 +234,7 @@ export async function upsertMembers(
         createdById: params.createdById,
         groupId: params.groupId,
         targetUserId: userId,
-      }))
+      })),
     ),
   ]);
 }

@@ -34,7 +34,7 @@ export const calcRenewalsPassed = (sub: Subscription, toDate?: AnyDate) => {
   const toDateOrTmr = toDate ? toDate : dayjsUTC().add(1, "day").startOf("day");
   const end = minDate(toDateOrTmr, sub.endDate);
   return Math.ceil(
-    calcCyclesInRange({ start: sub.startDate, end: end }, sub.cycle)
+    calcCyclesInRange({ start: sub.startDate, end: end }, sub.cycle),
   );
 };
 
@@ -43,7 +43,7 @@ export const calcRenewalsInRange = (sub: Subscription, range: DateRange) => {
 
   const start = calcRenewalDateAfter(
     sub,
-    dayjsUTC(range.start).subtract(1, "day").endOf("day")
+    dayjsUTC(range.start).subtract(1, "day").endOf("day"),
   );
   if (!start) return 0;
 
@@ -69,7 +69,7 @@ export const calcRenewalDateAfter = (sub: Subscription, after: Dayjs) => {
 
 export const calcReminderDate = (
   sub: Subscription,
-  leadTime: ReminderValue | null
+  leadTime: ReminderValue | null,
 ) => {
   const today = dayjsUTC().endOf("day");
 
@@ -98,7 +98,7 @@ export const calcNextReminderDate = (params: {
   const nextReminderDate = addCycles(
     dayjsUTC(params.reminderDate),
     params.cycle,
-    1
+    1,
   );
   const nextRenewal = addLeadTime(nextReminderDate, params.leadTime);
 

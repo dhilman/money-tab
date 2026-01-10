@@ -9,11 +9,11 @@ export function middleware(req: NextRequest) {
   switch (data.type) {
     case "USER":
       return NextResponse.redirect(
-        `${env.NEXT_PUBLIC_BASE_URL}/webapp/user/${data.id}`
+        `${env.NEXT_PUBLIC_BASE_URL}/webapp/user/${data.id}`,
       );
     case "GROUP":
       return NextResponse.redirect(
-        `${env.NEXT_PUBLIC_BASE_URL}/webapp/group/${data.id}`
+        `${env.NEXT_PUBLIC_BASE_URL}/webapp/group/${data.id}`,
       );
     case "TX": {
       let url = `${env.NEXT_PUBLIC_BASE_URL}/webapp/tx/${data.id}`;

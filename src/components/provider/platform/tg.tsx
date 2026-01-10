@@ -102,7 +102,7 @@ export const useTelegram = (ready: boolean): Platform | null => {
 };
 
 const useMainButton = (webApp: WebAppOrNull) => {
-  const callback = useRef<() => void>();
+  const callback = useRef<() => void>(undefined);
 
   return {
     setOnMain: (onMain?: () => void) => {
@@ -177,14 +177,14 @@ const useSettingsButton = (webApp: WebAppOrNull) => {
     isSetup.current = true;
     const tg = window.Telegram.WebApp;
     tg.SettingsButton.onClick(
-      () => void push({ pathname: "/webapp/settings" })
+      () => void push({ pathname: "/webapp/settings" }),
     );
     tg.SettingsButton.show();
   }, [webApp, push]);
 };
 
 const useBackButton = (webApp: WebAppOrNull) => {
-  const callback = useRef<() => void>();
+  const callback = useRef<() => void>(undefined);
   const router = useRouter();
   const shown = useRef(false);
   const { back } = useWebAppRouter();

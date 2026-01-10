@@ -23,7 +23,7 @@ export const SubHeader = () => {
       </div>
       <CurrencyAmount
         size="5xl"
-        className="font-bold leading-none"
+        className="leading-none font-bold"
         amount={sub.amount}
         currency={sub.currencyCode}
         isLoading={isLoading}
@@ -33,7 +33,7 @@ export const SubHeader = () => {
           "mt-2 flex items-center gap-1.5 px-3 py-1",
           "rounded-full text-sm font-semibold shadow-sm",
           "bg-foreground text-background",
-          isLoading && "bg-hint/10 text-transparent"
+          isLoading && "bg-hint/10 text-transparent",
         )}
       >
         <RepeatIcon className="h-3.5 w-3.5 stroke-[2.5px]" />

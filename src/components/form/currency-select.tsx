@@ -37,7 +37,7 @@ export const CurrencySelect = ({ options, onSelect }: Props) => {
         isCaseSensitive: false,
         shouldSort: true,
         threshold: 0.4,
-      }
+      },
     );
   }, [options]);
 
@@ -58,7 +58,7 @@ export const CurrencySelect = ({ options, onSelect }: Props) => {
         <div className="flex h-9 w-full items-center gap-1 rounded-lg bg-hint/10 px-3 text-hint">
           <SearchIcon className="h-5 w-5" />
           <TextInput
-            className="h-7 w-full bg-transparent pl-1 pr-2 text-sm text-foreground"
+            className="h-7 w-full bg-transparent pr-2 pl-1 text-sm text-foreground"
             placeholder={t("search_currencies")}
             value={query}
             onChange={(v) => setQuery(v)}
@@ -126,7 +126,7 @@ export const CurrencyListIcon = ({
     <div
       className={cn(
         "flex h-8 w-8 items-center justify-center rounded-full bg-hint/10 text-lg",
-        className
+        className,
       )}
     >
       <CurrencyFlag code={code} />

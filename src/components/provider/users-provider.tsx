@@ -91,7 +91,7 @@ export const UsersProvider = ({ children }: { children: React.ReactNode }) => {
     });
     usersById.set(
       me.id,
-      addNameToUser({ ...me, nickname: null, connected: true, me: true })
+      addNameToUser({ ...me, nickname: null, connected: true, me: true }),
     );
 
     groupsWithMembers?.forEach((group) => {
@@ -99,7 +99,7 @@ export const UsersProvider = ({ children }: { children: React.ReactNode }) => {
         if (usersById.has(member.id)) return;
         usersById.set(
           member.id,
-          addNameToUser({ ...member, nickname: null, connected: false })
+          addNameToUser({ ...member, nickname: null, connected: false }),
         );
       });
     });
@@ -128,7 +128,7 @@ export function useAddUsersToIndex(users?: (BaseUser | null)[]) {
       if (!user) return;
       newUsersById.set(
         user.id,
-        addNameToUser({ ...user, nickname: null, connected: false })
+        addNameToUser({ ...user, nickname: null, connected: false }),
       );
     });
     userStore.setState({ usersById: newUsersById });
@@ -144,8 +144,8 @@ export function useUser(id: string | null) {
 export function useUsersByIds(ids: (string | null)[]) {
   const users = userStore(
     useShallow((state) =>
-      ids.map((id) => (id ? state.usersById.get(id) : null))
-    )
+      ids.map((id) => (id ? state.usersById.get(id) : null)),
+    ),
   );
   return users.filter((v) => !!v);
 }

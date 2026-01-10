@@ -91,7 +91,7 @@ function useGroupEdit(id: string, params: GroupEdit) {
   const ref = useRef(params);
   ref.current = params;
 
-  const { mutate, isLoading } = api.group.edit.useMutation({
+  const { mutate, isPending: isLoading } = api.group.edit.useMutation({
     onSuccess: () => {
       ctx.group.get.setData(id, (v) => {
         if (!v) return v;

@@ -43,7 +43,7 @@ const TelegramLoginButton = () => {
     script.setAttribute("data-radius", "8");
     script.setAttribute(
       "data-auth-url",
-      `${env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/tg`
+      `${env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/tg`,
     );
     script.setAttribute("data-request-access", "write");
     ref.current.appendChild(script);

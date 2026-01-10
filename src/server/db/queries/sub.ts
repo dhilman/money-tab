@@ -18,7 +18,7 @@ export function list<T extends WithInputMany>(
     userId: string;
     archived?: boolean;
   },
-  withInput: T
+  withInput: T,
 ) {
   const { userId, archived = false } = filters;
   return ctx.db.query.subscription.findMany({
@@ -31,12 +31,12 @@ export function list<T extends WithInputMany>(
             .where(
               and(
                 eq(schema.subContrib.subscriptionId, v.id),
-                eq(schema.subContrib.userId, userId)
-              )
-            )
+                eq(schema.subContrib.userId, userId),
+              ),
+            ),
         ),
         isNotNull(schema.subscription.archivedAt).if(archived),
-        isNull(schema.subscription.archivedAt).if(!archived)
+        isNull(schema.subscription.archivedAt).if(!archived),
       ),
     with: withInput,
   });
@@ -45,7 +45,7 @@ export function list<T extends WithInputMany>(
 export async function byIdLike<T extends WithInput>(
   ctx: DbCtx,
   id: string,
-  withParams: T
+  withParams: T,
 ) {
   const v = await ctx.db.query.subscription.findFirst({
     where: (v) => prefix(v.id, id),
@@ -96,7 +96,7 @@ export async function remindCandidates() {
     .from(schema.subscription)
     .leftJoin(
       schema.subContrib,
-      eq(schema.subscription.id, schema.subContrib.subscriptionId)
+      eq(schema.subscription.id, schema.subContrib.subscriptionId),
     )
     .leftJoin(schema.user, eq(schema.subContrib.userId, schema.user.id))
     .where(
@@ -104,7 +104,7 @@ export async function remindCandidates() {
         isNotNull(schema.subContrib.reminder),
         lte(schema.subContrib.reminderDate, sql`DATE()`),
         eq(schema.user.isRegistered, true),
-        isNotNull(schema.user.telegramId)
-      )
+        isNotNull(schema.user.telegramId),
+      ),
     );
 }

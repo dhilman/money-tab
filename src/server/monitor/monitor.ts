@@ -68,7 +68,7 @@ class MonitoringService {
       procedure?: string;
       userId?: string;
       properties?: Record<string, unknown>;
-    } = {}
+    } = {},
   ) {
     const cookies = parseMtCookieString(req.cookie);
     this.capture({
@@ -136,7 +136,7 @@ class MonitoringService {
         userId: e.userId,
         name: e.name,
         loadTime: e.loadTime,
-      }))
+      })),
     );
     log.debug({ count: this.events.length }, "flushed events");
     this.events = [];
@@ -161,7 +161,7 @@ class MonitoringService {
         sessionId: e.sessionId,
 
         properties: e.properties,
-      }))
+      })),
     );
     log.debug({ count: this.errors.length }, "flushed errors");
     this.errors = [];

@@ -9,7 +9,7 @@ export type PathnameQueryMap = {
 };
 
 export function useTypedQuery<T extends NewRoute["pathname"]>(
-  _: T
+  _: T,
 ): PathnameQueryMap[T] {
   const router = useRouter();
   return router.query as PathnameQueryMap[T];

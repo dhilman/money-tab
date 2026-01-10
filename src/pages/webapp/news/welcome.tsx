@@ -174,7 +174,7 @@ function Testimonials({ items }: { items: TestimonialProps[] }) {
           className="relative flex h-24 w-[85%] shrink-0 flex-col items-center gap-2 rounded-lg border border-hint/10 p-3 shadow-md"
         >
           <div className="text-base">{el.text}</div>
-          <div className="absolute bottom-3 right-3 text-sm font-semibold">
+          <div className="absolute right-3 bottom-3 text-sm font-semibold">
             {el.name}
           </div>
         </div>

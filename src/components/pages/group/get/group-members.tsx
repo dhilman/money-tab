@@ -52,7 +52,7 @@ const Header = () => {
           onClick={() => {
             const url = getTgWebAppShareUrl(
               { type: "GROUP", id: group.id },
-              i18n.t("share_message_group")
+              i18n.t("share_message_group"),
             );
             platform.openTgLink(url);
           }}

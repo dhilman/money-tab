@@ -47,7 +47,7 @@ export const TxListPage = ({
     }
     if (userId) {
       filtered = filtered.filter((tx) =>
-        tx.contribs.some((c) => c.userId === userId)
+        tx.contribs.some((c) => c.userId === userId),
       );
     }
     if (groupId) {

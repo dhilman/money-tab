@@ -1,3 +1,4 @@
+import { keepPreviousData } from "@tanstack/react-query";
 import { StatCard } from "~/components/admin/stat-card";
 import { NavDefault } from "~/components/common/layout/nav";
 import { WebAppMain } from "~/components/common/layout/webapp-layout";
@@ -7,7 +8,7 @@ import { api } from "~/utils/api";
 export default webAppPage(Page);
 function Page() {
   const { data } = api.admin.totals.useQuery(undefined, {
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });

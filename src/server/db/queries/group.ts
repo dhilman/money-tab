@@ -18,7 +18,7 @@ export function list<T extends WithInputMany>(
   filters: {
     userId: string;
   },
-  withInput: T
+  withInput: T,
 ) {
   return ctx.db.query.group.findMany({
     where: (v, { and, exists, isNull }) =>
@@ -30,11 +30,11 @@ export function list<T extends WithInputMany>(
             .where(
               and(
                 eq(schema.membership.groupId, v.id),
-                eq(schema.membership.userId, filters.userId)
-              )
-            )
+                eq(schema.membership.userId, filters.userId),
+              ),
+            ),
         ),
-        isNull(v.archivedAt)
+        isNull(v.archivedAt),
       ),
     with: withInput,
   });

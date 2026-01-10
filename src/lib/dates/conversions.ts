@@ -14,7 +14,7 @@ const _leadTimeToDayjs = {
 } as const;
 
 export const leadTimeToDayjs = (
-  leadTime: ReminderValue
+  leadTime: ReminderValue,
 ): [number, ManipulateType] => {
   const [value, unit] = _leadTimeToDayjs[leadTime];
   return [value, unit];

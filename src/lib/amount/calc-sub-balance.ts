@@ -26,32 +26,35 @@ interface CalcSubParams {
 }
 
 export function calcSubsSpend(subs: Subscription[], params: CalcSubParams) {
-  return subs.reduce((acc, sub) => {
-    const contrib = sub.contribs.find((c) => c.userId === params.userId);
-    if (!contrib) return acc;
-    if (!contrib.amountOwed) return acc;
+  return subs.reduce(
+    (acc, sub) => {
+      const contrib = sub.contribs.find((c) => c.userId === params.userId);
+      if (!contrib) return acc;
+      if (!contrib.amountOwed) return acc;
 
-    const renewals = calcNumCycles(sub, params);
-    if (!renewals) return acc;
+      const renewals = calcNumCycles(sub, params);
+      if (!renewals) return acc;
 
-    const amount = contrib.amountOwed * renewals;
-    acc.push({ id: sub.id, amount, currencyCode: sub.currencyCode });
-    return acc;
-  }, [] as { id: string; amount: number; currencyCode: string }[]);
+      const amount = contrib.amountOwed * renewals;
+      acc.push({ id: sub.id, amount, currencyCode: sub.currencyCode });
+      return acc;
+    },
+    [] as { id: string; amount: number; currencyCode: string }[],
+  );
 }
 
 export function calcSubsUserBalances(
   subs: Subscription[],
-  params: CalcSubParams
+  params: CalcSubParams,
 ): UserBalance[] {
   return combineUserBalances(
-    subs.map((sub) => calcSubUserBalances(sub, params))
+    subs.map((sub) => calcSubUserBalances(sub, params)),
   );
 }
 
 function calcSubUserBalances(
   sub: Subscription,
-  params: CalcSubParams
+  params: CalcSubParams,
 ): UserBalance[] {
   const cycles = calcNumCycles(sub, params);
   if (!cycles) return [];

@@ -45,12 +45,12 @@ export const TxListSearch = (props: Props) => {
       <div
         className={cn(
           "flex h-9 w-full items-center gap-1 rounded-lg bg-hint/10 px-3 text-hint",
-          "bg-[#747480]/[0.12] text-foreground dark:bg-[#767680]/[0.24]"
+          "bg-[#747480]/12 text-foreground dark:bg-[#767680]/24",
         )}
       >
         <SearchIcon className="h-5 w-5 text-hint" />
         <TextInput
-          className="h-7 w-full bg-transparent pl-1 pr-2 text-sm"
+          className="h-7 w-full bg-transparent pr-2 pl-1 text-sm"
           placeholder={t("search_txs")}
           value={props.query}
           onChange={(v) => props.setQuery(v)}

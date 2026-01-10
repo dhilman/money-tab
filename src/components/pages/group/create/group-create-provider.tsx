@@ -26,7 +26,7 @@ export const useGroupCreateCtx = () => {
   const ctx = useContext(Context);
   if (!ctx) {
     throw new Error(
-      "useGroupCreateCtx must be used within a GroupCreateProvider"
+      "useGroupCreateCtx must be used within a GroupCreateProvider",
     );
   }
   return ctx;
@@ -43,7 +43,7 @@ export const GroupCreateProvider = ({
 
   const toggleUserId = (id: string) => {
     setUserIds((ids) =>
-      ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id]
+      ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id],
     );
   };
 
@@ -81,7 +81,7 @@ const useCreateMutation = () => {
   const ctx = api.useUtils();
   const state = useGroupCreateCtx();
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isPending: isLoading } = useMutation({
     mutationFn: async () => {
       if (!state.name) {
         toast.error(t("error.name_required"));

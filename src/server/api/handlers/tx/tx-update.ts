@@ -43,7 +43,7 @@ export const txUpdateHandler = privateProcedure
     await mutate.tx.contribsConfirm(
       ctx,
       tx.id,
-      successes.map((s) => s.id)
+      successes.map((s) => s.id),
     );
 
     return tx.id;
@@ -61,7 +61,7 @@ type TxSelected = Omit<SelectTxComplete, "createdBy">;
 function transform(
   ctx: MyContext,
   input: Input,
-  tx: TxSelected
+  tx: TxSelected,
 ): UpdateTxParams {
   function isChanged() {
     return (
@@ -99,7 +99,7 @@ function transform(
 async function notify(
   ctx: MyContext,
   events: TxChangeset["events"],
-  tx: SelectTxWithContribs
+  tx: SelectTxWithContribs,
 ) {
   const userIds = events.map((e) => e.userId);
   const notifs = [] as NotifyEventById[];
@@ -118,7 +118,7 @@ function changesetToNotifyData(
     tx: SelectTxWithContribs;
     userId: string;
     events: TxChangeset["events"];
-  }
+  },
 ): NotifyDataSingle | null {
   if (params.userId === ctx.userId) return null;
 

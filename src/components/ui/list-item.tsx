@@ -19,7 +19,7 @@ export const ListItem = <T extends React.ElementType = "div">({
     <Component
       className={cn(
         "group flex w-full items-center rounded-xl pl-4 text-left focus-visible:z-10",
-        className
+        className,
       )}
       {...props}
     >
@@ -45,7 +45,7 @@ export const ListItemLeft = ({
         "shrink-0",
         size === "sm" && "w-[40px]",
         size === "md" && "w-[50px]",
-        className
+        className,
       )}
     >
       {children}
@@ -71,7 +71,7 @@ export const ListItemIconContainer = ({
         size === "md" && "h-7 w-7 p-1",
         size === "lg" && "h-[30px] w-[30px] p-1",
         size === "xl" && "h-10 w-10 p-2",
-        className
+        className,
       )}
     >
       {children}
@@ -97,7 +97,7 @@ export const ListItemBody = ({
         size === "sm" && "h-[44px]",
         size === "md" && "h-[48px]",
         size === "lg" && "h-[60px]",
-        className
+        className,
       )}
     >
       {children}
@@ -125,7 +125,7 @@ export const ListItemIcon = ({
         size === "md" && "h-7 w-7 p-1",
         size === "lg" && "h-[30px] w-[30px] p-1",
         size === "xl" && "h-10 w-10 p-2",
-        className
+        className,
       )}
     >
       <Icon className={cn("h-full w-full", iconClassName)} />

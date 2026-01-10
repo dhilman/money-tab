@@ -47,7 +47,7 @@ const NotSeenDisclaimer = () => {
   const { t } = useTranslation();
   const { isCreator, contribs } = useContribsCtx();
   const notSeen = contribs.some(
-    (c) => c.status === "NOT_DELIVERED" && c.userId
+    (c) => c.status === "NOT_DELIVERED" && c.userId,
   );
 
   if (!notSeen) return null;

@@ -29,7 +29,7 @@ export const Home = () => {
       <ClientComponent>
         <ProfileNav className="py-4" />
       </ClientComponent>
-      <WebAppMain className="flex w-full flex-col gap-7 pb-0 pt-0">
+      <WebAppMain className="flex w-full flex-col gap-7 pt-0 pb-0">
         <div className="flex flex-col gap-4">
           <HomeBalance />
         </div>

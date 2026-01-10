@@ -134,7 +134,7 @@ const calcRemaining = (params: {
           endDate: sub.endDate,
           cycle: { unit: sub.cycleUnit, value: sub.cycleValue },
         },
-        { start: fromDate, end: toDate }
+        { start: fromDate, end: toDate },
       );
       return {
         amount: sub.amount * renewals,

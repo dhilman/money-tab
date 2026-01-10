@@ -31,8 +31,8 @@ await db
   .where(
     or(
       eq(schema.connection.ownerId, userId),
-      eq(schema.connection.userId, userId)
-    )
+      eq(schema.connection.userId, userId),
+    ),
   );
 
 // delete user

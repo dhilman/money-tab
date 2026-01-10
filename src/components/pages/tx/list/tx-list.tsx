@@ -89,7 +89,7 @@ function ViewMoreButton({ source }: ViewMoreButtonProps) {
 
 function Header({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w-full px-4 py-[5px] text-sm uppercase text-hint">
+    <div className="w-full px-4 py-[5px] text-sm text-hint uppercase">
       {children}
     </div>
   );
@@ -122,7 +122,7 @@ interface EmptyParams {
 function Empty({ source, hideCreate }: EmptyParams) {
   const { t } = useTranslation();
   return (
-    <div className="flex w-full flex-col items-center px-7 pb-8 pt-4">
+    <div className="flex w-full flex-col items-center px-7 pt-4 pb-8">
       <AnimatedImageContainer>
         <AnimatedImage name="abacus" />
       </AnimatedImageContainer>

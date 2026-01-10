@@ -160,7 +160,7 @@ const useCreateMutation = () => {
   const state = useSubCreateCtx();
   const participants = useParticipantsCtx();
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isPending: isLoading } = useMutation({
     mutationFn: async () => {
       const data: SubCreateReq = {
         name: state.name,

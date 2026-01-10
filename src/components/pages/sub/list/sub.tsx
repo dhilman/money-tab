@@ -39,7 +39,7 @@ export const SubNextDate = ({ sub, absolute }: SubNextDateProps) => {
       <div
         className={cn(
           "inline-flex items-center text-sm text-hint",
-          isRenewingSoon && "text-primary"
+          isRenewingSoon && "text-primary",
         )}
       >
         {contrib?.reminderDate && (

@@ -135,7 +135,7 @@ const UserListItem = ({
   const { decimals, parser } = useCurrencyAmountParser(currency);
   const original = useMemo(
     () => (participant.amount / 10 ** decimals).toFixed(decimals),
-    [participant.amount, decimals]
+    [participant.amount, decimals],
   );
   const [value, setValue] = useState("");
 
@@ -179,7 +179,7 @@ const UserListItem = ({
             ref={setRef}
             className={cn(
               "w-20 rounded-[8.91px] bg-tertiary px-3 py-[5px] text-right text-base",
-              participant.manual && invalid && "bg-red-500/20"
+              participant.manual && invalid && "bg-red-500/20",
             )}
             type="number"
             enterKeyHint="next"

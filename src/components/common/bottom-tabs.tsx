@@ -21,7 +21,7 @@ export const BottomTabs = ({ txs, subs }: BottomTabsProps) => {
     >
       <TabsListPrimitive
         className={cn(
-          "flex w-full items-center justify-center gap-4 border-b border-hint/10 text-hint"
+          "flex w-full items-center justify-center gap-4 border-b border-hint/10 text-hint",
         )}
       >
         <Trigger value="txs">{t("expenses")}</Trigger>
@@ -48,7 +48,7 @@ const Trigger = ({ value, children }: TriggerProps) => {
       value={value}
       className={cn(
         "group h-12 w-36 text-center text-sm font-semibold",
-        "data-[state=active]:text-foreground"
+        "data-[state=active]:text-foreground",
       )}
     >
       <div className="relative mx-auto flex h-12 w-fit items-center">

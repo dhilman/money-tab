@@ -7,9 +7,9 @@ import { cn } from "~/lib/utils";
 const buttonVariants = cva(
   cn(
     "group w-full flex items-center justify-center gap-2 text-sm font-medium rounded-lg",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+    "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
     "select-none disabled:pointer-events-none disabled:opacity-50",
-    "transition-colors duration-200"
+    "transition-colors duration-200",
   ),
   {
     variants: {
@@ -34,11 +34,12 @@ const buttonVariants = cva(
       variant: "default",
       size: "md",
     },
-  }
+  },
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
@@ -53,7 +54,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       />
     );
-  }
+  },
 );
 Button.displayName = "Button";
 
@@ -74,11 +75,12 @@ const buttonIconVariants = cva(
       size: "default",
       variant: "none",
     },
-  }
+  },
 );
 
 interface ButtonIconProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof buttonIconVariants> {}
 
 const ButtonIcon = React.forwardRef<HTMLDivElement, ButtonIconProps>(
@@ -90,7 +92,7 @@ const ButtonIcon = React.forwardRef<HTMLDivElement, ButtonIconProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
 ButtonIcon.displayName = "ButtonIcon";

@@ -92,7 +92,7 @@ const BalanceAmount = ({
   return (
     <CurrencyAmount
       size="5xl"
-      className="w-full text-center text-[60px] font-bold leading-[72px]"
+      className="w-full text-center text-[60px] leading-[72px] font-bold"
       isLoading={isLoading}
       amount={amount}
       currency={currencyCode}
@@ -161,11 +161,11 @@ const Select = <T extends string>({
         onChange={onChange}
         className="rounded-xl"
       />
-      <label className="col-start-1 row-start-1 pb-[8px] pl-3 pt-[9px]">
+      <label className="col-start-1 row-start-1 pt-[9px] pb-[8px] pl-3">
         <div className="text-sm text-hint">{label}</div>
         <div className="text-base font-medium">{selected?.label}</div>
       </label>
-      <div className="absolute right-3 top-1/2 -translate-y-1/2 transform">
+      <div className="absolute top-1/2 right-3 -translate-y-1/2 transform">
         <ChevronsUpDownIcon className="h-4 w-4" />
       </div>
     </div>
@@ -186,7 +186,7 @@ function useBalance({ spendType, timePeriod }: UseBalanceParams) {
     },
     {
       staleTime: Infinity,
-    }
+    },
   );
   const {
     user: me,
@@ -205,7 +205,7 @@ function useBalance({ spendType, timePeriod }: UseBalanceParams) {
         const amount = convertAmount(
           cur.amount,
           cur.currencyCode,
-          currencyCode
+          currencyCode,
         );
         return acc + amount;
       }, 0);

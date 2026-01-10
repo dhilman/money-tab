@@ -10,10 +10,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { Bento, BentoContent, BentoHeader } from "~/components/bento-box";
 import { WebAppMain } from "~/components/common/layout/webapp-layout";
-import { SettingsWalletConnect } from "~/components/pages/settings/settings-wallet";
 import { useProfile } from "~/components/provider/auth/auth-provider";
 import { usePlatform } from "~/components/provider/platform/context";
-import { WalletProvider } from "~/components/provider/wallet-provider";
 import { MyLink } from "~/components/router/link";
 import {
   ListItem,
@@ -29,9 +27,6 @@ export const Settings = () => {
   return (
     <WebAppMain className="flex flex-col gap-6 py-8">
       <SectionGeneral />
-      <WalletProvider>
-        <SettingsWalletConnect />
-      </WalletProvider>
       <SectionInfo />
       <SectionAdmin />
     </WebAppMain>

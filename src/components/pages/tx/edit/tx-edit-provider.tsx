@@ -48,7 +48,7 @@ export const TxEditProvider = ({ tx, children }: Props) => {
   const [screen, setScreen] = useState<TxEditScreen>("main");
   const [amount, setAmount] = useState(tx.amount);
   const [currency, setCurrency] = useState<Currency>(
-    getCurrencyByCodeWithDefault(tx.currencyCode)
+    getCurrencyByCodeWithDefault(tx.currencyCode),
   );
   const [description, setDescription] = useState(tx.description || "");
   const [dateTime, setDateTime] = useState(parseDateOrDateTime(tx.date));
@@ -59,7 +59,7 @@ export const TxEditProvider = ({ tx, children }: Props) => {
       key: "",
       size: v.size ?? 0,
       type: v.type ?? "",
-    }))
+    })),
   );
   const [participants, updateParticipants] = useParticipantsEditReducer({
     meId: me.id,
@@ -111,7 +111,7 @@ function parseDateOrDateTime(date: string | null) {
 
 function TxMainButton({ tx }: { tx: Tx }) {
   const { screen, setScreen } = useTxEditCtx();
-  const { mutate, isLoading } = useUpdateMutation(tx.id);
+  const { mutate, isPending: isLoading } = useUpdateMutation(tx.id);
   const isEdited = useIsEdited(tx);
 
   const onClickMain = useCallback(() => {
@@ -176,7 +176,7 @@ function useUpdateMutation(id: string) {
   const state = useTxEditCtx();
   const participants = useParticipantsCtx();
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isPending: isLoading } = useMutation({
     mutationFn: async () => {
       const data: UpdateReq = {
         id: id,
@@ -210,7 +210,7 @@ function useUpdateMutation(id: string) {
     },
   });
 
-  return { mutate, isLoading };
+  return { mutate, isPending: isLoading };
 }
 
 function getDateTime(date: string, time: string) {

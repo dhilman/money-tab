@@ -52,7 +52,7 @@ const TxGroup = () => {
   const groups = useGroups();
   const group = useMemo(
     () => groups.find((g) => g.id === tx.groupId),
-    [groups, tx.groupId]
+    [groups, tx.groupId],
   );
 
   if (!group) return null;
@@ -90,7 +90,7 @@ const TxDate = () => {
           icon={CalendarIcon}
           className={cn(
             "h-10 w-10 rounded-full p-2.5",
-            "bg-gradient-to-br from-primary to-primary/40 text-primary-foreground"
+            "bg-linear-to-br from-primary to-primary/40 text-primary-foreground",
           )}
         />
       </ListItemLeft>

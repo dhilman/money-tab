@@ -14,7 +14,7 @@ export const txLeaveHandler = privateProcedure
     validator.notCreator(
       ctx,
       tx.createdById,
-      "Creator cannot leave transaction"
+      "Creator cannot leave transaction",
     );
 
     const changeset = leaveChangeset(ctx, tx);

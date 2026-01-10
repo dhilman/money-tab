@@ -8,7 +8,7 @@ export const userDisconnectHandler = privateProcedure
     const existing = await queries.user.connectionBetween(
       ctx,
       ctx.userId,
-      input
+      input,
     );
     if (!existing) return { id: input };
 

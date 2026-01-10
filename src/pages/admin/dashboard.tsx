@@ -1,3 +1,4 @@
+import { keepPreviousData } from "@tanstack/react-query";
 import { useMemo } from "react";
 import {
   AdminDateRange,
@@ -18,10 +19,10 @@ function Page() {
       endDate: dateRange.endDate,
     },
     {
-      keepPreviousData: true,
+      placeholderData: keepPreviousData,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-    }
+    },
   );
   const events = useMemo(() => {
     if (!data) return {};

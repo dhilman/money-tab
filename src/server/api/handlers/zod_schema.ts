@@ -23,7 +23,7 @@ export const Contribs = z.array(
     amountPaid: z.number().int(),
     amountOwed: z.number().int(),
     manualAmountOwed: z.boolean(),
-  })
+  }),
 );
 
 export const Cycle = z.object({

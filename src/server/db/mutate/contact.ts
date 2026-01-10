@@ -6,7 +6,7 @@ export async function upsert(ctx: DbUserCtx, otherUserId: string) {
   const existing = await queries.user.connectionBetween(
     ctx,
     ctx.userId,
-    otherUserId
+    otherUserId,
   );
   if (existing) return;
 
@@ -26,7 +26,7 @@ export async function upsert(ctx: DbUserCtx, otherUserId: string) {
 export async function remove(
   ctx: DbUserCtx,
   userId: string,
-  otherUserId: string
+  otherUserId: string,
 ) {
   await ctx.db.batch([
     ctx.db
@@ -34,16 +34,16 @@ export async function remove(
       .where(
         and(
           eq(schema.connection.ownerId, userId),
-          eq(schema.connection.userId, otherUserId)
-        )
+          eq(schema.connection.userId, otherUserId),
+        ),
       ),
     ctx.db
       .delete(schema.connection)
       .where(
         and(
           eq(schema.connection.ownerId, otherUserId),
-          eq(schema.connection.userId, userId)
-        )
+          eq(schema.connection.userId, userId),
+        ),
       ),
     ctx.db.insert(schema.event).values({
       name: "user_disconnected",
@@ -64,7 +64,7 @@ export async function updateNickname(params: {
     .where(
       and(
         eq(schema.connection.ownerId, params.callerUserId),
-        eq(schema.connection.userId, params.userId)
-      )
+        eq(schema.connection.userId, params.userId),
+      ),
     );
 }

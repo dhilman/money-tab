@@ -27,7 +27,7 @@ function Page() {
     },
     {
       enabled: !!event,
-    }
+    },
   );
 
   if (!data) return <div />;
@@ -46,17 +46,17 @@ function Page() {
           <SelectEventName />
         </div>
 
-        <div className="flex w-full flex-col gap-6 pb-4 pt-2">
+        <div className="flex w-full flex-col gap-6 pt-2 pb-4">
           <Bento>
             <BentoHeader>Per Day</BentoHeader>
-            <BentoContent className="pb-2 pt-3">
+            <BentoContent className="pt-3 pb-2">
               <DayCountAreaChart data={data.perDay} />
             </BentoContent>
           </Bento>
 
           <Bento>
             <BentoHeader>Per User</BentoHeader>
-            <BentoContent className="pb-2 pt-3">
+            <BentoContent className="pt-3 pb-2">
               <HistogramChart
                 data={data.perUser}
                 valueKey="count"

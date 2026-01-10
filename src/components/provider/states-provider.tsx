@@ -25,7 +25,7 @@ export const LoadingText = ({ text, className }: LoadingTextProps) => {
     <span
       className={cn(
         "w-fit animate-pulse rounded-lg bg-hint/10 text-transparent",
-        className
+        className,
       )}
     >
       {text}

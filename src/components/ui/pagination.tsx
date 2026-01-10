@@ -15,7 +15,7 @@ export const Pagination = ({ total, current }: PaginationProps) => {
           key={i}
           className={cn(
             "h-2 w-2 rounded-full",
-            i === current ? "bg-foreground" : "bg-hint/30"
+            i === current ? "bg-foreground" : "bg-hint/30",
           )}
         />
       ))}
@@ -33,7 +33,7 @@ export function useInView(onInView: () => void) {
           onInView();
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.5 },
     );
 
     if (ref.current) {

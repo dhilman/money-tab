@@ -14,7 +14,7 @@ export const AnimatedImageContainer = ({
     <div
       className={cn(
         "flex h-[92px] w-[92px] items-center justify-center",
-        className
+        className,
       )}
     >
       {children}

@@ -4,9 +4,8 @@ import { env } from "~/env.mjs";
 
 export default defineConfig({
   schema: "./src/server/monitor/mdb/schema.ts",
-  dialect: "sqlite",
+  dialect: "turso",
   out: "migrations/monitor",
-  driver: "turso",
   dbCredentials: {
     url: env.MONITOR_DATABASE_URL,
     authToken: env.MONITOR_DATABASE_TOKEN,

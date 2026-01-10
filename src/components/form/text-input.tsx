@@ -26,8 +26,8 @@ export const TextInput = ({
       value={value}
       placeholder={placeholder}
       className={cn(
-        "w-full resize-none font-medium focus:outline-none",
-        className
+        "w-full resize-none font-medium focus:outline-hidden",
+        className,
       )}
       enterKeyHint={entryKeyHint}
       onChange={(e) => onChange(e.target.value)}
@@ -66,9 +66,9 @@ export const TextInputSecondary = ({
       value={value}
       placeholder={placeholder}
       className={cn(
-        "h-9 w-full rounded-md bg-canvas px-2 py-1 focus:outline-none",
+        "h-9 w-full rounded-md bg-canvas px-2 py-1 focus:outline-hidden",
         "text-sm font-medium",
-        className
+        className,
       )}
       onChange={(e) => onValueChange(e.target.value)}
       onKeyDown={onKeyDown}

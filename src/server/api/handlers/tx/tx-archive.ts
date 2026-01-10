@@ -24,12 +24,11 @@ export const txArchiveHandler = privateProcedure
 
 const notify = async (ctx: MyContext, tx: SelectTxWithContribs) => {
   const contribs = tx.contribs.filter(
-    (c) => c.userId && c.userId !== tx.createdById
+    (c) => c.userId && c.userId !== tx.createdById,
   );
 
   return await notifier.manyByIds(
     ctx,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     contribs.map((c) => c.userId!),
     {
       type: "tx_archived",
@@ -38,6 +37,6 @@ const notify = async (ctx: MyContext, tx: SelectTxWithContribs) => {
       amount: tx.amount,
       currencyCode: tx.currencyCode,
       description: tx.description,
-    }
+    },
   );
 };

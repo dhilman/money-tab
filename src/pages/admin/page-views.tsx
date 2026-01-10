@@ -32,13 +32,13 @@ function Page() {
 
         <Bento>
           <BentoHeader>Page Views</BentoHeader>
-          <BentoContent className="pb-2 pt-3">
+          <BentoContent className="pt-3 pb-2">
             <DayCountAreaChart data={data.perDay} />
           </BentoContent>
         </Bento>
         <Bento>
           <BentoHeader>Load Times</BentoHeader>
-          <BentoContent className="pb-2 pt-3">
+          <BentoContent className="pt-3 pb-2">
             <HistogramChart
               data={data.loadTimes}
               valueKey="loadTime"
@@ -48,7 +48,7 @@ function Page() {
         </Bento>
         <Bento>
           <BentoHeader>Interactive Time</BentoHeader>
-          <BentoContent className="pb-2 pt-3">
+          <BentoContent className="pt-3 pb-2">
             <HistogramChart
               data={data.loadTimes}
               valueKey="interactiveTime"

@@ -97,7 +97,7 @@ function Page() {
                     setEventNames((prev) =>
                       checked
                         ? [...prev, event]
-                        : prev.filter((e) => e !== event)
+                        : prev.filter((e) => e !== event),
                     )
                   }
                 />
@@ -108,7 +108,7 @@ function Page() {
         </Bento>
 
         <Bento>
-          <BentoContent className="pb-2 pt-3">
+          <BentoContent className="pt-3 pb-2">
             <HistogramChart
               data={data.perUser}
               valueKey="count"

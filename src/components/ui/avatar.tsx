@@ -19,7 +19,7 @@ export const avatarVariants = cva(
         "6xl": "h-28 w-28 text-5xl font-bold font-rounded",
       },
     },
-  }
+  },
 );
 
 interface AvatarProps extends VariantProps<typeof avatarVariants> {

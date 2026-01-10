@@ -45,7 +45,7 @@ const Header = () => {
         }
       >
         <div className="mt-3 text-2xl font-semibold">{group.name}</div>
-        <div className="mt-0.5 font-medium lowercase text-hint">
+        <div className="mt-0.5 font-medium text-hint lowercase">
           {t("n_members", { count: group.memberships.length })}
         </div>
       </LoadingProvider>
@@ -87,7 +87,7 @@ const ActionButtons = () => {
             await register();
             join.mutate(group.id);
           }}
-          disabled={join.isLoading}
+          disabled={join.isPending}
           className="w-2/3"
         >
           <IconV1 Icon={PlusIcon} />
@@ -126,7 +126,7 @@ const GroupTabs = () => {
     { groupId: group.id },
     {
       enabled: group.isMember,
-    }
+    },
   );
 
   const txs = data?.txs ?? [];

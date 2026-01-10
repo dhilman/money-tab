@@ -212,7 +212,7 @@ const WrappedProvider = ({ title, value }: WrappedProviderProps) => {
         copyUrl: noop,
         isLoading: false,
         joinMutation: {
-          isLoading: false,
+          isPending: false,
           mutate: noop,
         },
         ...value,

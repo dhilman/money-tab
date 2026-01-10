@@ -66,7 +66,7 @@ function contribEvents(params: {
 export async function contribsConfirm(
   ctx: DbCtx,
   txId: string,
-  userIds: string[]
+  userIds: string[],
 ) {
   if (userIds.length === 0) return;
 
@@ -78,8 +78,8 @@ export async function contribsConfirm(
     .where(
       and(
         eq(schema.contribution.transactionId, txId),
-        inArray(schema.contribution.userId, userIds)
-      )
+        inArray(schema.contribution.userId, userIds),
+      ),
     );
 }
 
@@ -93,7 +93,7 @@ export interface UpdateTxParams {
 export async function update(
   ctx: DbUserCtx,
   id: string,
-  update: UpdateTxParams
+  update: UpdateTxParams,
 ) {
   await ctx.db.transaction(async (trx) => {
     if (update.isChanged) {
@@ -133,7 +133,7 @@ export async function archive(ctx: DbUserCtx, id: string) {
 export async function contribsChangeset(
   ctx: DbUserCtx,
   txId: string,
-  changes: TxChangeset
+  changes: TxChangeset,
 ) {
   await ctx.db.transaction(async (trx) => {
     await applyChangeset({ ...ctx, db: trx }, txId, changes);
@@ -143,7 +143,7 @@ export async function contribsChangeset(
 async function applyFilesChangeset(
   ctx: DbTxUserCtx,
   txId: string,
-  changes: Changeset<InsertFile>
+  changes: Changeset<InsertFile>,
 ) {
   if (changes.deletes.length > 0) {
     await ctx.db
@@ -151,8 +151,8 @@ async function applyFilesChangeset(
       .where(
         and(
           eq(schema.file.transactionId, txId),
-          inArray(schema.file.id, changes.deletes)
-        )
+          inArray(schema.file.id, changes.deletes),
+        ),
       );
   }
   if (changes.creates.length > 0) {
@@ -163,7 +163,7 @@ async function applyFilesChangeset(
 async function applyChangeset(
   ctx: DbTxUserCtx,
   txId: string,
-  changes: TxChangeset
+  changes: TxChangeset,
 ) {
   function eventToDbEvent(e: TxChangeset["events"][0]): InsertEvent {
     return {
@@ -180,8 +180,8 @@ async function applyChangeset(
       .where(
         and(
           eq(schema.contribution.transactionId, txId),
-          inArray(schema.contribution.id, changes.deletes)
-        )
+          inArray(schema.contribution.id, changes.deletes),
+        ),
       );
   }
   if (changes.updates.length > 0) {
@@ -190,8 +190,8 @@ async function applyChangeset(
         ctx.db
           .update(schema.contribution)
           .set(update)
-          .where(eq(schema.contribution.id, update.id))
-      )
+          .where(eq(schema.contribution.id, update.id)),
+      ),
     );
   }
   if (changes.creates.length > 0) {
@@ -203,7 +203,7 @@ async function applyChangeset(
         amountPaid: v.amountPaid,
         amountOwed: v.amountOwed,
         status: v.status ?? "NOT_DELIVERED",
-      }))
+      })),
     );
   }
   if (changes.events.length > 0) {
@@ -214,7 +214,7 @@ async function applyChangeset(
 }
 
 function mapContribEventToEventName(
-  e: TxChangeset["events"][0]
+  e: TxChangeset["events"][0],
 ): InsertEvent["name"] {
   switch (e.type) {
     case "leave":

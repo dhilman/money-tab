@@ -125,8 +125,8 @@ const FilePreviewProps = ({ file, onRemove }: FilePreviewProps) => {
       />
       <button
         className={cn(
-          "absolute right-0 top-0 flex h-[22px] w-[22px] items-center justify-center rounded-full bg-red-500",
-          "-translate-y-1/2 translate-x-1/2"
+          "absolute top-0 right-0 flex h-[22px] w-[22px] items-center justify-center rounded-full bg-red-500",
+          "translate-x-1/2 -translate-y-1/2",
         )}
         onClick={onRemove}
       >

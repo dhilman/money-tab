@@ -28,7 +28,7 @@ export const EmptyOptions = ({ el, className }: Props) => {
     <Bento
       className={cn(
         "flex flex-col items-center justify-center gap-6",
-        className
+        className,
       )}
     >
       <Player />

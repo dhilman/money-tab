@@ -58,7 +58,7 @@ export const TxProvider = ({ shortId, shortContribId, children }: Props) => {
     if (!tx) return;
     const url = getTgWebAppShareUrl(
       { type: "TX", id: tx.id, contribId },
-      i18n.t("share_message_tx")
+      i18n.t("share_message_tx"),
     );
     platform.openTgLink(url);
   };
@@ -128,7 +128,7 @@ const JoinMainButton = () => {
     <MainButton
       onClick={() => joinMutation.mutate(joinContribId)}
       label={t("confirm_join")}
-      isLoading={joinMutation.isLoading}
+      isLoading={joinMutation.isPending}
     />
   );
 };

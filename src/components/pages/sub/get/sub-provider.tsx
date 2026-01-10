@@ -82,7 +82,7 @@ export const SubProvider = ({
   const copyUrl = (contribId?: string) => {
     const url = getTgWebAppShareUrl(
       { type: "SUB", id: sub?.id || "", contribId },
-      i18n.t("share_message_sub")
+      i18n.t("share_message_sub"),
     );
     platform.openTgLink(url);
   };
@@ -156,7 +156,7 @@ const JoinMainButton = () => {
     <MainButton
       onClick={() => joinMutation.mutate(joinContribId)}
       label={t("confirm_join")}
-      isLoading={joinMutation.isLoading}
+      isLoading={joinMutation.isPending}
     />
   );
 };

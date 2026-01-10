@@ -58,7 +58,7 @@ const UserListItem = ({ userId, isPayer, onSelect }: UserListItemProps) => {
             className={cn(
               "ml-auto flex h-[22px] w-[22px] shrink-0 items-center justify-center",
               "rounded-full border-[1.5px] text-primary-foreground",
-              "border-primary bg-primary"
+              "border-primary bg-primary",
             )}
           >
             <CheckIcon className="h-4 w-4" />

@@ -55,13 +55,13 @@ export const SubListItem = ({
           size="xl"
         />
       </ListItemLeft>
-      <ListItemBody className="h-16 gap-4 overflow-hidden truncate">
+      <ListItemBody className="h-16 gap-4 truncate overflow-hidden">
         <div className="flex flex-col truncate text-left">
           <div className="truncate text-ellipsis whitespace-nowrap">
             {sub.name}
           </div>
           <UserNamesList
-            className="truncate text-ellipsis text-sm text-hint"
+            className="truncate text-sm text-ellipsis text-hint"
             userIds={others.map((u) => u.userId)}
           />
         </div>

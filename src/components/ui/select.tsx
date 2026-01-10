@@ -20,9 +20,9 @@ const SelectTrigger = React.forwardRef<
       "flex h-9 w-full items-center justify-between rounded-md px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50",
       "border border-hint/10",
       "shadow-sm shadow-canvas",
-      "ring-offset-background focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground",
+      "ring-offset-background focus:outline-hidden focus-visible:ring-1 focus-visible:ring-foreground",
       "bg-transparent placeholder:text-hint",
-      className
+      className,
     )}
     {...props}
   >
@@ -57,12 +57,12 @@ const SelectContent = React.forwardRef<
         }
       }}
       className={cn(
-        "relative z-50 min-w-[8rem] overflow-hidden rounded-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        "relative z-50 min-w-32 overflow-hidden rounded-md data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
         "border border-hint/10 bg-background text-foreground",
         "shadow-lg dark:shadow-background",
         position === "popper" &&
           "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
-        className
+        className,
       )}
       position={position}
       {...props}
@@ -71,7 +71,7 @@ const SelectContent = React.forwardRef<
         className={cn(
           "p-1",
           position === "popper" &&
-            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+            "h-(--radix-select-trigger-height) w-full min-w-(--radix-select-trigger-width)",
         )}
       >
         {children}
@@ -100,10 +100,10 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "group relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "group relative flex w-full cursor-default items-center rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50",
       "focus:bg-primary focus:text-primary-foreground",
       "select-none",
-      className
+      className,
     )}
     {...props}
   >
@@ -148,7 +148,7 @@ function useIsOpenDebounced() {
       }
       setIsOpen(value);
     },
-    [setIsOpen]
+    [setIsOpen],
   );
 
   return { isOpen, setIsOpen: setIsOpenWrapper };

@@ -9,7 +9,7 @@ interface DataItem {
 
 interface Props {
   items: DataItem[];
-  labelFormatter?: (label: string) => React.ReactElement;
+  labelFormatter?: (label: string) => React.ReactElement<any>;
   header: string;
 }
 
@@ -44,7 +44,7 @@ export const BentoCounts = ({ items, labelFormatter, header }: Props) => {
               className="relative flex w-full items-center justify-between p-2 text-sm"
             >
               <div
-                className="absolute left-0 top-0 h-full rounded-lg bg-hint/10"
+                className="absolute top-0 left-0 h-full rounded-lg bg-hint/10"
                 style={{ width: `${width}%` }}
               />
               <Label label={key} />

@@ -92,7 +92,7 @@ const SubsReminderEvent = z.object({
       amount: z.number(),
       currencyCode: z.string(),
       renewalDate: z.string(),
-    })
+    }),
   ),
 });
 

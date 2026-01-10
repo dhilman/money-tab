@@ -24,7 +24,7 @@ export const RadioCheck = ({
         "rounded-full border-[1.5px] text-primary-foreground",
         selected ? "border-primary bg-primary" : "border-hint/20",
         disabled && "border-hint bg-hint",
-        className
+        className,
       )}
       onClick={onClick}
     >

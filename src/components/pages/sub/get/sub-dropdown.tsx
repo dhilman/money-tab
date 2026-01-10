@@ -106,7 +106,7 @@ const CancelDropdownItem = () => {
           endDate: getDateYYYYMMDD(new Date()),
         });
       }}
-      disabled={mutation.isLoading}
+      disabled={mutation.isPending}
     >
       {t("cancel")}
       <RefreshCwOff className="ml-auto h-4 w-4" />
@@ -140,12 +140,12 @@ const ArchiveDropdownItem = () => {
     <DropdownMenuItem
       onSelect={async () => {
         const confirmed = await platform.confirmDialog(
-          t("confirm.archive_sub")
+          t("confirm.archive_sub"),
         );
         if (!confirmed) return;
         mutation.mutate(sub.id);
       }}
-      disabled={mutation.isLoading}
+      disabled={mutation.isPending}
       className="text-red-500"
     >
       {t("archive")}
@@ -182,7 +182,7 @@ const LeaveDropdownItem = () => {
         if (!confirmed) return;
         mutation.mutate(sub.id);
       }}
-      disabled={mutation.isLoading}
+      disabled={mutation.isPending}
     >
       {t("leave")}
       <LogOutIcon className="ml-auto h-4 w-4" />

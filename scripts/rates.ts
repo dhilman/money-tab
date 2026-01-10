@@ -15,7 +15,7 @@ async function getRates() {
   const endpoint = "https://api.currencyapi.com/v3/latest";
 
   const Response = z.object({
-    data: z.record(z.object({ value: z.number() })),
+    data: z.record(z.string(), z.object({ value: z.number() })),
   });
 
   const res = await fetch(`${endpoint}?apikey=${api_key}`);
@@ -23,7 +23,7 @@ async function getRates() {
   const data = Response.parse(body);
 
   return Object.fromEntries(
-    Object.entries(data.data).map(([key, { value }]) => [key, value])
+    Object.entries(data.data).map(([key, { value }]) => [key, value]),
   );
 }
 
