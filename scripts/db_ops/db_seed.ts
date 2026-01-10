@@ -60,7 +60,6 @@ async function seed() {
     await db.insert(schema.user).values(user).execute();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const user1 = USERS[0]!;
 
   for (const user of USERS) {

@@ -41,7 +41,6 @@ async function handler(req: NextRequest) {
   const body = (await req.json()) as unknown;
   const { type } = ReqSchema.parse(body);
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const fileExtension = type.split("/")[1]!;
 
   const id = createId();

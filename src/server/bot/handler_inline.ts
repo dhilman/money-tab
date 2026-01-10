@@ -213,7 +213,6 @@ const calculateContributions = (userId: string, queryId: QueryId) => {
     {
       userId: userId,
       amountPaid: isPayer ? queryId.amount : 0,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       amountOwed: isPayer ? 0 : amount1!,
     },
   ];

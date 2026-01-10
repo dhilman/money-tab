@@ -29,7 +29,6 @@ const notify = async (ctx: MyContext, tx: SelectTxWithContribs) => {
 
   return await notifier.manyByIds(
     ctx,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     contribs.map((c) => c.userId!),
     {
       type: "tx_archived",

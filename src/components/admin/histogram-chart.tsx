@@ -1,13 +1,13 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import {
-  BarChart,
   Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
+  BarChart,
   CartesianGrid,
   LabelList,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
 
 interface HistogramBin {
@@ -40,15 +40,12 @@ export const HistogramChart = <T extends string>({
       const v = point[valueKey];
       if (v === null || v === undefined) return;
       for (let i = 0; i < bins.length; i++) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const bin = bins[i]!;
         const nextBin = bins[i + 1];
         if (nextBin === undefined) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           histogramBins[i]!.count++;
           break;
         } else if (v >= bin && v < nextBin) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           histogramBins[i]!.count++;
           break;
         }

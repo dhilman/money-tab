@@ -102,7 +102,6 @@ const ShareSelf = () => {
 };
 
 const ActionButtons = () => {
-  const { t } = useTranslation();
   const { user, isLoading, isContact } = useUserCtx();
 
   if (isLoading) {
