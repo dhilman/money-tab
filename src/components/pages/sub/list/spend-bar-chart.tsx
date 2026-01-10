@@ -57,7 +57,10 @@ export const SpendBarChart = ({
           tickFormatter={formatY}
           strokeWidth={0}
         />
-        <Bar dataKey="total" onClick={(data) => onClick?.(data as DataPoint)}>
+        <Bar
+          dataKey="total"
+          onClick={(data) => onClick?.(data as unknown as DataPoint)}
+        >
           {data.map((entry, i) => (
             <Cell
               key={i}
