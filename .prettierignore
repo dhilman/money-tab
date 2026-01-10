@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Build output
+build/
+coverage/
+
+# Data and local files
+data/
+.vercel/
+
+# Lock files
+pnpm-lock.yaml
+
+# Generated migration metadata
+migrations/*/meta/
+
+# Animation files
+public/animation/
+
+src/@types/resources.d.ts

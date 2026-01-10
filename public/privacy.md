@@ -23,12 +23,14 @@ To improve our service, we may collect analytical data, which may include: devic
 ## 3. How We Use Your Information
 
 We use the collected information for the following purposes:
+
 - To provide and maintain our service
 - To identify users and manage accounts
 - To improve and optimize our service
 - To analyze usage patterns and trends
 
 We adhere to two fundamental principles:
+
 1. We do not use your data to show ads.
 2. We only collect the data which is required to provide the service.
 

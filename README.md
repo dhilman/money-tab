@@ -1,4 +1,3 @@
-
 # MoneyTab
 
 ## Table of Contents
@@ -23,7 +22,6 @@
 ## Summary
 
 MoneyTab is an app for shared finances. It is primarily aimed to be used as a Telegram Mini App (TMA) thus minimazing onboarding friction and leveraging existing social connections. Its core functionality is around splitting bills and sharing recurring expenses with contacts and groups.
-
 
 # Development
 
@@ -57,6 +55,7 @@ pnpm run dev
 ## With Telegram
 
 Configuring Telegram will enable the following functionality:
+
 - Accessing the Telegram Mini App (TMA)
 - Authentication through TMA
 - Notifications through Telegram
@@ -65,14 +64,17 @@ Configuring Telegram will enable the following functionality:
 
 - Setup a [Telegram Bot](https://core.telegram.org/bots#how-do-i-create-a-bot) through [BotFather](https://t.me/botfather) and save the `BOT_TOKEN`
 - Setup a local tunnel to port 3000 (e.g. with [cloudflared](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/do-more-with-tunnels/trycloudflare/#use-trycloudflare)) and save the `TUNNEL_URL` (this should be an `https` URL)
+
 ```bash
 cloudflared tunnel --url http://localhost:3000
 ```
+
 - Optional: Create a new web app for the bot through [BotFather](https://t.me/botfather). Use `/newapp` command, and assign the `TUNNEL_URL/webapp` as the URL.
 
 ### Setup
 
 - Configure environment variables inside `.env` file:
+
   ```
   NEXT_PUBLIC_BASE_URL=https://your-tunnel-url
 
@@ -89,6 +91,7 @@ cloudflared tunnel --url http://localhost:3000
   ```
 
 - Run bot setup script (configures the webhook)
+
   ```bash
   bun run ./scripts/bot_setup.ts
   ```
@@ -101,6 +104,7 @@ cloudflared tunnel --url http://localhost:3000
 ## With S3
 
 Configuring S3 will enable:
+
 - File uploads (e.g. receipts)
 - Avatar uploads
 
@@ -112,6 +116,7 @@ Configuring S3 will enable:
 ## With QStash
 
 Configuring QStash will enable:
+
 - Asynchrounous delivery of notifications
 - Asynchrounous avatar uploads
 
@@ -176,10 +181,10 @@ src/                 # Main source code
 ```
 
 ## Maybe Helpful Links
+
 - [Telegram Web App](https://core.telegram.org/bots/webapps)
   - [Telegram Answer Inline Query](https://core.telegram.org/bots/api#answerinlinequery)
   - [Web App initialisation & types](https://core.telegram.org/bots/webapps#initializing-web-apps)
   - [WebApp Typescript old](https://github.com/prKassad/telegram-webapps-types/blob/master/dist/index.d.ts)
 - [Lucide Icons](https://lucide.dev/)
 - [Currencies Original Source](https://gist.github.com/ksafranski/2973986)
-
