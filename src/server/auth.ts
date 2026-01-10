@@ -67,13 +67,30 @@ async function verifyApiKey(ctx: Ctx, apiKey: string | null) {
     if (env.MOCK_AUTH && env.MOCK_TG_USER_ID) {
       logger.warn("Missing initData, using mock data");
       return {
-        user: { id: env.MOCK_TG_USER_ID },
+        user: {
+          id: env.MOCK_TG_USER_ID,
+          first_name: undefined,
+          last_name: undefined,
+          username: undefined,
+          allows_write_to_pm: undefined,
+          language_code: undefined,
+        },
         auth_date: BigInt(1619450000),
       };
     }
     const referer = ctx.req.getHeader("referer");
     if (referer?.includes("/webapp/test")) {
-      return { user: { id: 1 }, auth_date: BigInt(1619450000) };
+      return {
+        user: {
+          id: 1,
+          first_name: undefined,
+          last_name: undefined,
+          username: undefined,
+          allows_write_to_pm: undefined,
+          language_code: undefined,
+        },
+        auth_date: BigInt(1619450000),
+      };
     }
     throw new Error("Missing API key");
   }

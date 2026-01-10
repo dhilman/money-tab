@@ -12,7 +12,7 @@ describe("parse date or date time", () => {
     { input: "2021-01-20T12:00:00", expected: "2021-01-20 12:00:00" },
     { input: "2021-01-20T12:00:00Z", expected: "2021-01-20 12:00:00" },
     { input: "2021-01-20T12:00:00+03:00", expected: "2021-01-20 09:00:00" },
-    { input: "hello", expected: "", error: "Invalid date" },
+    { input: "hello", expected: "", error: "Invalid input" },
   ];
 
   testCases.forEach((tc) => {

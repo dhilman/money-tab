@@ -63,8 +63,8 @@ importers:
         specifier: ^1.1.13
         version: 1.1.13(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@t3-oss/env-nextjs':
-        specifier: ^0.3.1
-        version: 0.3.1(typescript@5.9.3)(zod@3.23.8)
+        specifier: ^0.13.10
+        version: 0.13.10(typescript@5.9.3)(zod@4.3.5)
       '@tanstack/react-query':
         specifier: ^5.90.16
         version: 5.90.16(react@19.2.3)
@@ -180,11 +180,11 @@ importers:
         specifier: ^0.9.0
         version: 0.9.1(@types/react-dom@19.2.3(@types/react@19.2.8))(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       zod:
-        specifier: ^3.22.4
-        version: 3.23.8
+        specifier: ^4.3.5
+        version: 4.3.5
       zustand:
-        specifier: ^5.0.3
-        version: 5.0.3(@types/react@19.2.8)(react@19.2.3)(use-sync-external-store@1.2.2(react@19.2.3))
+        specifier: ^5.0.9
+        version: 5.0.9(@types/react@19.2.8)(react@19.2.3)(use-sync-external-store@1.2.2(react@19.2.3))
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.3.3
@@ -2296,17 +2296,39 @@ packages:
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
-  '@t3-oss/env-core@0.3.1':
-    resolution: {integrity: sha512-iEnBuWeSjzqQLDTUw7H+YhstV4OZrGXTkQGL6ZOMxZQoCmwGX7GVS+1KCd5RvCzOtrIAD9jeOItSWNjC7sG4Sg==}
+  '@t3-oss/env-core@0.13.10':
+    resolution: {integrity: sha512-NNFfdlJ+HmPHkLi2HKy7nwuat9SIYOxei9K10lO2YlcSObDILY7mHZNSHsieIM3A0/5OOzw/P/b+yLvPdaG52g==}
     peerDependencies:
-      typescript: '>=4.7.2'
-      zod: ^3.0.0
+      arktype: ^2.1.0
+      typescript: '>=5.0.0'
+      valibot: ^1.0.0-beta.7 || ^1.0.0
+      zod: ^3.24.0 || ^4.0.0
+    peerDependenciesMeta:
+      arktype:
+        optional: true
+      typescript:
+        optional: true
+      valibot:
+        optional: true
+      zod:
+        optional: true
 
-  '@t3-oss/env-nextjs@0.3.1':
-    resolution: {integrity: sha512-W1OgOn5xtpdEGraAQesyLzO2aNLRfSJEyK6qjQFfEUnrPbkvB+WxABX2bPMqfn4KJQ8pziLCSdBFiUN8OagqAg==}
+  '@t3-oss/env-nextjs@0.13.10':
+    resolution: {integrity: sha512-JfSA2WXOnvcc/uMdp31paMsfbYhhdvLLRxlwvrnlPE9bwM/n0Z+Qb9xRv48nPpvfMhOrkrTYw1I5Yc06WIKBJQ==}
     peerDependencies:
-      typescript: '>=4.7.2'
-      zod: ^3.0.0
+      arktype: ^2.1.0
+      typescript: '>=5.0.0'
+      valibot: ^1.0.0-beta.7 || ^1.0.0
+      zod: ^3.24.0 || ^4.0.0
+    peerDependenciesMeta:
+      arktype:
+        optional: true
+      typescript:
+        optional: true
+      valibot:
+        optional: true
+      zod:
+        optional: true
 
   '@tailwindcss/node@4.1.18':
     resolution: {integrity: sha512-DoR7U1P7iYhw16qJ49fgXUlry1t4CpXeErJHnQ44JgTSKMaZUdf17cfn5mHchfJ4KRBZRFA/Coo+MUF5+gOaCQ==}
@@ -5661,14 +5683,14 @@ packages:
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
 
-  zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
-
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zustand@5.0.3:
-    resolution: {integrity: sha512-14fwWQtU3pH4dE0dOpdMiWjddcH+QzKIgk1cl8epwSE7yag43k/AD/m4L6+K7DytAOr9gGBe3/EXj9g7cdostg==}
+  zod@4.3.5:
+    resolution: {integrity: sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==}
+
+  zustand@5.0.9:
+    resolution: {integrity: sha512-ALBtUj0AfjJt3uNRQoL1tL2tMvj6Gp/6e39dnfT6uzpelGru8v1tPOGBzayOWbPJvujM8JojDk3E1LxeFisBNg==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@types/react': '>=18.0.0'
@@ -7880,16 +7902,17 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@t3-oss/env-core@0.3.1(typescript@5.9.3)(zod@3.23.8)':
-    dependencies:
+  '@t3-oss/env-core@0.13.10(typescript@5.9.3)(zod@4.3.5)':
+    optionalDependencies:
       typescript: 5.9.3
-      zod: 3.23.8
+      zod: 4.3.5
 
-  '@t3-oss/env-nextjs@0.3.1(typescript@5.9.3)(zod@3.23.8)':
+  '@t3-oss/env-nextjs@0.13.10(typescript@5.9.3)(zod@4.3.5)':
     dependencies:
-      '@t3-oss/env-core': 0.3.1(typescript@5.9.3)(zod@3.23.8)
+      '@t3-oss/env-core': 0.13.10(typescript@5.9.3)(zod@4.3.5)
+    optionalDependencies:
       typescript: 5.9.3
-      zod: 3.23.8
+      zod: 4.3.5
 
   '@tailwindcss/node@4.1.18':
     dependencies:
@@ -11719,11 +11742,11 @@ snapshots:
     dependencies:
       zod: 3.25.76
 
-  zod@3.23.8: {}
-
   zod@3.25.76: {}
 
-  zustand@5.0.3(@types/react@19.2.8)(react@19.2.3)(use-sync-external-store@1.2.2(react@19.2.3)):
+  zod@4.3.5: {}
+
+  zustand@5.0.9(@types/react@19.2.8)(react@19.2.3)(use-sync-external-store@1.2.2(react@19.2.3)):
     optionalDependencies:
       '@types/react': 19.2.8
       react: 19.2.3
