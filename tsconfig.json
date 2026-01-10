@@ -21,7 +21,7 @@
       "~/*": ["./src/*"],
       "react": ["./node_modules/@types/react"]
     },
-    "types": ["@types/telegram-web-app"],
+    "types": ["@types/telegram-web-app", "bun"],
     "plugins": [
       {
         "name": "next"

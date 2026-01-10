@@ -63,9 +63,7 @@ export const user = createTable(
     meInPaidFor: boolean("me_in_paid_for").notNull().default(false),
     currencyCode: text("currency_code", { length: 3 }),
   },
-  (v) => ({
-    createdAtIdx: index("user_created_at_idx").on(sql`${v.createdAt} DESC`),
-  }),
+  (v) => [index("user_created_at_idx").on(sql`${v.createdAt} DESC`)],
 );
 
 export const connection = createTable(
@@ -76,15 +74,13 @@ export const connection = createTable(
     userId: columns.cuid("to_user_id").notNull(),
     nickname: text("to_user_nickname"),
   },
-  (v) => ({
-    pk: primaryKey({
+  (v) => [
+    primaryKey({
       columns: [v.ownerId, v.userId],
     }),
-    toUserIdx: index("to_user_idx").on(v.userId),
-    createdAtIdx: index("connection_created_at_idx").on(
-      sql`${v.createdAt} DESC`,
-    ),
-  }),
+    index("to_user_idx").on(v.userId),
+    index("connection_created_at_idx").on(sql`${v.createdAt} DESC`),
+  ],
 );
 
 export const userRelations = relations(user, ({ many }) => ({
@@ -118,10 +114,10 @@ export const group = createTable(
     tgChatType: text("tg_chat_type"),
     tgLinked: boolean("tg_linked").notNull().default(false),
   },
-  (v) => ({
-    createdAtIdx: index("group_created_at_idx").on(sql`${v.createdAt} DESC`),
-    userIdx: index("group_user_idx").on(v.createdById),
-  }),
+  (v) => [
+    index("group_created_at_idx").on(sql`${v.createdAt} DESC`),
+    index("group_user_idx").on(v.createdById),
+  ],
 );
 
 export const groupRelations = relations(group, ({ one, many }) => ({
@@ -146,16 +142,11 @@ export const membership = createTable(
       .notNull()
       .default("MEMBER"),
   },
-  (v) => ({
-    groupUserIdx: uniqueIndex("membership_group_user_idx").on(
-      v.groupId,
-      v.userId,
-    ),
-    userIdx: index("membership_user_idx").on(v.userId),
-    createdAtIdx: index("membership_created_at_idx").on(
-      sql`${v.createdAt} DESC`,
-    ),
-  }),
+  (v) => [
+    uniqueIndex("membership_group_user_idx").on(v.groupId, v.userId),
+    index("membership_user_idx").on(v.userId),
+    index("membership_created_at_idx").on(sql`${v.createdAt} DESC`),
+  ],
 );
 
 export const membershipRelations = relations(membership, ({ one }) => ({
@@ -207,10 +198,10 @@ export const subscription = createTable(
       .notNull()
       .default("PRIVATE"),
   },
-  (v) => ({
-    userIdx: index("subs_user_idx").on(v.createdById),
-    createdAtIdx: index("subs_created_at_idx").on(sql`${v.createdAt} DESC`),
-  }),
+  (v) => [
+    index("subs_user_idx").on(v.createdById),
+    index("subs_created_at_idx").on(sql`${v.createdAt} DESC`),
+  ],
 );
 
 export const subscriptionRelations = relations(
@@ -255,14 +246,11 @@ export const subContrib = createTable(
     reminder: text("reminder", { enum: REMINDER_VALUES, length: 3 }),
     reminderDate: date("reminder_date"),
   },
-  (v) => ({
-    subIdUserIdIdx: uniqueIndex("sub_id_user_id_idx").on(
-      v.subscriptionId,
-      v.userId,
-    ),
-    userId: index("sub_contribs_user_id").on(v.userId),
-    reminderDateIdx: index("sub_contribs_reminder_date_idx").on(v.reminderDate),
-  }),
+  (v) => [
+    uniqueIndex("sub_id_user_id_idx").on(v.subscriptionId, v.userId),
+    index("sub_contribs_user_id").on(v.userId),
+    index("sub_contribs_reminder_date_idx").on(v.reminderDate),
+  ],
 );
 
 export const subUsersRelations = relations(subContrib, ({ one }) => ({
@@ -297,11 +285,11 @@ export const transaction = createTable(
       .notNull()
       .default("RESTRICTED"),
   },
-  (v) => ({
-    createdAtIdx: index("tx_created_at_idx").on(sql`${v.createdAt} DESC`),
-    createdByIdx: index("tx_created_by_idx").on(v.createdById),
-    groupIdIdx: index("tx_group_id_idx").on(v.groupId),
-  }),
+  (v) => [
+    index("tx_created_at_idx").on(sql`${v.createdAt} DESC`),
+    index("tx_created_by_idx").on(v.createdById),
+    index("tx_group_id_idx").on(v.groupId),
+  ],
 );
 
 export const transactionRelations = relations(transaction, ({ one, many }) => ({
@@ -347,13 +335,10 @@ export const contribution = createTable(
       enum: ["NOT_DELIVERED", "CONFIRMED"],
     }).notNull(),
   },
-  (v) => ({
-    txIdUserIdIdx: uniqueIndex("tx_id_user_id_idx").on(
-      v.transactionId,
-      v.userId,
-    ),
-    userIdx: index("tx_contribs_user_idx").on(v.userId),
-  }),
+  (v) => [
+    uniqueIndex("tx_id_user_id_idx").on(v.transactionId, v.userId),
+    index("tx_contribs_user_idx").on(v.userId),
+  ],
 );
 
 export const contributionRelations = relations(contribution, ({ one }) => ({
@@ -379,11 +364,11 @@ export const file = createTable(
     type: text("type"),
     size: integer("size"),
   },
-  (v) => ({
-    createdAtIdx: index("file_created_at_idx").on(sql`${v.createdAt} DESC`),
-    createdById: index("file_created_by_idx").on(v.createdBy),
-    txIdIdx: index("file_tx_id_idx").on(v.transactionId),
-  }),
+  (v) => [
+    index("file_created_at_idx").on(sql`${v.createdAt} DESC`),
+    index("file_created_by_idx").on(v.createdBy),
+    index("file_tx_id_idx").on(v.transactionId),
+  ],
 );
 
 export const fileRelations = relations(file, ({ one }) => ({
@@ -408,17 +393,14 @@ export const event = createTable(
     subscriptionId: columns.cuid("subscription_id"),
     groupId: columns.cuid("group_id"),
   },
-  (v) => ({
-    eventNameCreatedAtIdx: index("event_name_created_at_idx").on(
-      v.name,
-      sql`${v.createdAt} DESC`,
-    ),
-    createdByIdx: index("event_created_by_idx").on(v.createdById),
-    targetUserIdx: index("event_target_user_idx").on(v.targetUserId),
-    transactionIdx: index("event_transaction_idx").on(v.transactionId),
-    subscriptionIdx: index("event_subscription_idx").on(v.subscriptionId),
-    groupIdx: index("event_group_idx").on(v.groupId),
-  }),
+  (v) => [
+    index("event_name_created_at_idx").on(v.name, sql`${v.createdAt} DESC`),
+    index("event_created_by_idx").on(v.createdById),
+    index("event_target_user_idx").on(v.targetUserId),
+    index("event_transaction_idx").on(v.transactionId),
+    index("event_subscription_idx").on(v.subscriptionId),
+    index("event_group_idx").on(v.groupId),
+  ],
 );
 
 export const eventRelations = relations(event, ({ one }) => ({

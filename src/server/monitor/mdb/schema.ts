@@ -32,15 +32,14 @@ export const event = createTable(
     // Page interactive time in milliseconds
     interactiveTime: integer("interactive_time"),
   },
-  (table) => ({
-    uniqueIdx: uniqueIndex("events_time_name_user_idx").on(
-      // desc index
+  (table) => [
+    uniqueIndex("events_time_name_user_idx").on(
       table.timestamp,
       table.type,
       table.userId,
     ),
-    sessionIds: index("events_session_id_idx").on(table.sessionId),
-  }),
+    index("events_session_id_idx").on(table.sessionId),
+  ],
 );
 
 export const eventRelations = relations(event, ({ one }) => ({
@@ -85,11 +84,10 @@ export const session = createTable(
     referrer: text("referrer"),
     referrerHost: text("referrer_host"),
   },
-  (table) => ({
-    userIdx: index("sessions_user_idx").on(table.userId),
-    // desc index
-    startAtIdx: index("sessions_start_at_idx").on(table.startAt),
-  }),
+  (table) => [
+    index("sessions_user_idx").on(table.userId),
+    index("sessions_start_at_idx").on(table.startAt),
+  ],
 );
 
 export const sessionRelations = relations(session, ({ many }) => ({
@@ -120,12 +118,9 @@ export const issue = createTable(
     resolvedAt: text("resolved_at"),
     properties: text("properties", { mode: "json" }),
   },
-  (table) => ({
-    resolvedAtHash: index("issues_resolved_at_hash_idx").on(
-      table.resolvedAt,
-      table.hash,
-    ),
-  }),
+  (table) => [
+    index("issues_resolved_at_hash_idx").on(table.resolvedAt, table.hash),
+  ],
 );
 
 export const issueRelations = relations(issue, ({ one }) => ({

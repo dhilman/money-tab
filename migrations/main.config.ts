@@ -4,9 +4,8 @@ import { env } from "~/env.mjs";
 
 export default defineConfig({
   schema: "./src/server/db/schema.ts",
-  dialect: "sqlite",
+  dialect: "turso",
   out: "migrations/main",
-  driver: "turso",
   dbCredentials: {
     url: env.DATABASE_URL,
     authToken: env.DATABASE_TOKEN || "123",
