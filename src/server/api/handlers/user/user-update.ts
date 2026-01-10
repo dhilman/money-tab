@@ -7,7 +7,6 @@ const input = z.object({
   currencyCode: z.string().length(3).nullish(),
   languageCode: z.string().length(2).nullish(),
   meInPaidFor: z.boolean().optional(),
-  tonAddress: z.string().nullish(),
 });
 
 export const userUpdateHandler = privateProcedure

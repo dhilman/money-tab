@@ -168,7 +168,7 @@ textarea,
 button,
 select,
 a {
-  @apply bg-inherit outline-hidden focus:outline-hidden focus-visible:outline-hidden;
+  @apply outline-hidden focus:outline-hidden focus-visible:outline-hidden;
   -webkit-tap-highlight-color: transparent;
 }
 
