@@ -30,11 +30,11 @@ const Status = () => {
   return (
     <Bento>
       <BentoContent className="p-4">
-        <div className="text-hint text-lg">
+        <div className="text-lg text-hint">
           Status:
-          <span className="text-foreground font-medium"> Archived</span>
+          <span className="font-medium text-foreground"> Archived</span>
         </div>
-        <div className="text-hint mt-1 text-sm">
+        <div className="mt-1 text-sm text-hint">
           This transaction has been archived and is no longer visible in the
           overview.
         </div>

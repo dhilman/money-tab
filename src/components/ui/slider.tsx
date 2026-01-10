@@ -9,7 +9,7 @@ const SliderThumb = React.forwardRef<
 >((props, ref) => (
   <SliderPrimitive.Thumb
     ref={ref}
-    className="focus-visible:ring-ring border-hint/20 bg-background ring-offset-background block h-5 w-5 rounded-full border shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+    className="focus-visible:ring-ring block h-5 w-5 rounded-full border border-hint/20 bg-background shadow-sm ring-offset-background transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
     {...props}
   />
 ));
@@ -22,10 +22,10 @@ const SliderTrack = React.forwardRef<
 >((props, ref) => (
   <SliderPrimitive.Track
     ref={ref}
-    className="bg-canvas relative h-2 w-full grow overflow-hidden rounded-full"
+    className="relative h-2 w-full grow overflow-hidden rounded-full bg-canvas"
     {...props}
   >
-    <SliderPrimitive.Range className="bg-primary/80 absolute h-full" />
+    <SliderPrimitive.Range className="absolute h-full bg-primary/80" />
   </SliderPrimitive.Track>
 ));
 

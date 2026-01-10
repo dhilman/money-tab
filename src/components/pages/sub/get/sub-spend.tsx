@@ -98,7 +98,7 @@ const SubSpendBreakdown = () => {
         <div className="font-semibold capitalize">{t("spend_breakdown")}</div>
         {sub.contribs.length > 1 && (
           <NativeSelect
-            className="text-primary ml-auto h-6 py-0 text-center text-xs capitalize"
+            className="ml-auto h-6 py-0 text-center text-xs text-primary capitalize"
             value={filter}
             onChange={(v) => setFilter(v)}
             options={[

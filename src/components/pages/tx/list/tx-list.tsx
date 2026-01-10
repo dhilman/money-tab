@@ -78,7 +78,7 @@ function ViewMoreButton({ source }: ViewMoreButtonProps) {
       <ButtonV1 size="lg" variant="tertiary" className="w-full gap-2" asChild>
         <MyLink route={{ pathname: "/webapp/txs", query: source }}>
           <IconBox className="h-6 w-6">
-            <ListIcon className="text-foreground h-5 w-5" />
+            <ListIcon className="h-5 w-5 text-foreground" />
           </IconBox>
           {t("expense_history")}
         </MyLink>
@@ -89,7 +89,7 @@ function ViewMoreButton({ source }: ViewMoreButtonProps) {
 
 function Header({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-hint w-full px-4 py-[5px] text-sm uppercase">
+    <div className="w-full px-4 py-[5px] text-sm text-hint uppercase">
       {children}
     </div>
   );
@@ -132,7 +132,7 @@ function Empty({ source, hideCreate }: EmptyParams) {
       {!hideCreate && (
         <MyLink
           route={{ pathname: "/webapp/tx/create", query: source }}
-          className="text-link mt-4 text-sm font-semibold"
+          className="mt-4 text-sm font-semibold text-link"
         >
           {t("create_expense")}
         </MyLink>

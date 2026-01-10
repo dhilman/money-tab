@@ -25,7 +25,7 @@ export function UserHeader() {
         </div>
         {user.username && (
           <button
-            className="text-link mt-0.5 text-base font-bold"
+            className="mt-0.5 text-base font-bold text-link"
             onClick={() => {
               platform.openTgLink(`https://t.me/${user.username as string}`);
             }}

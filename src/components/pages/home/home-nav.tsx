@@ -20,7 +20,7 @@ export const ProfileNav = ({ className }: ProfileNavProps) => {
         route={{ pathname: "/webapp/settings" }}
         className={cn(
           "flex h-10 w-10 items-center justify-center place-self-end",
-          "bg-background text-foreground/80 rounded-full",
+          "rounded-full bg-background text-foreground/80",
         )}
       >
         <SettingsIcon className="h-5 w-5" />
@@ -36,7 +36,7 @@ const VisibilityToggle = () => {
     <button
       className={cn(
         "flex h-10 w-10 items-center justify-center place-self-start",
-        "bg-background text-foreground/80 rounded-full",
+        "rounded-full bg-background text-foreground/80",
       )}
       onClick={() => updateUser({ hideBalance: !user.hideBalance })}
     >

@@ -20,7 +20,7 @@ export const FormTextInput = ({ id, label, value, onChange }: Props) => {
           <label
             htmlFor={id}
             className={cn(
-              "text-hint block w-full text-sm transition-transform duration-300",
+              "block w-full text-sm text-hint transition-transform duration-300",
               !isInputShown && "translate-y-[11px] text-base",
             )}
           >

@@ -96,7 +96,7 @@ const MainScreen = () => {
           <BentoContent>
             <EndDateInput endDate={rest.endDate} setEndDate={rest.setEndDate} />
           </BentoContent>
-          <div className="text-hint mt-1 w-full px-2 text-left text-sm">
+          <div className="mt-1 w-full px-2 text-left text-sm text-hint">
             {t("editing_of_sub_limited_desc")}
           </div>
         </Bento>

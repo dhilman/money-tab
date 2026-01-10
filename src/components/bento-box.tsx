@@ -32,7 +32,7 @@ export const BentoContent = <T extends React.ElementType>({
   const Component = as || "div";
   return (
     <Component
-      className={cn("bg-background flex w-full flex-col rounded-xl", className)}
+      className={cn("flex w-full flex-col rounded-xl bg-background", className)}
       {...props}
     />
   );
@@ -48,7 +48,7 @@ export const BentoHeader = ({ className, children }: BentoHeaderProps) => {
     <div
       className={cn(
         "flex h-8 w-full items-center rounded-t-xl pl-2",
-        "text-hint text-sm font-medium uppercase",
+        "text-sm font-medium text-hint uppercase",
         className,
       )}
     >
@@ -75,7 +75,7 @@ export const EmptyBox = ({ className, children, ...props }: Props) => {
     <div
       className={cn(
         "flex w-full flex-col items-center justify-center rounded-xl select-none",
-        "text-hint px-3 py-5 text-center text-sm",
+        "px-3 py-5 text-center text-sm text-hint",
         "bg-background",
         className,
       )}

@@ -58,7 +58,7 @@ export const NativeSelectContainer = ({
       className={cn(
         "grid h-9 w-fit bg-transparent",
         "rounded-md border-0 border-transparent",
-        "text-hint text-center text-base",
+        "text-center text-base text-hint",
         className,
       )}
     >

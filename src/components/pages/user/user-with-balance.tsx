@@ -33,14 +33,14 @@ export const UserWithBalanceLoading = () => {
         <div
           className={cn(
             avatarVariants({ size: "xl" }),
-            "bg-canvas/50 animate-pulse",
+            "animate-pulse bg-canvas/50",
           )}
         />
       </ListItemLeft>
       <ListItemBody>
         <div className="flex h-full w-full items-center justify-between gap-3">
-          <div className="bg-canvas h-4 w-20 animate-pulse rounded-md" />
-          <div className="bg-canvas h-4 w-10 animate-pulse rounded-md" />
+          <div className="h-4 w-20 animate-pulse rounded-md bg-canvas" />
+          <div className="h-4 w-10 animate-pulse rounded-md bg-canvas" />
         </div>
       </ListItemBody>
     </ListItem>
@@ -80,10 +80,10 @@ export const UserWithBalance = ({ userId }: Props) => {
                 color="amount"
                 className="font-semibold"
               />
-              <ChevronRightIcon className="text-hint/50 h-4 w-4" />
+              <ChevronRightIcon className="h-4 w-4 text-hint/50" />
             </div>
             {balance.n > 1 && (
-              <div className="text-hint text-sm">
+              <div className="text-sm text-hint">
                 {t("currencies", { count: balance.n })}
               </div>
             )}

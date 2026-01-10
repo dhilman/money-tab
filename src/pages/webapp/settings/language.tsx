@@ -45,7 +45,7 @@ function Page() {
                   <div className="text-sm">{lang.local}</div>
                 </div>
                 {lang.value === user.languageCode && (
-                  <CheckIcon className="text-primary ml-auto h-5 w-5" />
+                  <CheckIcon className="ml-auto h-5 w-5 text-primary" />
                 )}
               </ListItemBody>
             </ListItem>

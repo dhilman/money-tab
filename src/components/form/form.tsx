@@ -8,7 +8,7 @@ interface FormSectionProps {
 export const FormSection = ({ children }: FormSectionProps) => {
   return (
     <div className="w-full px-2">
-      <div className="bg-background w-full rounded-xl">{children}</div>
+      <div className="w-full rounded-xl bg-background">{children}</div>
     </div>
   );
 };

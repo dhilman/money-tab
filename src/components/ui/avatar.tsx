@@ -64,7 +64,7 @@ function AvatarImage({ src, fallback }: AvatarImageProps) {
       alt="Avatar"
       onError={() => setIsLoadedError(true)}
       onLoad={() => setIsLoadedError(false)}
-      className="bg-canvas/50 aspect-square h-full w-full"
+      className="aspect-square h-full w-full bg-canvas/50"
     />
   );
 }

@@ -44,7 +44,7 @@ export const CustomCycleInput = ({
           value={text}
           onChange={onTextChange}
           className={cn(
-            "no-spinner bg-canvas ml-auto h-8 w-10 rounded-md text-center",
+            "no-spinner ml-auto h-8 w-10 rounded-md bg-canvas text-center",
             !isValid && "bg-red-500/20",
           )}
           placeholder="0"
@@ -56,7 +56,7 @@ export const CustomCycleInput = ({
           options={options}
           value={cycle.unit}
           onChange={(unit) => onChange({ ...cycle, unit })}
-          className="bg-canvas text-foreground ml-2 h-8"
+          className="ml-2 h-8 bg-canvas text-foreground"
         />
       </ListItemBody>
     </ListItem>

@@ -66,7 +66,7 @@ export const TextInputSecondary = ({
       value={value}
       placeholder={placeholder}
       className={cn(
-        "bg-canvas h-9 w-full rounded-md px-2 py-1 focus:outline-hidden",
+        "h-9 w-full rounded-md bg-canvas px-2 py-1 focus:outline-hidden",
         "text-sm font-medium",
         className,
       )}

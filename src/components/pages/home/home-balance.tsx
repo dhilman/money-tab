@@ -83,7 +83,7 @@ const BalanceAmount = ({
     return (
       <div className="flex h-[72px] items-center justify-center gap-2">
         {Array.from({ length: 4 }).map((_, i) => (
-          <AsteriskIcon key={i} className="text-hint h-6 w-6" strokeWidth={3} />
+          <AsteriskIcon key={i} className="h-6 w-6 text-hint" strokeWidth={3} />
         ))}
       </div>
     );
@@ -154,7 +154,7 @@ const Select = <T extends string>({
   const selected = options.find((option) => option.value === value);
 
   return (
-    <div className="bg-tertiary relative grid w-full rounded-xl">
+    <div className="relative grid w-full rounded-xl bg-tertiary">
       <NativeSelectTrigger
         options={options}
         value={value}
@@ -162,7 +162,7 @@ const Select = <T extends string>({
         className="rounded-xl"
       />
       <label className="col-start-1 row-start-1 pt-[9px] pb-[8px] pl-3">
-        <div className="text-hint text-sm">{label}</div>
+        <div className="text-sm text-hint">{label}</div>
         <div className="text-base font-medium">{selected?.label}</div>
       </label>
       <div className="absolute top-1/2 right-3 -translate-y-1/2 transform">

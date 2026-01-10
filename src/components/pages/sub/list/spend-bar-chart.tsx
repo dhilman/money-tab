@@ -49,11 +49,11 @@ export const SpendBarChart = ({
         <XAxis
           dataKey="start"
           tickFormatter={formatX}
-          className="text-foreground! text-xs!"
+          className="text-xs! text-foreground!"
         />
         <YAxis
           dataKey="total"
-          className="text-foreground! text-xs!"
+          className="text-xs! text-foreground!"
           tickFormatter={formatY}
           strokeWidth={0}
         />
@@ -65,7 +65,7 @@ export const SpendBarChart = ({
             <Cell
               key={i}
               className={cn(
-                "fill-primary! z-10 stroke-transparent!",
+                "z-10 fill-primary! stroke-transparent!",
                 selected &&
                   (entry.id === selected.id
                     ? "fill-primary!"

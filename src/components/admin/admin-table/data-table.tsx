@@ -109,7 +109,7 @@ export function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="bg-background w-full overflow-x-auto rounded-md border">
+      <div className="w-full overflow-x-auto rounded-md border bg-background">
         <Table className="min-w-max px-2">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -71,7 +71,7 @@ function Page() {
             labelFormatter={(label) => (
               <MyLink
                 route={{ pathname: "/admin/user/[id]", query: { id: label } }}
-                className="text-primary z-10 font-medium"
+                className="z-10 font-medium text-primary"
               >
                 {label}
               </MyLink>
@@ -118,7 +118,7 @@ const Select = <T extends string>({ options, value, onChange }: Select<T>) => {
     <select
       value={value}
       onChange={(e) => onChange(e.target.value as T)}
-      className="border-hint/10 bg-background rounded-md border px-2 py-1"
+      className="rounded-md border border-hint/10 bg-background px-2 py-1"
     >
       {options.map((option) => (
         <option key={option.value} value={option.value}>

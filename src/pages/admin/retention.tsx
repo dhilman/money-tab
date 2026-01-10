@@ -76,7 +76,7 @@ function Page() {
           <NativeSelect
             value={lastDays.toString()}
             onChange={(v) => setLastDays(parseInt(v))}
-            className="bg-background w-28 shrink-0"
+            className="w-28 shrink-0 bg-background"
             options={[
               { label: "1 day", value: "1" },
               { label: "2 days", value: "2" },
@@ -123,7 +123,7 @@ function Page() {
           labelFormatter={(label) => (
             <MyLink
               route={{ pathname: "/admin/user/[id]", query: { id: label } }}
-              className="text-primary z-10 font-medium"
+              className="z-10 font-medium text-primary"
             >
               {label}
             </MyLink>

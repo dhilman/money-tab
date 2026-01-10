@@ -34,8 +34,8 @@ export const TxLoading = () => {
   return (
     <ListItem>
       <ListItemLeft>
-        <div className="bg-canvas/50 flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
-          <div className="bg-canvas/50 h-6 w-6 animate-pulse rounded-lg" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-canvas/50">
+          <div className="h-6 w-6 animate-pulse rounded-lg bg-canvas/50" />
         </div>
       </ListItemLeft>
       <ListItemBody className="h-16 gap-4">
@@ -45,9 +45,9 @@ export const TxLoading = () => {
         <div className="ml-auto flex shrink-0 flex-col items-end justify-center gap-1">
           <div className="inline-flex items-center justify-center gap-1">
             <LoadingText text="20.00" className="text-sm font-semibold" />
-            <ChevronRightIcon className="text-hint/50 h-4 w-4" />
+            <ChevronRightIcon className="h-4 w-4 text-hint/50" />
           </div>
-          <div className="bg-canvas/50 h-4 w-16 rounded-md" />
+          <div className="h-4 w-16 rounded-md bg-canvas/50" />
         </div>
       </ListItemBody>
     </ListItem>
@@ -155,7 +155,7 @@ const TxUsers = ({ contribs }: TxUsersProps) => {
 
   return (
     <UserNamesList
-      className="text-hint text-sm"
+      className="text-sm text-hint"
       userIds={others.map((c) => c.userId as string)}
     />
   );

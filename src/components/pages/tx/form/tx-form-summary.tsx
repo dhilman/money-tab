@@ -66,7 +66,7 @@ export const TxEditSummary = () => {
         <ListItem>
           <ListItemBody className="justify-between">
             <FormLabel>{t("summary")}</FormLabel>
-            <div className="text-hint w-full text-right">
+            <div className="w-full text-right text-hint">
               <span>{summary.prefix}</span>
               <CurrencyAmount
                 as="span"

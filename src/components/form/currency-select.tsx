@@ -55,10 +55,10 @@ export const CurrencySelect = ({ options, onSelect }: Props) => {
   return (
     <div className="w-full max-w-xl space-y-6">
       <div className="px-2">
-        <div className="bg-hint/10 text-hint flex h-9 w-full items-center gap-1 rounded-lg px-3">
+        <div className="flex h-9 w-full items-center gap-1 rounded-lg bg-hint/10 px-3 text-hint">
           <SearchIcon className="h-5 w-5" />
           <TextInput
-            className="text-foreground h-7 w-full bg-transparent pr-2 pl-1 text-sm"
+            className="h-7 w-full bg-transparent pr-2 pl-1 text-sm text-foreground"
             placeholder={t("search_currencies")}
             value={query}
             onChange={(v) => setQuery(v)}
@@ -68,7 +68,7 @@ export const CurrencySelect = ({ options, onSelect }: Props) => {
       <div className="flex w-full flex-col items-center gap-5">
         {filtered.map((group) => (
           <div key={group.label} className="w-full space-y-2">
-            <div className="text-hint w-full px-3 text-sm font-medium">
+            <div className="w-full px-3 text-sm font-medium text-hint">
               {group.label}
             </div>
             <List>
@@ -105,7 +105,7 @@ export const CurrencyOption = ({ currency, onClick }: CurrencyOption) => {
           {currency.name}
           {valIsName ? "" : ` (${currency.code})`}
         </div>
-        <div className="text-hint ml-auto shrink-0 text-sm">
+        <div className="ml-auto shrink-0 text-sm text-hint">
           {currency.symbol}
         </div>
       </ListItemBody>
@@ -125,7 +125,7 @@ export const CurrencyListIcon = ({
   return (
     <div
       className={cn(
-        "bg-hint/10 flex h-8 w-8 items-center justify-center rounded-full text-lg",
+        "flex h-8 w-8 items-center justify-center rounded-full bg-hint/10 text-lg",
         className,
       )}
     >

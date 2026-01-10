@@ -52,7 +52,7 @@ export const TourPage1 = () => {
             </ListItemLeft>
             <ListItemBody>
               <div>
-                <div className="text-hint text-sm">{t("default_currency")}</div>
+                <div className="text-sm text-hint">{t("default_currency")}</div>
                 <div>{currency.name}</div>
               </div>
               <ChevronRightIcon className="ml-auto h-4 w-4" />

@@ -82,7 +82,7 @@ const ArchiveButton = () => {
       >
         {t("archive_group")}
       </Button>
-      <div className="text-hint w-full px-2 pt-1 text-left text-sm">
+      <div className="w-full px-2 pt-1 text-left text-sm text-hint">
         {t("archive_group_note")}
       </div>
     </Bento>

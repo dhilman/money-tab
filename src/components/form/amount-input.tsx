@@ -46,7 +46,7 @@ export const FormAmountInput = ({
           <label
             htmlFor="amount"
             className={cn(
-              "text-hint block w-full text-sm transition-transform duration-300",
+              "block w-full text-sm text-hint transition-transform duration-300",
               !isInputShown && "translate-y-[13px] text-base",
             )}
           >
@@ -101,7 +101,7 @@ const AmountInput = ({
         id={id}
         type="text"
         inputMode="decimal"
-        className="focus:placeholder-hint w-full placeholder-transparent"
+        className="w-full placeholder-transparent focus:placeholder-hint"
         value={value}
         onChange={(e) => onValueChange(e.target.value)}
         placeholder={formatAmountCurrency(0, currency, {

@@ -36,7 +36,7 @@ export const EmptyOptions = ({ el, className }: Props) => {
         <div className="text-lg font-medium capitalize">
           {t("no_contacts_yet")}
         </div>
-        <div className="text-hint px-8">
+        <div className="px-8 text-hint">
           {el === "sub"
             ? t("invite_after_create_sub")
             : t("invite_after_create_tx")}

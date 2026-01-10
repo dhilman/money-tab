@@ -150,7 +150,7 @@ function Header() {
         {EXAMPLES.map((el) => (
           <div
             key={el.title}
-            className="border-hint/10 bg-background flex aspect-square w-full flex-col items-center justify-center gap-3 rounded-xl border"
+            className="flex aspect-square w-full flex-col items-center justify-center gap-3 rounded-xl border border-hint/10 bg-background"
           >
             <AnimatedImage name={el.image} className="h-28 w-28" />
           </div>
@@ -171,7 +171,7 @@ function Testimonials({ items }: { items: TestimonialProps[] }) {
       {items.map((el, i) => (
         <div
           key={i}
-          className="border-hint/10 relative flex h-24 w-[85%] shrink-0 flex-col items-center gap-2 rounded-lg border p-3 shadow-md"
+          className="relative flex h-24 w-[85%] shrink-0 flex-col items-center gap-2 rounded-lg border border-hint/10 p-3 shadow-md"
         >
           <div className="text-base">{el.text}</div>
           <div className="absolute right-3 bottom-3 text-sm font-semibold">
@@ -197,7 +197,7 @@ function FeatureCard({ emoji, title, desc }: FeatureCardProps) {
       </div>
       <div className="w-full space-y-1">
         <div className="text-lg font-semibold">{title}</div>
-        <div className="text-hint text-sm">{desc}</div>
+        <div className="text-sm text-hint">{desc}</div>
       </div>
     </div>
   );

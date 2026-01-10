@@ -104,7 +104,7 @@ const UserPaidBy = ({ userId, onEditPayer }: UserPaidByProps) => {
       <ListItemBody>
         <div className="w-full truncate">
           <PartyUserName user={user} />
-          <div className="text-hint text-sm">{t("paid_by")}</div>
+          <div className="text-sm text-hint">{t("paid_by")}</div>
         </div>
         <ButtonV1
           variant="secondary"
@@ -166,19 +166,19 @@ const UserListItem = ({
         <div className="ml-auto flex items-center gap-2">
           {participant.manual && (
             <button
-              className="bg-tertiary flex h-8 w-8 items-center justify-center rounded-[8.91px]"
+              className="flex h-8 w-8 items-center justify-center rounded-[8.91px] bg-tertiary"
               onClick={() => {
                 setValue("");
                 resetAmount(participant.id);
               }}
             >
-              <RefreshCwIcon className="text-foreground h-4 w-4" />
+              <RefreshCwIcon className="h-4 w-4 text-foreground" />
             </button>
           )}
           <input
             ref={setRef}
             className={cn(
-              "bg-tertiary w-20 rounded-[8.91px] px-3 py-[5px] text-right text-base",
+              "w-20 rounded-[8.91px] bg-tertiary px-3 py-[5px] text-right text-base",
               participant.manual && invalid && "bg-red-500/20",
             )}
             type="number"

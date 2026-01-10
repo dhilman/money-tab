@@ -61,7 +61,7 @@ const TxActivityItem = ({ item }: { item: ActivityItem }) => {
       <ListItemBody className="h-fit pl-1 text-sm leading-tight whitespace-normal">
         <div>
           <ActivityItemCopy item={item} />
-          <div className="text-hint mt-0.5 text-xs">
+          <div className="mt-0.5 text-xs text-hint">
             {formatDateTime(item.createdAt)}
           </div>
         </div>

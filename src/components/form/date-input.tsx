@@ -12,7 +12,7 @@ export const DateInput = ({ value, onChange }: DateInputProps) => {
       type="date"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="bg-canvas ml-auto h-9 w-40 rounded-md px-4 text-sm font-medium"
+      className="ml-auto h-9 w-40 rounded-md bg-canvas px-4 text-sm font-medium"
     />
   );
 };
@@ -28,7 +28,7 @@ export const DateInputOptional = ({
 }: DateInputOptionalProps) => {
   if (value) {
     return (
-      <div className="bg-canvas ml-auto flex h-9 w-40 items-center gap-1 rounded-md">
+      <div className="ml-auto flex h-9 w-40 items-center gap-1 rounded-md bg-canvas">
         <input
           type="date"
           value={value}
@@ -37,7 +37,7 @@ export const DateInputOptional = ({
         />
         <button
           onClick={() => onChange(null)}
-          className="border-hint/10 inline-flex shrink-0 items-center justify-center rounded-r-md border-l p-2"
+          className="inline-flex shrink-0 items-center justify-center rounded-r-md border-l border-hint/10 p-2"
         >
           <XIcon className="h-4 w-4" />
         </button>
@@ -53,7 +53,7 @@ export const DateInputOptional = ({
         date.setMonth(date.getMonth() + 1);
         onChange(getDateLocal(date));
       }}
-      className="text-primary ml-auto flex h-10 w-10 items-center justify-center"
+      className="ml-auto flex h-10 w-10 items-center justify-center text-primary"
     >
       <PlusIcon className="h-4 w-4" />
     </button>

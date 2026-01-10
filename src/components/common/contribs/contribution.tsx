@@ -54,7 +54,7 @@ const NotSeenDisclaimer = () => {
   if (!isCreator) return null;
 
   return (
-    <div className="text-hint -mt-1 w-full px-3 text-sm">
+    <div className="-mt-1 w-full px-3 text-sm text-hint">
       <span className="mr-0.5 font-bold text-orange-500">*</span>
       {t("not_seen_desc")}
     </div>
@@ -162,7 +162,7 @@ const ContribListItem = ({ contrib }: ContribListItemProps) => {
               <span className="ml-0.5 font-bold text-orange-500">*</span>
             )}
           </div>
-          {isPayer && <div className="text-hint text-sm">{t("payer")}</div>}
+          {isPayer && <div className="text-sm text-hint">{t("payer")}</div>}
         </div>
         <div className="ml-auto text-right">
           {contrib.amountOwed > 0 && (
@@ -172,9 +172,9 @@ const ContribListItem = ({ contrib }: ContribListItemProps) => {
             />
           )}
           {showInvite && (
-            <div className="text-link text-sm">{t("share_link")}</div>
+            <div className="text-sm text-link">{t("share_link")}</div>
           )}
-          {showJoin && <div className="text-link text-sm">{t("join")}</div>}
+          {showJoin && <div className="text-sm text-link">{t("join")}</div>}
         </div>
       </ListItemBody>
     </ListItem>
@@ -205,11 +205,11 @@ const ContribLoading = () => {
   return (
     <ListItem className="animate-pulse">
       <ListItemLeft>
-        <div className="bg-foreground/10 h-10 w-10 rounded-full" />
+        <div className="h-10 w-10 rounded-full bg-foreground/10" />
       </ListItemLeft>
       <ListItemBody className="h-16">
-        <div className="bg-foreground/10 h-4 w-24 rounded-lg" />
-        <div className="bg-foreground/10 ml-auto h-4 w-16 rounded-lg" />
+        <div className="h-4 w-24 rounded-lg bg-foreground/10" />
+        <div className="ml-auto h-4 w-16 rounded-lg bg-foreground/10" />
       </ListItemBody>
     </ListItem>
   );

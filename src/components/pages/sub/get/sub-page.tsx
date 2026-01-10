@@ -18,8 +18,8 @@ export const SubPage = () => {
     <WebAppMain className="flex flex-col gap-6">
       <SubDropdown>
         <button className="absolute top-4 right-4">
-          <div className="bg-hint/10 flex h-9 w-9 items-center justify-center rounded-full">
-            <DotsVerticalIcon className="text-hint h-5 w-5" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-hint/10">
+            <DotsVerticalIcon className="h-5 w-5 text-hint" />
           </div>
         </button>
       </SubDropdown>
@@ -77,11 +77,11 @@ const StatusDeleted = () => {
   return (
     <Bento>
       <BentoContent className="p-4">
-        <div className="text-hint text-lg">
+        <div className="text-lg text-hint">
           Status:
-          <span className="text-foreground font-medium"> Deleted</span>
+          <span className="font-medium text-foreground"> Deleted</span>
         </div>
-        <div className="text-hint mt-1 text-sm">
+        <div className="mt-1 text-sm text-hint">
           This subscription has been deleted and will no longer be visible.
         </div>
       </BentoContent>

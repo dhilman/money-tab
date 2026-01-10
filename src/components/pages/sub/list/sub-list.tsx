@@ -48,7 +48,7 @@ export function SubListStatefull({
         {!hideCreate && (
           <MyLink
             route={{ pathname: "/webapp/sub/create", query: source }}
-            className="text-link mt-4 text-sm font-semibold"
+            className="mt-4 text-sm font-semibold text-link"
           >
             {t("add_subscription")}
           </MyLink>
@@ -73,7 +73,7 @@ const ViewMoreButton = () => {
       <MyLink route={{ pathname: "/webapp/subs" }} asChild>
         <ButtonV1 size="lg" variant="tertiary" className="w-full gap-2">
           <IconBox className="h-6 w-6">
-            <BarChartBigIcon className="text-foreground h-5 w-5" />
+            <BarChartBigIcon className="h-5 w-5 text-foreground" />
           </IconBox>
           {t("statistics")}
         </ButtonV1>

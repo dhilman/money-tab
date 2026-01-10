@@ -25,7 +25,7 @@ import {
 
 export const Home = () => {
   return (
-    <div className="bg-canvas w-full">
+    <div className="w-full bg-canvas">
       <ClientComponent>
         <ProfileNav className="py-4" />
       </ClientComponent>
@@ -54,24 +54,24 @@ const HomeLinks = () => {
           route={{ pathname: "/webapp/contacts", query: { tab: "contacts" } }}
         >
           <ListItemLeft>
-            <div className="bg-tertiary flex h-10 w-10 items-center justify-center rounded-full">
-              <User2Icon className="text-foreground h-5 w-5" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-tertiary">
+              <User2Icon className="h-5 w-5 text-foreground" />
             </div>
           </ListItemLeft>
           <ListItemBody>
             <div className="text-base">{t("contacts_and_groups")}</div>
-            <ChevronRightIcon className="text-hint ml-auto h-4 w-4" />
+            <ChevronRightIcon className="ml-auto h-4 w-4 text-hint" />
           </ListItemBody>
         </ListItem>
         <ListItem as={MyLink} route={{ pathname: "/webapp/news" }}>
           <ListItemLeft>
-            <div className="bg-tertiary flex h-10 w-10 items-center justify-center rounded-full">
-              <NewspaperIcon className="text-foreground h-5 w-5" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-tertiary">
+              <NewspaperIcon className="h-5 w-5 text-foreground" />
             </div>
           </ListItemLeft>
           <ListItemBody>
             <div className="text-base">{t("moneytab_blog")}</div>
-            <ChevronRightIcon className="text-hint ml-auto h-4 w-4" />
+            <ChevronRightIcon className="ml-auto h-4 w-4 text-hint" />
           </ListItemBody>
         </ListItem>
       </List>

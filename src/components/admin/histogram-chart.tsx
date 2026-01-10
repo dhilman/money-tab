@@ -59,8 +59,8 @@ export const HistogramChart = <T extends string>({
     <ResponsiveContainer width="100%" height={400} className="-ml-4">
       <BarChart data={histogramData} className="text-foreground!">
         <CartesianGrid strokeDasharray="3 3" className="stroke-hint/30" />
-        <XAxis dataKey="range" className="text-foreground! text-xs!" />
-        <YAxis className="text-foreground! text-xs!" />
+        <XAxis dataKey="range" className="text-xs! text-foreground!" />
+        <YAxis className="text-xs! text-foreground!" />
         <Tooltip
           wrapperClassName="bg-background! border! border-hint/30! rounded-md! text-foreground!"
           labelClassName="text-foreground!"

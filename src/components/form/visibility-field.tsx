@@ -62,14 +62,14 @@ export const VisibilityField = ({
         <FormField className="justify-between">
           <FormLabelWithIcon>
             <FormIcon className="bg-primary">
-              <UserRoundPlusIcon className="text-primary-foreground h-5 w-5" />
+              <UserRoundPlusIcon className="h-5 w-5 text-primary-foreground" />
             </FormIcon>
             <div>{t("allow_others_to_join")}</div>
           </FormLabelWithIcon>
           <Switch checked={isPublic} onCheckedChange={onCheckedChange} />
         </FormField>
       </BentoContent>
-      <div className="text-hint px-2 text-left text-sm">
+      <div className="px-2 text-left text-sm text-hint">
         <Hint />
       </div>
     </div>

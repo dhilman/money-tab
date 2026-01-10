@@ -57,7 +57,7 @@ const UserListItem = ({ userId, isPayer, onSelect }: UserListItemProps) => {
           <div
             className={cn(
               "ml-auto flex h-[22px] w-[22px] shrink-0 items-center justify-center",
-              "text-primary-foreground rounded-full border-[1.5px]",
+              "rounded-full border-[1.5px] text-primary-foreground",
               "border-primary bg-primary",
             )}
           >

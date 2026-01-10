@@ -61,7 +61,7 @@ export const SubListItem = ({
             {sub.name}
           </div>
           <UserNamesList
-            className="text-hint truncate text-sm text-ellipsis"
+            className="truncate text-sm text-ellipsis text-hint"
             userIds={others.map((u) => u.userId)}
           />
         </div>

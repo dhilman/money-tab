@@ -94,11 +94,11 @@ const ErrorBento = ({ icon, title, description, hint }: ErrorBentoProps) => {
         <Icon size="3xl" variant="hint" Icon={icon} round />
         <div className="mt-2.5 space-y-0.5 text-center">
           <div className="text-xl font-bold">{title}</div>
-          <div className="text-hint text-base font-medium">{description}</div>
+          <div className="text-base font-medium text-hint">{description}</div>
         </div>
       </BentoContent>
       {hint && (
-        <div className="text-hint mt-1 px-2 text-center text-sm leading-tight">
+        <div className="mt-1 px-2 text-center text-sm leading-tight text-hint">
           {hint}
         </div>
       )}

@@ -21,7 +21,7 @@ export const TxFiles = () => {
             key={f.id}
             src={f.url}
             alt="attachment"
-            className="border-hint/20 h-[84px] w-[84px] rounded-md border-[0.5px] object-cover"
+            className="h-[84px] w-[84px] rounded-md border-[0.5px] border-hint/20 object-cover"
           />
         ))}
       </div>
@@ -40,7 +40,7 @@ const FilesDrawer = ({ children }: DrawerProps) => {
     <Drawer>
       <DrawerTrigger asChild>{children}</DrawerTrigger>
       <DrawerContent className="h-[calc(100vh-4rem)]" aria-describedby="files">
-        <div className="bg-background flex w-full justify-center overflow-y-auto">
+        <div className="flex w-full justify-center overflow-y-auto bg-background">
           <div className="min-h-screen w-full max-w-xl pb-12">
             <DrawerHeader className="pt-2">
               <DrawerTitle>{t("attachments")}</DrawerTitle>
@@ -51,7 +51,7 @@ const FilesDrawer = ({ children }: DrawerProps) => {
                   key={f.id}
                   src={f.url}
                   alt="attachment"
-                  className="bg-canvas/10 h-fit w-full rounded-md object-contain"
+                  className="h-fit w-full rounded-md bg-canvas/10 object-contain"
                 />
               ))}
             </div>

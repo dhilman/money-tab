@@ -24,9 +24,9 @@ export const DayCountAreaChart = ({ data }: Props) => {
         <XAxis
           dataKey="key"
           tickFormatter={(date: Date) => dayjs(date).format("D/MM")}
-          className="text-foreground! text-xs!"
+          className="text-xs! text-foreground!"
         />
-        <YAxis dataKey="count" className="text-foreground! text-xs!" />
+        <YAxis dataKey="count" className="text-xs! text-foreground!" />
         <Area
           dataKey="count"
           className="fill-primary/30! stroke-primary!"

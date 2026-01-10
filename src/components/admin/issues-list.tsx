@@ -62,7 +62,7 @@ export const BentoIssuesList = ({ issues }: Props) => {
                     }}
                   />
                   {i < issues.length - 1 && (
-                    <div className="bg-hint/20 h-px w-full" />
+                    <div className="h-px w-full bg-hint/20" />
                   )}
                 </div>
               ))}
@@ -87,12 +87,12 @@ const IssueListItem = ({ issue, selected, onToggle }: IssueListItemProps) => {
         route={{ pathname: "/admin/issue/[hash]", query: { hash: issue.hash } }}
         className="absolute top-0 left-0 z-10 h-full w-3/4"
       />
-      <div className="text-hint flex w-full items-center justify-between gap-2 text-sm">
+      <div className="flex w-full items-center justify-between gap-2 text-sm text-hint">
         <div className="inline-flex items-center gap-1.5">
           <span className="rounded-md bg-blue-500/5 px-3 text-blue-500">
             {adminFormatDate(issue.timestamp ?? "")}
           </span>
-          <div className="bg-hint h-1 w-1 rounded-full" />
+          <div className="h-1 w-1 rounded-full bg-hint" />
           <span className="rounded-md bg-red-500/10 px-3 text-red-500">
             {issue.count}
           </span>
@@ -103,15 +103,15 @@ const IssueListItem = ({ issue, selected, onToggle }: IssueListItemProps) => {
         <span>{issue.path ?? "no-path"}</span>
         {issue.procedure && (
           <>
-            <div className="bg-hint h-1 w-1 rounded-full" />
+            <div className="h-1 w-1 rounded-full bg-hint" />
             <span>{issue.procedure}</span>
           </>
         )}
-        <div className="bg-hint h-1 w-1 rounded-full" />
+        <div className="h-1 w-1 rounded-full bg-hint" />
         <span>{issue.type}</span>
       </div>
       {issue.message && (
-        <div className="text-hint w-full truncate text-left text-sm">
+        <div className="w-full truncate text-left text-sm text-hint">
           {issue.message}
         </div>
       )}

@@ -9,7 +9,7 @@ interface PaginationProps {
 export const Pagination = ({ total, current }: PaginationProps) => {
   if (total <= 1) return null;
   return (
-    <div className="bg-hint/10 flex w-fit items-center gap-2 rounded-full px-2.5 py-2">
+    <div className="flex w-fit items-center gap-2 rounded-full bg-hint/10 px-2.5 py-2">
       {Array.from({ length: total }).map((_, i) => (
         <div
           key={i}

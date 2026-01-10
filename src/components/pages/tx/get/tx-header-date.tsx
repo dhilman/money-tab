@@ -67,7 +67,7 @@ const TxGroup = () => {
       </ListItemLeft>
       <ListItemBody>
         <div>
-          <div className="text-hint text-sm">{t("group")}</div>
+          <div className="text-sm text-hint">{t("group")}</div>
           <div className="text-foreground">{group.name}</div>
         </div>
       </ListItemBody>
@@ -90,13 +90,13 @@ const TxDate = () => {
           icon={CalendarIcon}
           className={cn(
             "h-10 w-10 rounded-full p-2.5",
-            "from-primary to-primary/40 text-primary-foreground bg-linear-to-br",
+            "bg-linear-to-br from-primary to-primary/40 text-primary-foreground",
           )}
         />
       </ListItemLeft>
       <ListItemBody>
         <div>
-          <div className="text-hint text-sm">{t("date")}</div>
+          <div className="text-sm text-hint">{t("date")}</div>
           <div className="text-foreground">
             {isDateTime ? formatEventDate(tx.date) : formatDate(tx.date)}
           </div>

@@ -68,7 +68,7 @@ function Page() {
                 <>
                   {data.issues?.count ?? 0}
                   {data.issues?.unique ? (
-                    <span className="text-hint ml-2 text-sm">
+                    <span className="ml-2 text-sm text-hint">
                       ({data.issues.unique} unique)
                     </span>
                   ) : null}

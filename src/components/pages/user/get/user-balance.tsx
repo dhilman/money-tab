@@ -20,11 +20,11 @@ export const UserBalance = () => {
     return (
       <Bento>
         <BentoHeader>{t("balance")}</BentoHeader>
-        <BentoContent className="bg-background items-center gap-1.5 px-3 py-4 text-center">
+        <BentoContent className="items-center gap-1.5 bg-background px-3 py-4 text-center">
           <span role="img" aria-label="scales" className="text-xl">
             ⚖️
           </span>
-          <div className="text-hint text-sm font-medium capitalize">
+          <div className="text-sm font-medium text-hint capitalize">
             {t("no_outstanding_balance")}
           </div>
         </BentoContent>
@@ -78,7 +78,7 @@ export const UserBalanceListItem = ({
             currency={currency}
             color="amount"
           />
-          <div className="text-hint text-sm">
+          <div className="text-sm text-hint">
             {amount > 0 ? t("owed_to_you") : t("you_owe")}
           </div>
         </div>

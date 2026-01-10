@@ -74,7 +74,7 @@ const IssueInstance = ({ issue }: IssueInstanceProps) => {
                   pathname: "/admin/user/[id]",
                   query: { id: issue.userId ?? "" },
                 }}
-                className="text-primary font-medium"
+                className="font-medium text-primary"
               >
                 {issue.userId}
               </MyLink>
@@ -94,7 +94,7 @@ const IssueStack = ({ stack }: { stack: string | null }) => {
   if (!stack) return null;
 
   return (
-    <div className="bg-canvas/50 w-full space-y-2 rounded-lg p-2">
+    <div className="w-full space-y-2 rounded-lg bg-canvas/50 p-2">
       <div className="flex w-full items-center justify-between">
         <div className="text-sm font-semibold">Stack</div>
         <Button
@@ -120,7 +120,7 @@ const IssueProperties = ({ properties }: { properties: unknown }) => {
   if (!properties) return null;
 
   return (
-    <div className="bg-canvas/50 w-full space-y-2 rounded-lg p-2">
+    <div className="w-full space-y-2 rounded-lg bg-canvas/50 p-2">
       <div className="flex w-full items-center justify-between">
         <div className="text-sm font-semibold">Properties</div>
         <Button

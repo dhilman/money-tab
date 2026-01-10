@@ -13,7 +13,7 @@ export const SubHeader = () => {
 
   return (
     <div className="flex w-full flex-col items-center justify-center">
-      <div className="font-rounded mb-1 px-4 text-center text-xl font-semibold">
+      <div className="mb-1 px-4 text-center font-rounded text-xl font-semibold">
         <LoadingProvider
           isLoading={isLoading}
           loading={<LoadingText text="Loading..." />}

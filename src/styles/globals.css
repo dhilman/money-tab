@@ -152,7 +152,7 @@
     @apply isolate h-full w-full;
   }
   body {
-    @apply bg-canvas text-foreground isolate h-full! w-full! antialiased;
+    @apply isolate h-full! w-full! bg-canvas text-foreground antialiased;
     font-family:
       -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
       Arial, sans-serif;

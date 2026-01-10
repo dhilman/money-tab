@@ -156,7 +156,7 @@ const AssumeUserButton = ({ id }: { id: string }) => {
     <Bento>
       <BentoContent>
         <div className="flex w-full items-center justify-between p-2">
-          <div className="bg-canvas/50 flex items-center gap-2 rounded-md px-4 py-1 font-medium">
+          <div className="flex items-center gap-2 rounded-md bg-canvas/50 px-4 py-1 font-medium">
             <input
               type="number"
               value={minutes}

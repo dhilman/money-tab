@@ -94,7 +94,7 @@ const HelperDrawerContent = () => {
               <HelperStepNumber>1</HelperStepNumber>
               <div>
                 <h3 className="text-lg font-semibold">Add Participants</h3>
-                <p className="text-hint text-sm">
+                <p className="text-sm text-hint">
                   {t("help_create_tx_select_payer_subtitle")}
                 </p>
               </div>
@@ -105,7 +105,7 @@ const HelperDrawerContent = () => {
                 <h3 className="text-lg font-semibold">
                   {t("help_create_tx_enter_amount")}
                 </h3>
-                <p className="text-hint text-sm">
+                <p className="text-sm text-hint">
                   {t("help_create_tx_enter_amount_subtitle")}
                 </p>
               </div>
@@ -116,7 +116,7 @@ const HelperDrawerContent = () => {
                 <h3 className="text-lg font-semibold">
                   {t("help_create_tx_add_participants")}
                 </h3>
-                <p className="text-hint text-sm">
+                <p className="text-sm text-hint">
                   {t("help_create_tx_add_participants_subtitle")}
                 </p>
               </div>
@@ -133,7 +133,7 @@ const HelperDrawerContent = () => {
                 <h3 className="text-lg font-semibold">
                   {t("help_create_tx_invite_participants_later")}
                 </h3>
-                <p className="text-hint text-sm">
+                <p className="text-sm text-hint">
                   {t("help_create_tx_invite_participants_later_subtitle")}
                 </p>
               </div>
@@ -154,7 +154,7 @@ const HelperStepCard = ({ className, children }: HelperStepCardProps) => {
   return (
     <div
       className={cn(
-        "border-hint/20 flex w-full items-center gap-3.5 rounded-2xl border p-3",
+        "flex w-full items-center gap-3.5 rounded-2xl border border-hint/20 p-3",
         className,
       )}
     >
@@ -168,7 +168,7 @@ const HelperStepNumber = ({ children }: { children: React.ReactNode }) => {
     <div
       className={cn(
         "flex h-12 w-12 shrink-0 items-center justify-center rounded-full",
-        "bg-primary text-primary-foreground text-xl font-semibold",
+        "bg-primary text-xl font-semibold text-primary-foreground",
       )}
     >
       {children}

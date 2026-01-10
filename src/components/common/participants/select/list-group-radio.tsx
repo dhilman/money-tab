@@ -48,7 +48,7 @@ export const ListGroupRadio = ({ group }: Props) => {
             <div className="truncate font-medium text-ellipsis">
               {group.name}
             </div>
-            <div className="text-hint text-sm">
+            <div className="text-sm text-hint">
               {t("n_members", { count: group.memberIds.length })}
             </div>
           </div>

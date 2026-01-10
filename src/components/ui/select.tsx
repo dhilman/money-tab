@@ -18,10 +18,10 @@ const SelectTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       "flex h-9 w-full items-center justify-between rounded-md px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50",
-      "border-hint/10 border",
-      "shadow-canvas shadow-sm",
-      "ring-offset-background focus-visible:ring-foreground focus:outline-hidden focus-visible:ring-1",
-      "placeholder:text-hint bg-transparent",
+      "border border-hint/10",
+      "shadow-sm shadow-canvas",
+      "ring-offset-background focus:outline-hidden focus-visible:ring-1 focus-visible:ring-foreground",
+      "bg-transparent placeholder:text-hint",
       className,
     )}
     {...props}
@@ -57,9 +57,9 @@ const SelectContent = React.forwardRef<
         }
       }}
       className={cn(
-        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 min-w-32 overflow-hidden rounded-md",
-        "border-hint/10 bg-background text-foreground border",
-        "dark:shadow-background shadow-lg",
+        "relative z-50 min-w-32 overflow-hidden rounded-md data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+        "border border-hint/10 bg-background text-foreground",
+        "shadow-lg dark:shadow-background",
         position === "popper" &&
           "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
         className,

@@ -44,7 +44,7 @@ export const DateInputV1 = ({
     <ListItem>
       <ListItemBody>
         <div>
-          <div className="text-hint text-sm">{label}</div>
+          <div className="text-sm text-hint">{label}</div>
           <input
             type={type}
             className="rounded-md font-medium"
@@ -100,8 +100,8 @@ export const RemoveButton = ({ onClick }: RemoveButtonProps) => {
       className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center"
       onClick={onClick}
     >
-      <div className="bg-hint/20 h-[22px] w-[22px] rounded-full stroke-[3px] p-1 text-white">
-        <XIcon className="text-hint h-full w-full" />
+      <div className="h-[22px] w-[22px] rounded-full bg-hint/20 stroke-[3px] p-1 text-white">
+        <XIcon className="h-full w-full text-hint" />
       </div>
     </button>
   );

@@ -21,7 +21,7 @@ export const RadioCheck = ({
     <Component
       className={cn(
         "flex h-[22px] w-[22px] shrink-0 items-center justify-center",
-        "text-primary-foreground rounded-full border-[1.5px]",
+        "rounded-full border-[1.5px] text-primary-foreground",
         selected ? "border-primary bg-primary" : "border-hint/20",
         disabled && "border-hint bg-hint",
         className,

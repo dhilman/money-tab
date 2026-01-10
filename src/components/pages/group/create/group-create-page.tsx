@@ -59,7 +59,7 @@ const ColorSelector = () => {
           key={i}
           className={cn(
             "h-5 w-5 rounded-full",
-            i === colorId && "ring-foreground ring-1 ring-offset-2",
+            i === colorId && "ring-1 ring-foreground ring-offset-2",
           )}
           style={{
             backgroundColor: getAccentColor(i),
@@ -100,7 +100,7 @@ const UserPill = ({ userId }: { userId: string }) => {
   if (!user) return null;
 
   return (
-    <div className="bg-canvas flex max-w-[160px] items-center gap-2 rounded-2xl p-1 pr-3">
+    <div className="flex max-w-[160px] items-center gap-2 rounded-2xl bg-canvas p-1 pr-3">
       <UserAvatar size="sm" user={user} />
       <div className="truncate text-ellipsis">{user.name}</div>
     </div>
