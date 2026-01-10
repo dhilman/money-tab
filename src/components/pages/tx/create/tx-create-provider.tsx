@@ -124,7 +124,7 @@ function useCreateMutation() {
   const state = useTxEditCtx();
   const participants = useParticipantsCtx();
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isPending: isLoading } = useMutation({
     mutationFn: async () => {
       const data: TxCreateReq = {
         value: state.amount,

@@ -44,5 +44,5 @@ export const useSettleMutation = (params: SettleMutationParams) => {
     }
   };
 
-  return { settle, isLoading: mutation.isLoading };
+  return { settle, isLoading: mutation.isPending };
 };

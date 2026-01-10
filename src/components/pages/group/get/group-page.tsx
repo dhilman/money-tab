@@ -87,7 +87,7 @@ const ActionButtons = () => {
             await register();
             join.mutate(group.id);
           }}
-          disabled={join.isLoading}
+          disabled={join.isPending}
           className="w-2/3"
         >
           <IconV1 Icon={PlusIcon} />

@@ -37,7 +37,7 @@ export const BentoIssuesList = ({ issues }: Props) => {
             resolve.mutate({ hashes: selectedHashes });
           }}
           disabled={selectedHashes.length === 0}
-          isLoading={resolve.isLoading}
+          isLoading={resolve.isPending}
         >
           Resolve {selectedHashes.length > 0 && `(${selectedHashes.length})`}
         </NavButtonRight>

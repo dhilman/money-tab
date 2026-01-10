@@ -47,7 +47,7 @@ const UserDataTableProps = ({ user }: UserDataTableProps) => {
       value: (
         <Button
           onClick={() => getUserLink.mutate({ telegramId: user.telegramId })}
-          disabled={!user.telegramId || getUserLink.isLoading}
+          disabled={!user.telegramId || getUserLink.isPending}
           variant="secondary"
           className="h-fit w-fit py-0.5"
         >

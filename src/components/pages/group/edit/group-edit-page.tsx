@@ -53,7 +53,7 @@ const ArchiveButton = () => {
   const router = useWebAppRouter();
   const platform = usePlatform();
   const { group } = useGroupEditCtx();
-  const { mutate, isLoading } = api.group.archive.useMutation({
+  const { mutate, isPending: isLoading } = api.group.archive.useMutation({
     onSuccess: (data) => {
       ctx.user.start.setData(undefined, (prev) => {
         if (!prev) return prev;

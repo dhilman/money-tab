@@ -156,7 +156,7 @@ const JoinMainButton = () => {
     <MainButton
       onClick={() => joinMutation.mutate(joinContribId)}
       label={t("confirm_join")}
-      isLoading={joinMutation.isLoading}
+      isLoading={joinMutation.isPending}
     />
   );
 };

@@ -1,3 +1,4 @@
+import { keepPreviousData } from "@tanstack/react-query";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { userCols } from "~/components/admin/admin-table/admin-user-cols";
@@ -23,7 +24,7 @@ export default webAppPage(Page);
 function Page() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const { data } = api.admin.users.useQuery(pagination, {
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   });
 
   if (!data) return null;

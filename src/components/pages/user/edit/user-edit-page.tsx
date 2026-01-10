@@ -74,7 +74,7 @@ const UserEditMain = ({ user }: UserEditMainProps) => {
           }
           router.back();
         }}
-        isLoading={updateName.isLoading}
+        isLoading={updateName.isPending}
         disabled={!isEdited}
         label={t("save")}
       />
@@ -87,7 +87,7 @@ const RemoveContactButton = ({ id }: { id: string }) => {
   const ctx = api.useUtils();
   const router = useWebAppRouter();
   const platform = usePlatform();
-  const { mutate, isLoading } = api.user.disconnect.useMutation({
+  const { mutate, isPending: isLoading } = api.user.disconnect.useMutation({
     onSuccess: (data) => {
       ctx.user.start.setData(undefined, (prev) => {
         if (!prev) return prev;

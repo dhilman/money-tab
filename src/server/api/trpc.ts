@@ -73,12 +73,14 @@ export const publicProcedure = t.procedure;
 
 const monitoring = t.middleware(async (opts) => {
   const res = await opts.next();
+  // In tRPC v11, rawInput was replaced with getRawInput() async function
+  const rawInput = await opts.getRawInput();
 
   function capture() {
     if (res.ok) return;
     if (res.error.code === "NOT_FOUND") {
       logger.warn(
-        { error: res.error, input: opts.rawInput },
+        { error: res.error, input: rawInput },
         "Not found, skipping monitoring"
       );
       return;
@@ -93,7 +95,7 @@ const monitoring = t.middleware(async (opts) => {
       procedure: opts.path,
       userId: opts.ctx?.userId ?? undefined,
       properties: {
-        inputs: opts.rawInput,
+        inputs: rawInput,
       },
     });
   }

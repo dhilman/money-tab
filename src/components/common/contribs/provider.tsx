@@ -20,7 +20,7 @@ export type ContribsContext = {
   contribs: Contrib[];
   copyUrl: (contribId?: string) => void;
   joinMutation: {
-    isLoading: boolean;
+    isPending: boolean;
     mutate: (contribId: string) => void;
   };
   isLoading: boolean;

@@ -81,7 +81,7 @@ const useCreateMutation = () => {
   const ctx = api.useUtils();
   const state = useGroupCreateCtx();
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isPending: isLoading } = useMutation({
     mutationFn: async () => {
       if (!state.name) {
         toast.error(t("error.name_required"));

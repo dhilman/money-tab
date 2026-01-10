@@ -152,7 +152,7 @@ export const SubEditProvider = ({ sub, children }: Props) => {
 
 function SubMainButton() {
   const { screen, setScreen } = useSubEditCtx();
-  const { mutate, isLoading } = useUpdateMutation();
+  const { mutate, isPending: isLoading } = useUpdateMutation();
   const isEdited = useIsEdited();
 
   const onClickMain = useCallback(() => {
@@ -199,7 +199,7 @@ function useUpdateMutation() {
   const state = useSubEditCtx();
   const participants = useParticipantsCtx();
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isPending: isLoading } = useMutation({
     mutationFn: async () => {
       const data: SubUpdate = {
         id: state.id,
@@ -234,7 +234,7 @@ function useUpdateMutation() {
     },
   });
 
-  return { mutate, isLoading };
+  return { mutate, isPending: isLoading };
 }
 
 function validate(meId: string, v: SubUpdate): boolean {

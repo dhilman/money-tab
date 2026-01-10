@@ -152,7 +152,7 @@ const AddContact = () => {
           await register();
           connectMutation.mutate(user.id);
         }}
-        disabled={connectMutation.isLoading}
+        disabled={connectMutation.isPending}
       >
         <IconV1 Icon={UserPlus2Icon} />
         {t("add_contact")}

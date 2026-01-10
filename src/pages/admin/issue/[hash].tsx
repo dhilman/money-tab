@@ -47,8 +47,8 @@ const Provider = ({ hash }: Props) => {
         <NavTitle>{data.issue.hash}</NavTitle>
         <NavButtonRight
           onClick={() => resolve.mutate({ hashes: [data.issue.hash] })}
-          disabled={resolve.isLoading}
-          isLoading={resolve.isLoading}
+          disabled={resolve.isPending}
+          isLoading={resolve.isPending}
         >
           Resolve
         </NavButtonRight>

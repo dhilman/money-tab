@@ -1,4 +1,3 @@
-import type { DefaultErrorData } from "@trpc/server/dist/error/formatter";
 import {
   HomeIcon,
   LockIcon,
@@ -15,7 +14,7 @@ import { Icon } from "~/components/ui/icon";
 import { URLS } from "~/lib/consts/urls";
 
 interface TrpcError {
-  data?: DefaultErrorData | null;
+  data?: { code?: string } | null;
 }
 
 interface Props {

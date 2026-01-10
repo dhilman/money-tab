@@ -111,7 +111,7 @@ function parseDateOrDateTime(date: string | null) {
 
 function TxMainButton({ tx }: { tx: Tx }) {
   const { screen, setScreen } = useTxEditCtx();
-  const { mutate, isLoading } = useUpdateMutation(tx.id);
+  const { mutate, isPending: isLoading } = useUpdateMutation(tx.id);
   const isEdited = useIsEdited(tx);
 
   const onClickMain = useCallback(() => {
@@ -176,7 +176,7 @@ function useUpdateMutation(id: string) {
   const state = useTxEditCtx();
   const participants = useParticipantsCtx();
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isPending: isLoading } = useMutation({
     mutationFn: async () => {
       const data: UpdateReq = {
         id: id,
@@ -210,7 +210,7 @@ function useUpdateMutation(id: string) {
     },
   });
 
-  return { mutate, isLoading };
+  return { mutate, isPending: isLoading };
 }
 
 function getDateTime(date: string, time: string) {
