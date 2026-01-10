@@ -49,7 +49,7 @@ const s3 = new S3Client({
 
 async function saveAvatar(
   ctx: DbCtx,
-  params: z.infer<typeof AvatarMessageSchema>
+  params: z.infer<typeof AvatarMessageSchema>,
 ) {
   logger.info(params, "Saving avatar");
   const profile = await getChatPhotoAndColor(params.tgId);
@@ -87,7 +87,7 @@ async function saveAvatar(
       type: params.type,
       photoUrl,
     },
-    "Avatar saved"
+    "Avatar saved",
   );
 }
 
@@ -124,7 +124,7 @@ async function uploadAvatatToS3(params: {
           "x-amz-meta-user": params.entityId,
         },
       }),
-    })
+    }),
   );
 
   return publicUrl;

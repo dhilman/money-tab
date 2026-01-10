@@ -45,8 +45,8 @@ export const TxCreateProvider = ({
   const [amount, setAmount] = useState(0);
   const [currency, setCurrency] = useState(
     getCurrencyByCodeWithDefault(
-      me.currencyCode || transactions[0]?.currencyCode
-    )
+      me.currencyCode || transactions[0]?.currencyCode,
+    ),
   );
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");

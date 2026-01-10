@@ -109,7 +109,7 @@ export function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="w-full overflow-x-auto rounded-md border bg-background">
+      <div className="bg-background w-full overflow-x-auto rounded-md border">
         <Table className="min-w-max px-2">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -121,7 +121,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -140,7 +140,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

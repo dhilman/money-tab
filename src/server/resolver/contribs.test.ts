@@ -12,7 +12,7 @@ function makeContrib(
   userId: string | null,
   amountPaid: number,
   amountOwed: number,
-  manualAmountOwed = false
+  manualAmountOwed = false,
 ) {
   return { userId, amountPaid, amountOwed, manualAmountOwed };
 }
@@ -22,7 +22,7 @@ function makeContribWithId(
   userId: string | null,
   amountPaid: number,
   amountOwed: number,
-  manualAmountOwed = false
+  manualAmountOwed = false,
 ) {
   return { id, userId, amountPaid, amountOwed, manualAmountOwed };
 }

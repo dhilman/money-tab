@@ -140,7 +140,7 @@ const ArchiveDropdownItem = () => {
     <DropdownMenuItem
       onSelect={async () => {
         const confirmed = await platform.confirmDialog(
-          t("confirm.archive_sub")
+          t("confirm.archive_sub"),
         );
         if (!confirmed) return;
         mutation.mutate(sub.id);

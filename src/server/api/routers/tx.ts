@@ -17,7 +17,7 @@ export const txRouter = createTRPCRouter({
     .input(
       z.object({
         archived: z.boolean().optional(),
-      })
+      }),
     )
     .query(async ({ ctx }) => {
       const txs = await queries.tx.list(
@@ -26,7 +26,7 @@ export const txRouter = createTRPCRouter({
           userId: ctx.userId,
           limit: 250,
         },
-        { contribs: true }
+        { contribs: true },
       );
 
       return {
@@ -40,7 +40,7 @@ export const txRouter = createTRPCRouter({
     .input(
       z.object({
         userId: z.string(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const txs = await queries.tx.list(
@@ -50,7 +50,7 @@ export const txRouter = createTRPCRouter({
           limit: 10,
           archived: false,
         },
-        { contribs: true }
+        { contribs: true },
       );
 
       return {
@@ -71,7 +71,7 @@ export const txRouter = createTRPCRouter({
     .input(
       z.object({
         groupId: z.string(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const txs = await queries.tx.list(
@@ -82,7 +82,7 @@ export const txRouter = createTRPCRouter({
         },
         {
           contribs: { with: { user: SelectUserColumns } },
-        }
+        },
       );
 
       return {
@@ -107,7 +107,7 @@ const calcTxNetForUser = (params: {
   contributions: SelectContrib[];
 }) => {
   const callerContrib = params.contributions.find(
-    (c) => c.userId === params.callerUserId
+    (c) => c.userId === params.callerUserId,
   );
   if (!callerContrib) return 0;
   if (callerContrib.amountPaid === 0) return -callerContrib.amountOwed;

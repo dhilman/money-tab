@@ -14,7 +14,7 @@ export const Nav = ({ className, children }: Props) => {
       <nav
         className={cn(
           "mx-auto grid h-[52px] w-full max-w-xl grid-cols-3 items-center px-4",
-          className
+          className,
         )}
       >
         {children}
@@ -55,7 +55,7 @@ interface NavTitleProps {
 
 export const NavTitle = ({ children }: NavTitleProps) => {
   return (
-    <div className="col-start-2 place-self-center whitespace-nowrap text-base font-semibold">
+    <div className="col-start-2 place-self-center text-base font-semibold whitespace-nowrap">
       {children}
     </div>
   );

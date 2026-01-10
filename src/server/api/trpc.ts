@@ -81,7 +81,7 @@ const monitoring = t.middleware(async (opts) => {
     if (res.error.code === "NOT_FOUND") {
       logger.warn(
         { error: res.error, input: rawInput },
-        "Not found, skipping monitoring"
+        "Not found, skipping monitoring",
       );
       return;
     }

@@ -18,7 +18,7 @@ const iconContainerVariants = cva("shrink-0 flex items-center justify-center", {
       accent: "bg-primary text-primary-foreground",
       hint: "bg-hint/10 text-hint",
       "primary-gradient":
-        "bg-gradient-to-br from-primary/90 to-primary/60 text-primary-foreground",
+        "bg-linear-to-br from-primary/90 to-primary/60 text-primary-foreground",
     },
     round: {
       true: "rounded-full",
@@ -29,8 +29,9 @@ const iconContainerVariants = cva("shrink-0 flex items-center justify-center", {
   },
 });
 
-interface IconContainerProps
-  extends VariantProps<typeof iconContainerVariants> {
+interface IconContainerProps extends VariantProps<
+  typeof iconContainerVariants
+> {
   className?: string;
   children: React.ReactNode;
 }

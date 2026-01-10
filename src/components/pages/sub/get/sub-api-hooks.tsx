@@ -32,7 +32,7 @@ export function useSubGet(params: Params) {
     (fn: (input: SubGetApi) => SubGetApi) => {
       ctx.sub.get.setData(params, (v) => (v ? fn(v) : v));
     },
-    [ctx.sub.get, params]
+    [ctx.sub.get, params],
   );
 
   const invalidate = useCallback(
@@ -41,7 +41,7 @@ export function useSubGet(params: Params) {
       void ctx.sub.get.invalidate(params);
       void ctx.user.start.invalidate();
     },
-    [ctx.sub.get, ctx.user.start, params, setData]
+    [ctx.sub.get, ctx.user.start, params, setData],
   );
 
   const joinMutation = useMutation({

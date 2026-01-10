@@ -49,7 +49,7 @@ const NewsListItem = ({ src, slug, title, description }: NewsListItemProps) => {
       <ListItemBody>
         <div>
           <div className="text-base font-medium">{title}</div>
-          <div className="text-sm text-hint">{description}</div>
+          <div className="text-hint text-sm">{description}</div>
         </div>
       </ListItemBody>
     </ListItem>

@@ -61,7 +61,7 @@ export async function create(ctx: DbCtx, params: UserCreateParams) {
 export async function updateById(
   ctx: DbCtx,
   userId: string,
-  params: Partial<InsertUser>
+  params: Partial<InsertUser>,
 ) {
   return ctx.db
     .update(schema.user)
@@ -166,7 +166,7 @@ export async function upsertFromTg(ctx: DbCtx, params: UserCreateParams) {
     ...event.map((e) =>
       ctx.db.insert(schema.event).values({
         ...e,
-      })
+      }),
     ),
   ]);
 

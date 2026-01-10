@@ -10,7 +10,7 @@ interface FormatDateRelativeOptions {
 
 export const formatDateRelative = (
   date: Date | string,
-  params: FormatDateRelativeOptions = {}
+  params: FormatDateRelativeOptions = {},
 ) => {
   const { utc = true } = params;
   const d = dayjs(date, { utc });

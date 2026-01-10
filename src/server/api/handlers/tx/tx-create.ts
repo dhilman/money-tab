@@ -34,7 +34,7 @@ export const txCreatehandler = privateProcedure
     await mutate.tx.contribsConfirm(
       ctx,
       data.tx.id,
-      successes.map((s) => s.id)
+      successes.map((s) => s.id),
     );
 
     return data.tx.id;
@@ -51,7 +51,7 @@ const transform = (ctx: MyContext, input: Input): CreateTxParams => {
   const txId = createId();
 
   function mapContrib(
-    contrib: Input["contributions"][0]
+    contrib: Input["contributions"][0],
   ): CreateTxParams["contribs"][0] {
     return {
       id: createId(),
@@ -90,7 +90,7 @@ const transform = (ctx: MyContext, input: Input): CreateTxParams => {
 
 const notify = async (ctx: MyContext, data: CreateTxParams) => {
   const contribs = data.contribs.filter(
-    (c) => c.userId !== ctx.userId && c.userId
+    (c) => c.userId !== ctx.userId && c.userId,
   );
 
   return await notifier.manyByIdsSync(
@@ -103,6 +103,6 @@ const notify = async (ctx: MyContext, data: CreateTxParams) => {
       amount: data.tx.amount,
       currencyCode: data.tx.currencyCode ?? "USD",
       description: data.tx.description ?? "",
-    }
+    },
   );
 };

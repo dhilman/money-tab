@@ -33,12 +33,12 @@ composer.on("my_chat_member", async (ctx) => {
         from.id,
         `Hi there, you have added the bot to a ${ctx.chat.type}.\n
 The bot currently only supports private chats & groups.\n
-If you have a use case for adding the bot to a ${ctx.chat.type}, please contact ${URLS.TG_SUPPORT}.`
+If you have a use case for adding the bot to a ${ctx.chat.type}, please contact ${URLS.TG_SUPPORT}.`,
       )
       .catch((err) => {
         ctx.logger.error(
           { error: err as Error },
-          "Failed to send unsupported chat message"
+          "Failed to send unsupported chat message",
         );
       });
   }

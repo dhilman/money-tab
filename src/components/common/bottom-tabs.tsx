@@ -17,20 +17,20 @@ export const BottomTabs = ({ txs, subs }: BottomTabsProps) => {
   return (
     <Tabs
       defaultValue="txs"
-      className="flex h-full w-full flex-col bg-background pb-4"
+      className="bg-background flex h-full w-full flex-col pb-4"
     >
       <TabsListPrimitive
         className={cn(
-          "flex w-full items-center justify-center gap-4 border-b border-hint/10 text-hint"
+          "border-hint/10 text-hint flex w-full items-center justify-center gap-4 border-b",
         )}
       >
         <Trigger value="txs">{t("expenses")}</Trigger>
         <Trigger value="subs">{t("subscriptions")}</Trigger>
       </TabsListPrimitive>
-      <TabsContent value="txs" className="w-full bg-background pt-2">
+      <TabsContent value="txs" className="bg-background w-full pt-2">
         {txs}
       </TabsContent>
-      <TabsContent value="subs" className="w-full bg-background">
+      <TabsContent value="subs" className="bg-background w-full">
         {subs}
       </TabsContent>
     </Tabs>
@@ -48,11 +48,11 @@ const Trigger = ({ value, children }: TriggerProps) => {
       value={value}
       className={cn(
         "group h-12 w-36 text-center text-sm font-semibold",
-        "data-[state=active]:text-foreground"
+        "data-[state=active]:text-foreground",
       )}
     >
       <div className="relative mx-auto flex h-12 w-fit items-center">
-        <div className="absolute inset-x-0 bottom-0 hidden h-1 rounded-t-lg bg-link group-data-[state=active]:block" />
+        <div className="bg-link absolute inset-x-0 bottom-0 hidden h-1 rounded-t-lg group-data-[state=active]:block" />
         {children}
       </div>
     </TabsTriggerPrimitive>

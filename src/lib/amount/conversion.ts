@@ -6,7 +6,7 @@ type RateKey = keyof typeof RATES;
 export function convertAmount(
   amount: number,
   from: string,
-  to: string
+  to: string,
 ): number {
   if (amount === 0) return 0;
 

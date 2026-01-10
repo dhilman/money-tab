@@ -132,7 +132,7 @@ export const AdminDateRange = ({ value, onChange }: Props) => {
             });
           }}
         />
-        <div className="rounded-md border border-hint/10">
+        <div className="border-hint/10 rounded-md border">
           <Calendar
             initialFocus
             mode="range"

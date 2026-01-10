@@ -58,7 +58,7 @@ export const TxProvider = ({ shortId, shortContribId, children }: Props) => {
     if (!tx) return;
     const url = getTgWebAppShareUrl(
       { type: "TX", id: tx.id, contribId },
-      i18n.t("share_message_tx")
+      i18n.t("share_message_tx"),
     );
     platform.openTgLink(url);
   };

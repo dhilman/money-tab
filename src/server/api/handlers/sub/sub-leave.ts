@@ -15,7 +15,7 @@ export const subLeaveHandler = privateProcedure
     validator.notCreator(
       ctx,
       sub.createdById,
-      "Creator cannot leave subscription"
+      "Creator cannot leave subscription",
     );
 
     const changeset = leaveChangeset(ctx, sub);

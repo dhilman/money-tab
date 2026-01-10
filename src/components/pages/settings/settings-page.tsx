@@ -56,7 +56,7 @@ const SectionGeneral = () => {
           </ListItemLeft>
           <ListItemBody size="sm">
             <div>{t("language")}</div>
-            <div className="ml-auto flex items-center gap-2 text-hint">
+            <div className="text-hint ml-auto flex items-center gap-2">
               {langValue?.label}
               <ChevronRightIcon className="h-4 w-4" />
             </div>
@@ -73,7 +73,7 @@ const SectionGeneral = () => {
           </ListItemLeft>
           <ListItemBody size="sm">
             <div>{t("default_currency")}</div>
-            <div className="ml-auto flex items-center gap-2 text-hint">
+            <div className="text-hint ml-auto flex items-center gap-2">
               {user.currencyCode || t("most_recent")}
               <ChevronRightIcon className="h-4 w-4" />
             </div>

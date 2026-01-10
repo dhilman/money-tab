@@ -64,7 +64,7 @@ export const FileInput = ({
   };
 
   return (
-    <ListItem className={cn("relative text-primary", disabled && "text-hint")}>
+    <ListItem className={cn("text-primary relative", disabled && "text-hint")}>
       <input
         type="file"
         className="absolute inset-0 z-10 cursor-default opacity-0"
@@ -110,8 +110,8 @@ interface FilePreviewProps {
 const FilePreviewProps = ({ file, onRemove }: FilePreviewProps) => {
   if (file.uploading) {
     return (
-      <div className="flex h-16 w-16 items-center justify-center rounded-md border-[0.5px] border-hint/20 bg-background/40">
-        <Loader2Icon className="h-8 w-8 animate-spin stroke-1 text-primary duration-1000" />
+      <div className="border-hint/20 bg-background/40 flex h-16 w-16 items-center justify-center rounded-md border-[0.5px]">
+        <Loader2Icon className="text-primary h-8 w-8 animate-spin stroke-1 duration-1000" />
       </div>
     );
   }
@@ -120,13 +120,13 @@ const FilePreviewProps = ({ file, onRemove }: FilePreviewProps) => {
     <div className="relative">
       <img
         src={file.url}
-        className="h-16 w-16 rounded-md border-[0.5px] border-hint/20 object-cover"
+        className="border-hint/20 h-16 w-16 rounded-md border-[0.5px] object-cover"
         alt="Uploaded file"
       />
       <button
         className={cn(
-          "absolute right-0 top-0 flex h-[22px] w-[22px] items-center justify-center rounded-full bg-red-500",
-          "-translate-y-1/2 translate-x-1/2"
+          "absolute top-0 right-0 flex h-[22px] w-[22px] items-center justify-center rounded-full bg-red-500",
+          "translate-x-1/2 -translate-y-1/2",
         )}
         onClick={onRemove}
       >

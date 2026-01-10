@@ -27,7 +27,7 @@ export const SelectedParticipants = ({ users, onAddNew, onRemove }: Props) => {
   const me = useMe();
   const filtered = useMemo(
     () => users.filter((user) => user.id !== me.id),
-    [me.id, users]
+    [me.id, users],
   );
 
   return (
@@ -63,7 +63,7 @@ const UserItem = ({ id, onRemove }: UserItemProps) => {
     <div
       className={cn(
         "flex max-w-[160px] items-center gap-2 rounded-2xl p-1 pr-3",
-        active ? "bg-primary text-primary-foreground" : "bg-canvas"
+        active ? "bg-primary text-primary-foreground" : "bg-canvas",
       )}
       onClick={() => setActive(!active)}
       onBlur={() => setActive(false)}

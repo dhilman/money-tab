@@ -6,9 +6,9 @@ import { cn } from "~/lib/utils";
 const buttonVariants = cva(
   cn(
     "group flex items-center justify-center gap-2.5",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+    "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
     "select-none disabled:pointer-events-none disabled:opacity-50",
-    "transition-colors duration-200"
+    "transition-colors duration-200",
   ),
   {
     variants: {
@@ -16,8 +16,7 @@ const buttonVariants = cva(
         default: "bg-background text-primary",
         primary: "bg-primary text-primary-foreground",
         secondary: "bg-primary/10 text-primary",
-        tertiary:
-          "bg-[#747480]/[0.12] dark:bg-[#767680]/[0.24] text-foreground",
+        tertiary: "bg-[#747480]/12 dark:bg-[#767680]/24 text-foreground",
         danger: "text-red-500 bg-red-50 hover:bg-red-100",
       },
       size: {
@@ -34,11 +33,12 @@ const buttonVariants = cva(
       variant: "default",
       size: "md",
     },
-  }
+  },
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
@@ -53,6 +53,6 @@ export const ButtonV1 = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       />
     );
-  }
+  },
 );
 ButtonV1.displayName = "ButtonV1";

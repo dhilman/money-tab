@@ -185,7 +185,7 @@ export class Translator {
   txSettle(tx: TxWithCreator) {
     return this.t(
       "bot:events.tx_settle",
-      this.txAndUserParams(tx.createdBy, tx)
+      this.txAndUserParams(tx.createdBy, tx),
     );
   }
   txArchived(tx: TxWithCreator) {
@@ -212,14 +212,14 @@ export class Translator {
   subNew(sub: SubWithCreator) {
     return this.t(
       "bot:events.sub_new",
-      this.subAndUserParams(sub.createdBy, sub)
+      this.subAndUserParams(sub.createdBy, sub),
     );
   }
 
   subJoined(sub: SubWithUser) {
     return this.t(
       "bot:events.sub_joined",
-      this.subAndUserParams(sub.user, sub)
+      this.subAndUserParams(sub.user, sub),
     );
   }
 
@@ -230,7 +230,7 @@ export class Translator {
   subRemovedUser(sub: SubWithCreator) {
     return this.t(
       "bot:events.sub_removed_user",
-      this.subAndUserParams(sub.createdBy, sub)
+      this.subAndUserParams(sub.createdBy, sub),
     );
   }
 

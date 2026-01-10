@@ -15,7 +15,7 @@ export const StatCard = ({ title, route, value }: StatCardProps) => {
   return (
     <BentoContent className="flex flex-col gap-2 p-4">
       <div className="flex w-full items-center gap-2">
-        <div className="text-sm font-medium text-hint">{title}</div>
+        <div className="text-hint text-sm font-medium">{title}</div>
         {route && (
           <Button size="xs" variant="secondary" className="ml-auto" asChild>
             <Link

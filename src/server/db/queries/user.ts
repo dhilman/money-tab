@@ -47,7 +47,7 @@ export function connections(ctx: DbCtx, userId: string) {
 export async function connectionBetween(
   ctx: DbCtx,
   ownerUserId: string,
-  otherUserId: string
+  otherUserId: string,
 ) {
   return ctx.db.query.connection.findFirst({
     where: (v) => and(eq(v.ownerId, ownerUserId), eq(v.userId, otherUserId)),

@@ -19,7 +19,7 @@ describe("parse date or date time", () => {
     test(tc.input, () => {
       if (tc.error) {
         expect(() => DateOrDateTimeStrAsSql.parse(tc.input)).toThrowError(
-          tc.error
+          tc.error,
         );
       } else {
         expect(DateOrDateTimeStrAsSql.parse(tc.input)).toBe(tc.expected);

@@ -26,7 +26,7 @@ interface Split {
 export function validIsInSplit(splits: Split[], userId: string) {
   if (
     !splits.some(
-      (s) => s.userId === userId && (s.amountPaid > 0 || s.amountOwed > 0)
+      (s) => s.userId === userId && (s.amountPaid > 0 || s.amountOwed > 0),
     )
   ) {
     toast.error(i18n.t("error.you_must_be_involved"));
@@ -47,7 +47,7 @@ export function validSplitsAmounts(splits: Split[], amount: number) {
 export function validContribs(
   callerId: string,
   total: number,
-  contribs: Split[]
+  contribs: Split[],
 ) {
   if (!validIsInSplit(contribs, callerId)) return false;
   if (!validSplitsAmounts(contribs, total)) return false;

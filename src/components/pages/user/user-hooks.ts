@@ -20,7 +20,8 @@ export const useSettleMutation = (params: SettleMutationParams) => {
         if (!prev) return prev;
         const balances = prev.balances.filter(
           (b) =>
-            b.userId !== params.userId || b.currencyCode !== params.currencyCode
+            b.userId !== params.userId ||
+            b.currencyCode !== params.currencyCode,
         );
         return { ...prev, balances };
       });
@@ -37,7 +38,7 @@ export const useSettleMutation = (params: SettleMutationParams) => {
       withSymbol: true,
     });
     const res = await platform.confirmDialog(
-      t("confirm.settle", { amount: v })
+      t("confirm.settle", { amount: v }),
     );
     if (res) {
       mutation.mutate(params);

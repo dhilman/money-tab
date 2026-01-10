@@ -22,7 +22,7 @@ export const BentoSessions = ({ sessions }: Props) => {
           <div key={session.id} className="flex w-full flex-col gap-1">
             <Session key={session.id} session={session} />
             {i < sessions.length - 1 && (
-              <div className="h-px w-full bg-hint/20" />
+              <div className="bg-hint/20 h-px w-full" />
             )}
           </div>
         ))}
@@ -57,7 +57,7 @@ const Session = ({ session }: { session: RecentSession }) => {
             pathname: "/admin/user/[id]",
             query: { id: session.userId ?? "" },
           }}
-          className="truncate text-xs font-medium text-primary"
+          className="text-primary truncate text-xs font-medium"
         >
           {session.userId}
         </MyLink>
@@ -67,7 +67,7 @@ const Session = ({ session }: { session: RecentSession }) => {
           {formatDateTimeRelative(session.startAt)}
         </div>
         {duration > 0 && (
-          <div className="ml-auto text-sm text-hint">
+          <div className="text-hint ml-auto text-sm">
             {duration} sec
             {session.endAt ? " (end)" : ""}
           </div>
@@ -108,18 +108,18 @@ const SessionEvent = ({ event }: SessionEventProps) => {
         </div>
         <div className="ml-auto flex items-center gap-1">
           {event.loadTime && (
-            <div className="rounded-full bg-hint/10 px-2">
+            <div className="bg-hint/10 rounded-full px-2">
               plt: {event.loadTime}ms
             </div>
           )}
           {event.interactiveTime && (
-            <div className="rounded-full bg-hint/10 px-2">
+            <div className="bg-hint/10 rounded-full px-2">
               pit: {event.interactiveTime}ms
             </div>
           )}
         </div>
       </div>
-      <div className="w-full truncate text-sm text-hint">{event.path}</div>
+      <div className="text-hint w-full truncate text-sm">{event.path}</div>
     </div>
   );
 };

@@ -45,7 +45,7 @@ export const subCreateHandler = privateProcedure
     await mutate.sub.contribsConfirm(
       ctx,
       data.sub.id,
-      successes.map((s) => s.id)
+      successes.map((s) => s.id),
     );
 
     return data.sub.id;
@@ -62,7 +62,7 @@ const transform = (ctx: MyContext, input: Input): CreateSubParams => {
   const subId = createId();
 
   const startDate = dayjsToSqlDate(
-    input.trial ? addCycles(input.startDate, input.trial, 1) : input.startDate
+    input.trial ? addCycles(input.startDate, input.trial, 1) : input.startDate,
   );
 
   const reminderDate = dayjsToSqlDateNullable(
@@ -72,12 +72,12 @@ const transform = (ctx: MyContext, input: Input): CreateSubParams => {
         endDate: input.endDate,
         cycle: input.cycle,
       },
-      input.reminder
-    )
+      input.reminder,
+    ),
   );
 
   const mapContrib = (
-    c: Input["contribs"][0]
+    c: Input["contribs"][0],
   ): CreateSubParams["contribs"][0] => {
     const isSelf = c.userId === ctx.userId;
     return {
@@ -119,7 +119,7 @@ const transform = (ctx: MyContext, input: Input): CreateSubParams => {
 
 const notify = async (ctx: MyContext, params: CreateSubParams) => {
   const contribs = params.contribs.filter(
-    (c) => c.userId && c.userId !== ctx.userId
+    (c) => c.userId && c.userId !== ctx.userId,
   );
   return await notifier.manyByIdsSync(
     ctx,
@@ -132,6 +132,6 @@ const notify = async (ctx: MyContext, params: CreateSubParams) => {
       name: params.sub.name,
       amount: params.sub.amount,
       currencyCode: params.sub.currencyCode ?? "USD",
-    }
+    },
   );
 };

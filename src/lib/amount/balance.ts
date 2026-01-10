@@ -10,6 +10,6 @@ export function combineUserBalances(balances: UserBalance[][]): UserBalance[] {
   return arrCombine(
     balances,
     (v) => v.userId + v.currencyCode,
-    (a, b) => ({ ...a, amount: a.amount + b.amount })
+    (a, b) => ({ ...a, amount: a.amount + b.amount }),
   );
 }

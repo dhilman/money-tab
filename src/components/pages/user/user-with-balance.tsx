@@ -33,14 +33,14 @@ export const UserWithBalanceLoading = () => {
         <div
           className={cn(
             avatarVariants({ size: "xl" }),
-            "animate-pulse bg-canvas/50"
+            "bg-canvas/50 animate-pulse",
           )}
         />
       </ListItemLeft>
       <ListItemBody>
         <div className="flex h-full w-full items-center justify-between gap-3">
-          <div className="h-4 w-20 animate-pulse rounded-md bg-canvas" />
-          <div className="h-4 w-10 animate-pulse rounded-md bg-canvas" />
+          <div className="bg-canvas h-4 w-20 animate-pulse rounded-md" />
+          <div className="bg-canvas h-4 w-10 animate-pulse rounded-md" />
         </div>
       </ListItemBody>
     </ListItem>
@@ -67,7 +67,7 @@ export const UserWithBalance = ({ userId }: Props) => {
         <UserAvatar size="xl" user={user} />
       </ListItemLeft>
       <ListItemBody className="gap-4 truncate">
-        <div className="w-full truncate whitespace-nowrap text-base font-medium">
+        <div className="w-full truncate text-base font-medium whitespace-nowrap">
           {user.name}
         </div>
         {balance && (
@@ -80,10 +80,10 @@ export const UserWithBalance = ({ userId }: Props) => {
                 color="amount"
                 className="font-semibold"
               />
-              <ChevronRightIcon className="h-4 w-4 text-hint/50" />
+              <ChevronRightIcon className="text-hint/50 h-4 w-4" />
             </div>
             {balance.n > 1 && (
-              <div className="text-sm text-hint">
+              <div className="text-hint text-sm">
                 {t("currencies", { count: balance.n })}
               </div>
             )}
@@ -100,7 +100,7 @@ const useUserBalance = (userId: string) => {
     if (user.hideBalance) return null;
 
     const userBalances = balances.filter(
-      (b) => b.userId === userId && b.amount !== 0
+      (b) => b.userId === userId && b.amount !== 0,
     );
     const total = userBalances.reduce((acc, b) => {
       return acc + convertAmount(b.amount, b.currencyCode, currencyCode);

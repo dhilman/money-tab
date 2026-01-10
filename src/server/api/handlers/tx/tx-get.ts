@@ -47,7 +47,7 @@ export const txGetHandler = privateProcedure
 async function validateAccess(
   ctx: MyContext,
   input: Input,
-  tx: SelectTxWithContribs
+  tx: SelectTxWithContribs,
 ) {
   const contribId = input.contribId;
   if (contribId) {
@@ -58,7 +58,7 @@ async function validateAccess(
 }
 
 export function getTxStatus(
-  tx: Pick<SelectTxComplete, "archivedAt" | "contribs">
+  tx: Pick<SelectTxComplete, "archivedAt" | "contribs">,
 ) {
   if (tx.archivedAt) {
     return "ARCHIVED" as const;

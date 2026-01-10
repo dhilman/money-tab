@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: Props) => {
       }
       void ctx.user.start.invalidate();
     },
-    [ctx.user.start]
+    [ctx.user.start],
   );
 
   if (error) return <AuthScreen />;
@@ -106,7 +106,7 @@ function useStartApi() {
     {
       refetchOnWindowFocus: false,
       placeholderData: () => getPlaceholderProfile(),
-    }
+    },
   );
 
   const updateUserMutation = api.user.update.useMutation({
@@ -184,7 +184,7 @@ export const useShareProfile = () => {
   return () => {
     const url = getTgWebAppShareUrl(
       { type: "USER", id: user.id },
-      i18n.t("share_message_profile")
+      i18n.t("share_message_profile"),
     );
     platform.openTgLink(url);
   };

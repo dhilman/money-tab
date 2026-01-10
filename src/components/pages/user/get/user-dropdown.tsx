@@ -34,14 +34,14 @@ export const UserDropdown = ({ children }: UserDropdownProps) => {
               query: { id: user.id },
             })
           }
-          className="justify-between font-normal text-foreground"
+          className="text-foreground justify-between font-normal"
         >
           {t("edit")}
           <PencilIcon className="h-4 w-4 shrink-0" />
         </DropdownMenuItem>
         {user.username && (
           <DropdownMenuItem
-            className="justify-between text-foreground"
+            className="text-foreground justify-between"
             onSelect={() => {
               platform.openTgLink(`https://t.me/${user.username as string}`);
             }}

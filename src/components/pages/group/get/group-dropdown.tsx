@@ -33,7 +33,7 @@ export const GroupDropdown = ({ children }: GroupDropdownProps) => {
               query: { id: group.id },
             })
           }
-          className="justify-between text-foreground"
+          className="text-foreground justify-between"
         >
           {t("edit")}
           <PencilIcon className="h-4 w-4 shrink-0" />

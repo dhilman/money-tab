@@ -39,13 +39,13 @@ const Header = () => {
         isLoading={isLoading}
         loading={
           <>
-            <div className="mt-3 h-8 w-32 animate-pulse rounded-full bg-background/50" />
-            <div className="mt-0.5 h-6 w-20 animate-pulse rounded-md bg-background/30" />
+            <div className="bg-background/50 mt-3 h-8 w-32 animate-pulse rounded-full" />
+            <div className="bg-background/30 mt-0.5 h-6 w-20 animate-pulse rounded-md" />
           </>
         }
       >
         <div className="mt-3 text-2xl font-semibold">{group.name}</div>
-        <div className="mt-0.5 font-medium lowercase text-hint">
+        <div className="text-hint mt-0.5 font-medium lowercase">
           {t("n_members", { count: group.memberships.length })}
         </div>
       </LoadingProvider>
@@ -73,7 +73,7 @@ const ActionButtons = () => {
   if (isLoading) {
     return (
       <div className="flex w-full justify-center px-2">
-        <div className="h-12 w-full animate-pulse rounded-lg bg-background/50" />
+        <div className="bg-background/50 h-12 w-full animate-pulse rounded-lg" />
       </div>
     );
   }
@@ -126,7 +126,7 @@ const GroupTabs = () => {
     { groupId: group.id },
     {
       enabled: group.isMember,
-    }
+    },
   );
 
   const txs = data?.txs ?? [];

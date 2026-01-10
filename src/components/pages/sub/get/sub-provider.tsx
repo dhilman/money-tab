@@ -82,7 +82,7 @@ export const SubProvider = ({
   const copyUrl = (contribId?: string) => {
     const url = getTgWebAppShareUrl(
       { type: "SUB", id: sub?.id || "", contribId },
-      i18n.t("share_message_sub")
+      i18n.t("share_message_sub"),
     );
     platform.openTgLink(url);
   };

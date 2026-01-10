@@ -25,11 +25,11 @@ import {
 
 export const Home = () => {
   return (
-    <div className="w-full bg-canvas">
+    <div className="bg-canvas w-full">
       <ClientComponent>
         <ProfileNav className="py-4" />
       </ClientComponent>
-      <WebAppMain className="flex w-full flex-col gap-7 pb-0 pt-0">
+      <WebAppMain className="flex w-full flex-col gap-7 pt-0 pb-0">
         <div className="flex flex-col gap-4">
           <HomeBalance />
         </div>
@@ -54,24 +54,24 @@ const HomeLinks = () => {
           route={{ pathname: "/webapp/contacts", query: { tab: "contacts" } }}
         >
           <ListItemLeft>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-tertiary">
-              <User2Icon className="h-5 w-5 text-foreground" />
+            <div className="bg-tertiary flex h-10 w-10 items-center justify-center rounded-full">
+              <User2Icon className="text-foreground h-5 w-5" />
             </div>
           </ListItemLeft>
           <ListItemBody>
             <div className="text-base">{t("contacts_and_groups")}</div>
-            <ChevronRightIcon className="ml-auto h-4 w-4 text-hint" />
+            <ChevronRightIcon className="text-hint ml-auto h-4 w-4" />
           </ListItemBody>
         </ListItem>
         <ListItem as={MyLink} route={{ pathname: "/webapp/news" }}>
           <ListItemLeft>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-tertiary">
-              <NewspaperIcon className="h-5 w-5 text-foreground" />
+            <div className="bg-tertiary flex h-10 w-10 items-center justify-center rounded-full">
+              <NewspaperIcon className="text-foreground h-5 w-5" />
             </div>
           </ListItemLeft>
           <ListItemBody>
             <div className="text-base">{t("moneytab_blog")}</div>
-            <ChevronRightIcon className="ml-auto h-4 w-4 text-hint" />
+            <ChevronRightIcon className="text-hint ml-auto h-4 w-4" />
           </ListItemBody>
         </ListItem>
       </List>

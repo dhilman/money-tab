@@ -38,7 +38,7 @@ export type AnalyticsEvent = z.infer<typeof AnalyticsEventSchema>;
 // Send GIF response to prevent caching
 const GIF = Buffer.from(
   "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
-  "base64"
+  "base64",
 );
 
 const POST = monitoredEdgeHandler(handler);
@@ -85,7 +85,7 @@ async function handler(req: NextRequest) {
         sessionId,
         isAnonymous,
         events: data.events,
-      })
+      }),
     );
   }
 
@@ -95,7 +95,7 @@ async function handler(req: NextRequest) {
       sessionId,
       events: data.events.map((e) => ({ name: e.n, t: e.t })),
     },
-    "inserting events"
+    "inserting events",
   );
 
   await mdb.batch([
@@ -179,7 +179,7 @@ function insertEvents(params: {
           loadTime: e.plt,
           interactiveTime: e.pit,
         } as mtypes.InsertEvent;
-      })
+      }),
     )
     .onConflictDoNothing();
 }

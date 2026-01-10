@@ -19,7 +19,7 @@ export const avatarVariants = cva(
         "6xl": "h-28 w-28 text-5xl font-bold font-rounded",
       },
     },
-  }
+  },
 );
 
 interface AvatarProps extends VariantProps<typeof avatarVariants> {
@@ -64,7 +64,7 @@ function AvatarImage({ src, fallback }: AvatarImageProps) {
       alt="Avatar"
       onError={() => setIsLoadedError(true)}
       onLoad={() => setIsLoadedError(false)}
-      className="aspect-square h-full w-full bg-canvas/50"
+      className="bg-canvas/50 aspect-square h-full w-full"
     />
   );
 }

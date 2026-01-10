@@ -46,7 +46,7 @@ export const TxEditSummary = () => {
           parties,
           (acc, p) => acc + p.amount,
           0,
-          (p) => p.id !== me.id
+          (p) => p.id !== me.id,
         ),
         prefix: i18n.t("you_are_owed"),
         color: "text-green-500",
@@ -66,7 +66,7 @@ export const TxEditSummary = () => {
         <ListItem>
           <ListItemBody className="justify-between">
             <FormLabel>{t("summary")}</FormLabel>
-            <div className="w-full text-right text-hint">
+            <div className="text-hint w-full text-right">
               <span>{summary.prefix}</span>
               <CurrencyAmount
                 as="span"

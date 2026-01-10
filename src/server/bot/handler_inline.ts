@@ -70,7 +70,7 @@ export const decodeQueryId = (queryId: string): QueryId | null => {
   if (!txid || !amount || !currency || !type) return null;
 
   const t = Object.entries(QUERY_ID_TYPE_MAP).find(
-    ([_k, v]) => v === type
+    ([_k, v]) => v === type,
   )?.[0];
   if (!t) return null;
 

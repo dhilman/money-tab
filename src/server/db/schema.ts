@@ -41,7 +41,7 @@ export const user = createTable(
     createdAt: columns.createdAt,
     updatedAt: columns.updatedAt,
     telegramId: integer("telegram_id", { mode: "number" }).unique(
-      "telegram_idx"
+      "telegram_idx",
     ),
     username: text("username", { length: 256 }),
     firstName: text("first_name", { length: 256 }),
@@ -65,7 +65,7 @@ export const user = createTable(
   },
   (v) => ({
     createdAtIdx: index("user_created_at_idx").on(sql`${v.createdAt} DESC`),
-  })
+  }),
 );
 
 export const connection = createTable(
@@ -82,9 +82,9 @@ export const connection = createTable(
     }),
     toUserIdx: index("to_user_idx").on(v.userId),
     createdAtIdx: index("connection_created_at_idx").on(
-      sql`${v.createdAt} DESC`
+      sql`${v.createdAt} DESC`,
     ),
-  })
+  }),
 );
 
 export const userRelations = relations(user, ({ many }) => ({
@@ -111,7 +111,7 @@ export const group = createTable(
     createdById: columns.cuid("created_by_id").notNull(),
     name: text("name", { length: 256 }).notNull(),
     telegramId: integer("telegram_id", { mode: "number" }).unique(
-      "group_telegram_idx"
+      "group_telegram_idx",
     ),
     accentColorId: integer("accent_color_id").$defaultFn(() => randomInt(7)),
     photoUrl: text("photo_url"),
@@ -121,7 +121,7 @@ export const group = createTable(
   (v) => ({
     createdAtIdx: index("group_created_at_idx").on(sql`${v.createdAt} DESC`),
     userIdx: index("group_user_idx").on(v.createdById),
-  })
+  }),
 );
 
 export const groupRelations = relations(group, ({ one, many }) => ({
@@ -149,13 +149,13 @@ export const membership = createTable(
   (v) => ({
     groupUserIdx: uniqueIndex("membership_group_user_idx").on(
       v.groupId,
-      v.userId
+      v.userId,
     ),
     userIdx: index("membership_user_idx").on(v.userId),
     createdAtIdx: index("membership_created_at_idx").on(
-      sql`${v.createdAt} DESC`
+      sql`${v.createdAt} DESC`,
     ),
-  })
+  }),
 );
 
 export const membershipRelations = relations(membership, ({ one }) => ({
@@ -210,7 +210,7 @@ export const subscription = createTable(
   (v) => ({
     userIdx: index("subs_user_idx").on(v.createdById),
     createdAtIdx: index("subs_created_at_idx").on(sql`${v.createdAt} DESC`),
-  })
+  }),
 );
 
 export const subscriptionRelations = relations(
@@ -231,7 +231,7 @@ export const subscriptionRelations = relations(
       references: [group.id],
     }),
     contribs: many(subContrib),
-  })
+  }),
 );
 
 export const subContrib = createTable(
@@ -258,11 +258,11 @@ export const subContrib = createTable(
   (v) => ({
     subIdUserIdIdx: uniqueIndex("sub_id_user_id_idx").on(
       v.subscriptionId,
-      v.userId
+      v.userId,
     ),
     userId: index("sub_contribs_user_id").on(v.userId),
     reminderDateIdx: index("sub_contribs_reminder_date_idx").on(v.reminderDate),
-  })
+  }),
 );
 
 export const subUsersRelations = relations(subContrib, ({ one }) => ({
@@ -301,7 +301,7 @@ export const transaction = createTable(
     createdAtIdx: index("tx_created_at_idx").on(sql`${v.createdAt} DESC`),
     createdByIdx: index("tx_created_by_idx").on(v.createdById),
     groupIdIdx: index("tx_group_id_idx").on(v.groupId),
-  })
+  }),
 );
 
 export const transactionRelations = relations(transaction, ({ one, many }) => ({
@@ -350,10 +350,10 @@ export const contribution = createTable(
   (v) => ({
     txIdUserIdIdx: uniqueIndex("tx_id_user_id_idx").on(
       v.transactionId,
-      v.userId
+      v.userId,
     ),
     userIdx: index("tx_contribs_user_idx").on(v.userId),
-  })
+  }),
 );
 
 export const contributionRelations = relations(contribution, ({ one }) => ({
@@ -383,7 +383,7 @@ export const file = createTable(
     createdAtIdx: index("file_created_at_idx").on(sql`${v.createdAt} DESC`),
     createdById: index("file_created_by_idx").on(v.createdBy),
     txIdIdx: index("file_tx_id_idx").on(v.transactionId),
-  })
+  }),
 );
 
 export const fileRelations = relations(file, ({ one }) => ({
@@ -411,14 +411,14 @@ export const event = createTable(
   (v) => ({
     eventNameCreatedAtIdx: index("event_name_created_at_idx").on(
       v.name,
-      sql`${v.createdAt} DESC`
+      sql`${v.createdAt} DESC`,
     ),
     createdByIdx: index("event_created_by_idx").on(v.createdById),
     targetUserIdx: index("event_target_user_idx").on(v.targetUserId),
     transactionIdx: index("event_transaction_idx").on(v.transactionId),
     subscriptionIdx: index("event_subscription_idx").on(v.subscriptionId),
     groupIdx: index("event_group_idx").on(v.groupId),
-  })
+  }),
 );
 
 export const eventRelations = relations(event, ({ one }) => ({

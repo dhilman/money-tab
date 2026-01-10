@@ -44,16 +44,16 @@ export const SpendBarChart = ({
         <CartesianGrid
           strokeDasharray="3 3"
           vertical={false}
-          className="!stroke-hint/30"
+          className="stroke-hint/30!"
         />
         <XAxis
           dataKey="start"
           tickFormatter={formatX}
-          className="!text-xs !text-foreground"
+          className="text-foreground! text-xs!"
         />
         <YAxis
           dataKey="total"
-          className="!text-xs !text-foreground"
+          className="text-foreground! text-xs!"
           tickFormatter={formatY}
           strokeWidth={0}
         />
@@ -62,11 +62,11 @@ export const SpendBarChart = ({
             <Cell
               key={i}
               className={cn(
-                "z-10 !fill-primary !stroke-transparent",
+                "fill-primary! z-10 stroke-transparent!",
                 selected &&
                   (entry.id === selected.id
-                    ? "!fill-primary"
-                    : "!fill-primary/30")
+                    ? "fill-primary!"
+                    : "fill-primary/30!"),
               )}
               radius={[4, 4, 0, 0]}
             />

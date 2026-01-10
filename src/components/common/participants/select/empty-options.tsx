@@ -28,7 +28,7 @@ export const EmptyOptions = ({ el, className }: Props) => {
     <Bento
       className={cn(
         "flex flex-col items-center justify-center gap-6",
-        className
+        className,
       )}
     >
       <Player />
@@ -36,7 +36,7 @@ export const EmptyOptions = ({ el, className }: Props) => {
         <div className="text-lg font-medium capitalize">
           {t("no_contacts_yet")}
         </div>
-        <div className="px-8 text-hint">
+        <div className="text-hint px-8">
           {el === "sub"
             ? t("invite_after_create_sub")
             : t("invite_after_create_tx")}

@@ -74,11 +74,11 @@ const SubDateAndReminder = () => {
         </ListItemLeft>
         <ListItemBody size="md">
           <div>
-            <div className="text-xs text-hint">{date?.label}</div>
+            <div className="text-hint text-xs">{date?.label}</div>
             <div className="text-sm">{date?.date}</div>
           </div>
           {date?.type === "renewal" && (
-            <div className="ml-auto text-sm font-medium text-primary">
+            <div className="text-primary ml-auto text-sm font-medium">
               {date.relative}
             </div>
           )}

@@ -28,8 +28,8 @@ export const sessionsSince = (params: CountParams) => {
       and(
         gt(mschema.session.startAt, params.startDate),
         lt(mschema.session.startAt, params.endDate),
-        eq(mschema.session.isAnonymous, false)
-      )
+        eq(mschema.session.isAnonymous, false),
+      ),
     );
 };
 
@@ -44,8 +44,8 @@ export const countryCountsSince = (params: CountParams) => {
       and(
         gt(mschema.session.startAt, params.startDate),
         lt(mschema.session.startAt, params.endDate),
-        eq(mschema.session.isAnonymous, false)
-      )
+        eq(mschema.session.isAnonymous, false),
+      ),
     )
     .groupBy(mschema.session.country);
 };
@@ -61,8 +61,8 @@ export const osCountsSince = (params: CountParams) => {
       and(
         gt(mschema.session.startAt, params.startDate),
         lt(mschema.session.startAt, params.endDate),
-        eq(mschema.session.isAnonymous, false)
-      )
+        eq(mschema.session.isAnonymous, false),
+      ),
     )
     .groupBy(mschema.session.os);
 };
@@ -78,8 +78,8 @@ export const uniqueVisitorsPerDay = (params: CountParams) => {
       and(
         eq(mschema.session.isAnonymous, false),
         gt(mschema.session.startAt, params.startDate),
-        lt(mschema.session.startAt, params.endDate)
-      )
+        lt(mschema.session.startAt, params.endDate),
+      ),
     )
     .groupBy(sql`DATE(${mschema.session.startAt})`)
     .orderBy(sql`DATE(${mschema.session.startAt})`);
@@ -97,8 +97,8 @@ export const pageViewsPerDay = (params: CountParams) => {
         gt(mschema.event.timestamp, params.startDate),
         lt(mschema.event.timestamp, params.endDate),
         eq(mschema.event.type, "page"),
-        eq(mschema.event.isAnonymous, false)
-      )
+        eq(mschema.event.isAnonymous, false),
+      ),
     )
     .groupBy(sql`DATE(${mschema.event.timestamp})`)
     .orderBy(sql`DATE(${mschema.event.timestamp})`);
@@ -116,8 +116,8 @@ export const notifsPerDay = (params: CountParams) => {
       and(
         gt(mschema.event.timestamp, params.startDate),
         lt(mschema.event.timestamp, params.endDate),
-        eq(mschema.event.type, "notify")
-      )
+        eq(mschema.event.type, "notify"),
+      ),
     )
     .groupBy(sql`DATE(${mschema.event.timestamp})`, mschema.event.name);
 };
@@ -133,8 +133,8 @@ export const eventsSince = (params: CountParams) => {
       and(
         gt(mschema.event.timestamp, params.startDate),
         lt(mschema.event.timestamp, params.endDate),
-        eq(mschema.event.isAnonymous, false)
-      )
+        eq(mschema.event.isAnonymous, false),
+      ),
     )
     .groupBy(mschema.event.type);
 };
@@ -161,9 +161,9 @@ export const recentSessions = (params: { limit: number }) => {
               startAt: sql`MAX(${mschema.session.startAt})`,
             })
             .from(mschema.session)
-            .where(eq(mschema.session.userId, s.userId))
+            .where(eq(mschema.session.userId, s.userId)),
         ),
-        eq(s.isAnonymous, false)
+        eq(s.isAnonymous, false),
       ),
     with: {
       events: {
@@ -187,8 +187,8 @@ export const openIssuesSince = (params: CountParams) => {
       and(
         isNull(mschema.issue.resolvedAt),
         gt(mschema.issue.timestamp, params.startDate),
-        lt(mschema.issue.timestamp, params.endDate)
-      )
+        lt(mschema.issue.timestamp, params.endDate),
+      ),
     );
 };
 

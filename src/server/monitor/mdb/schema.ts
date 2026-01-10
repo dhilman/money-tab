@@ -37,10 +37,10 @@ export const event = createTable(
       // desc index
       table.timestamp,
       table.type,
-      table.userId
+      table.userId,
     ),
     sessionIds: index("events_session_id_idx").on(table.sessionId),
-  })
+  }),
 );
 
 export const eventRelations = relations(event, ({ one }) => ({
@@ -89,7 +89,7 @@ export const session = createTable(
     userIdx: index("sessions_user_idx").on(table.userId),
     // desc index
     startAtIdx: index("sessions_start_at_idx").on(table.startAt),
-  })
+  }),
 );
 
 export const sessionRelations = relations(session, ({ many }) => ({
@@ -123,9 +123,9 @@ export const issue = createTable(
   (table) => ({
     resolvedAtHash: index("issues_resolved_at_hash_idx").on(
       table.resolvedAt,
-      table.hash
+      table.hash,
     ),
-  })
+  }),
 );
 
 export const issueRelations = relations(issue, ({ one }) => ({

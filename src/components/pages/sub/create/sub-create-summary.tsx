@@ -52,7 +52,7 @@ export const SubCreateSummary = ({ sub }: Props) => {
       parties,
       (acc, p) => acc + p.amount,
       0,
-      (p) => p.id !== user.id
+      (p) => p.id !== user.id,
     );
   }, [parties, user.id, isPayer]);
 
@@ -79,7 +79,7 @@ export const SubCreateSummary = ({ sub }: Props) => {
           <div
             className={cn(
               "ml-auto inline-flex items-center font-medium",
-              isPayer ? "text-green-500" : "text-red-500"
+              isPayer ? "text-green-500" : "text-red-500",
             )}
           >
             <CurrencyAmount

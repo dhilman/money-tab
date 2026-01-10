@@ -63,7 +63,7 @@ export function useParticipantsReducer(params: Params) {
         parties.push(newParticipant(params.startUserId, "user"));
       }
       return { ...state, parties };
-    }
+    },
   );
 
   const hasInitGroup = useRef(false);
@@ -126,7 +126,7 @@ export function useParticipantsEditReducer(params: EditParams) {
 
 export function isParticipantsEdited(
   contribs: EditParams["contribs"],
-  state: State
+  state: State,
 ) {
   const origPayer = contribs.find((c) => c.amountPaid > 0);
   const origPayerId = origPayer?.userId || origPayer?.id;
@@ -194,7 +194,7 @@ function reducer(state: State, action: Action): State {
 
 function partiesReducer(
   arr: Participant[],
-  action: PartiesAction
+  action: PartiesAction,
 ): Participant[] {
   switch (action.type) {
     case "add":
@@ -208,7 +208,7 @@ function partiesReducer(
             id,
             amount: 0,
             groupId: action.groupId,
-          }))
+          })),
       );
     case "add_new":
       return [...arr, newParticipant(createId(), "new")];
@@ -225,11 +225,11 @@ function partiesReducer(
       return arr.filter((p) => p.groupId !== action.groupId);
     case "set_amount":
       return arr.map((p) =>
-        p.id === action.id ? { ...p, manual: true, amount: action.amount } : p
+        p.id === action.id ? { ...p, manual: true, amount: action.amount } : p,
       );
     case "reset_amount":
       return arr.map((p) =>
-        p.id === action.id ? { ...p, manual: false, amount: 0 } : p
+        p.id === action.id ? { ...p, manual: false, amount: 0 } : p,
       );
   }
 }
@@ -237,7 +237,7 @@ function partiesReducer(
 function newParticipant(
   id: string,
   type: "user" | "new" = "user",
-  groupId?: string
+  groupId?: string,
 ): Participant {
   return { type, id, amount: 0, groupId };
 }
@@ -249,7 +249,7 @@ function recalculate(state: State): State {
       if (p.amount === 0) return { ...acc, zero: acc.zero + 1 };
       return { ...acc, auto: acc.auto + p.amount };
     },
-    { auto: 0, manual: 0, zero: 0 }
+    { auto: 0, manual: 0, zero: 0 },
   );
 
   if (amounts.manual > state.total) {
@@ -273,7 +273,7 @@ function recalculate(state: State): State {
     ...state,
     invalid: false,
     parties: state.parties.map((p) =>
-      p.manual ? p : { ...p, amount: splits.pop() ?? 0 }
+      p.manual ? p : { ...p, amount: splits.pop() ?? 0 },
     ),
   };
 }

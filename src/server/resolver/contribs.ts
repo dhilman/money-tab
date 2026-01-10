@@ -59,7 +59,7 @@ abstract class ContribsResolver<T extends Contrib> {
       params.old,
       // Using v.id as fallback -> this means unassigned will get re-created
       (v) => v.userId || v.id,
-      (v) => v.id
+      (v) => v.id,
     );
     this.oldMap = toMap(params.old, "id");
     this.newMap = toMap(params.new, (v) => {
@@ -131,7 +131,7 @@ class TxContribsResolver extends ContribsResolver<Contrib> {
       amountOwed: firstWhenChanged(c.amountOwed, old.amountOwed),
       manualAmountOwed: firstWhenChanged(
         c.manualAmountOwed,
-        old.manualAmountOwed
+        old.manualAmountOwed,
       ),
     });
 
@@ -175,7 +175,7 @@ class SubContribsResolver extends ContribsResolver<SubContrib> {
       amountOwed: firstWhenChanged(c.amountOwed, old.amountOwed),
       manualAmountOwed: firstWhenChanged(
         c.manualAmountOwed,
-        old.manualAmountOwed
+        old.manualAmountOwed,
       ),
       reminderDate: firstWhenChanged(newReminderDate, old.reminderDate),
     });
@@ -188,13 +188,13 @@ class SubContribsResolver extends ContribsResolver<SubContrib> {
 }
 
 export function resolveTxChanges(
-  params: ResolveParams<Contrib>
+  params: ResolveParams<Contrib>,
 ): ContribsChangeset<Contrib> {
   return new TxContribsResolver(params).resolve();
 }
 
 export function resolveSubChanges(
-  params: SubContribResolveParams
+  params: SubContribResolveParams,
 ): ContribsChangeset<SubContrib> {
   return new SubContribsResolver(params).resolve();
 }
@@ -209,7 +209,7 @@ export function joinChangeset(
     contribId: string;
     contribs: Contrib[];
     amount: number;
-  }
+  },
 ): ContribsChangeset<Contrib> {
   if (params.contribs.some((c) => c.userId === ctx.userId)) {
     throw new TRPCError({
@@ -251,7 +251,7 @@ export function leaveChangeset(
   params: {
     contribs: Contrib[];
     amount: number;
-  }
+  },
 ): ContribsChangeset<Contrib> {
   const existing = params.contribs.find((c) => c.userId === ctx.userId);
   if (!existing) {

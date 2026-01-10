@@ -11,7 +11,7 @@ export const formatDateTime = (date: Date | string) => {
 
 export const formatDate = (
   date: Date | string | dayjs.Dayjs,
-  opts: FormatDateOpts = {}
+  opts: FormatDateOpts = {},
 ) => {
   const { utc = true } = opts;
   const d = dayjs(date, { utc }).startOf("day");

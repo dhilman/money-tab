@@ -28,7 +28,7 @@ export const CurrencyAmount = ({
   const curr = getCurrencyWithDefault(currency);
   const fomatted = formatAmountForLocale(
     Math.abs(amount / 10 ** curr.precision),
-    curr.precision
+    curr.precision,
   );
 
   function getAmountColor() {
@@ -43,7 +43,7 @@ export const CurrencyAmount = ({
       <span
         className={cn(
           color === "symbol" && "text-hint",
-          getSymbolClassNames(size, fomatted.length)
+          getSymbolClassNames(size, fomatted.length),
         )}
       >
         {!isLoading && curr.symbol}

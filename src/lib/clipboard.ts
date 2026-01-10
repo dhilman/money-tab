@@ -16,7 +16,7 @@ export async function copyToClipboard(
     useShareSheet?: boolean;
     success?: string;
     error?: string | null;
-  }
+  },
 ) {
   const successMsg = opts?.success ?? i18n.t("common:copied");
   const errorMsg =

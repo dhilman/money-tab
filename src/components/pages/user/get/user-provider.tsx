@@ -41,7 +41,7 @@ export const UserProvider = ({ shortUserId, children }: Props) => {
   const { user: self, subscriptions, balances } = useProfile();
   const { data: txs, isLoading: txsLoading } = api.tx.listWithUser.useQuery(
     { userId: user?.id ?? "" },
-    { enabled: !!user }
+    { enabled: !!user },
   );
   const connectMutation = api.user.connect.useMutation({
     onSuccess: () => {

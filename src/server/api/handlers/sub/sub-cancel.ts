@@ -10,7 +10,7 @@ export const subCancelHandler = privateProcedure
     z.object({
       id: z.string(),
       endDate: DateStrAsDayJs,
-    })
+    }),
   )
   .mutation(async ({ ctx, input }) => {
     const sub = await db.query.subscription.findFirst({

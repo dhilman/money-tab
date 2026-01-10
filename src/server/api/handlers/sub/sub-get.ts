@@ -48,7 +48,7 @@ export const subGetHandler = privateProcedure
 async function validateAccess(
   ctx: MyContext,
   input: Input,
-  sub: SelectSubComplete
+  sub: SelectSubComplete,
 ) {
   const contribId = input.contribId;
   if (contribId) {

@@ -76,13 +76,13 @@ export const MoreButton = React.forwardRef<HTMLButtonElement, MoreButtonProps>(
         {...props}
       >
         <IconContainer className="h-7 w-7">
-          <div className="h-6 w-6 rounded-full bg-primary p-0.5 text-background">
+          <div className="bg-primary text-background h-6 w-6 rounded-full p-0.5">
             <EllipsisIcon className="h-full w-full" />
           </div>
         </IconContainer>
         <div>{t("more")}</div>
       </ButtonV1>
     );
-  }
+  },
 );
 MoreButton.displayName = "MoreButton";

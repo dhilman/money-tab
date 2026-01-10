@@ -115,7 +115,7 @@ export default function Home() {
             href={BOT_URL}
             className={cn(
               "rounded-full px-4 py-2 text-center text-sm font-semibold text-white",
-              "bg-gradient-to-r from-[#229ED9] to-[#2AABEE]"
+              "bg-linear-to-r from-[#229ED9] to-[#2AABEE]",
             )}
           >
             Get Started
@@ -139,8 +139,8 @@ export default function Home() {
               className={cn(
                 "inline-block rounded-full px-8 py-4 text-center text-white",
                 "text-xl font-bold",
-                "bg-gradient-to-r from-[#229ED9] to-[#2AABEE]",
-                "transition-all hover:shadow-lg hover:shadow-blue-500/20"
+                "bg-linear-to-r from-[#229ED9] to-[#2AABEE]",
+                "transition-all hover:shadow-lg hover:shadow-blue-500/20",
               )}
             >
               Start Using MoneyTab
@@ -179,7 +179,7 @@ export default function Home() {
         </section>
 
         {/* App Screenshots */}
-        <section className="bg-gradient-to-b from-black to-gray-900 py-10 md:py-16">
+        <section className="bg-linear-to-b from-black to-gray-900 py-10 md:py-16">
           <div className="container mx-auto px-4">
             <h2 className="mb-12 text-center text-3xl font-bold">
               Designed For Simplicity
@@ -211,7 +211,7 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 py-20">
+        <section className="bg-linear-to-r from-blue-900/20 to-purple-900/20 py-20">
           <div className="container mx-auto px-4 text-center">
             <h2 className="mb-6 text-4xl font-bold">
               Ready to simplify expense sharing?
@@ -225,8 +225,8 @@ export default function Home() {
               className={cn(
                 "inline-block rounded-full px-10 py-5 text-center text-white",
                 "text-xl font-bold",
-                "bg-gradient-to-r from-[#229ED9] to-[#2AABEE]",
-                "transition-all hover:shadow-xl hover:shadow-blue-500/20"
+                "bg-linear-to-r from-[#229ED9] to-[#2AABEE]",
+                "transition-all hover:shadow-xl hover:shadow-blue-500/20",
               )}
             >
               Get Started Now

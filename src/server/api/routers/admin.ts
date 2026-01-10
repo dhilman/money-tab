@@ -25,7 +25,7 @@ export const adminRouter = createTRPCRouter({
     .input(
       z.object({
         telegramId: z.number().nullable(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       if (!input.telegramId) return;
@@ -35,7 +35,7 @@ export const adminRouter = createTRPCRouter({
       await bot.api.sendMessage(
         ctx.user.telegramId,
         `[Link](tg://user?id=${input.telegramId})`,
-        { parse_mode: "MarkdownV2" }
+        { parse_mode: "MarkdownV2" },
       );
       return true;
     }),
@@ -46,7 +46,7 @@ export const adminRouter = createTRPCRouter({
         lastName: z.string().optional(),
         username: z.string().optional(),
         isRegistered: z.boolean().optional(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       const user = await mutate.user.create(ctx, {
@@ -63,7 +63,7 @@ export const adminRouter = createTRPCRouter({
       z.object({
         pageIndex: z.number().default(0),
         pageSize: z.number().default(50),
-      })
+      }),
     )
     .query(async ({ input }) => {
       const [users, total] = await db.batch([
@@ -93,7 +93,7 @@ export const adminRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         minutes: z.number().default(5),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       if (ctx?.user?.role !== "SUPER") {
@@ -134,7 +134,7 @@ export const adminRouter = createTRPCRouter({
       z.object({
         startDate: z.string(),
         endDate: z.string(),
-      })
+      }),
     )
     .query(async ({ input }) => {
       const range = sqlDateRange(input);
@@ -170,7 +170,7 @@ export const adminRouter = createTRPCRouter({
       z.object({
         startDate: z.string(),
         endDate: z.string(),
-      })
+      }),
     )
     .query(async ({ input }) => {
       const range = sqlDateRange(input);
@@ -197,7 +197,7 @@ export const adminRouter = createTRPCRouter({
       z.object({
         limit: z.number().default(50),
         events: z.number().default(10),
-      })
+      }),
     )
     .query(async ({ input }) => {
       return await mdb.query.session.findMany({
@@ -217,7 +217,7 @@ export const adminRouter = createTRPCRouter({
       z.object({
         startDate: z.string(),
         endDate: z.string(),
-      })
+      }),
     )
     .query(async ({ input }) => {
       const range = sqlDateRange(input);
@@ -231,7 +231,7 @@ export const adminRouter = createTRPCRouter({
               isNotNull(v.loadTime),
               gt(v.timestamp, range.startDate),
               lt(v.timestamp, range.endDate),
-              eq(v.isAnonymous, false)
+              eq(v.isAnonymous, false),
             ),
           orderBy: (v, { desc }) => desc(v.timestamp),
           limit: 1000,
@@ -245,7 +245,7 @@ export const adminRouter = createTRPCRouter({
       z.object({
         hash: z.string(),
         limit: z.number().default(10),
-      })
+      }),
     )
     .query(async ({ input }) => {
       const [issue, instances] = await mdb.batch([
@@ -282,7 +282,7 @@ export const adminRouter = createTRPCRouter({
         event: z.enum(EVENT_NAMES),
         startDate: z.string(),
         endDate: z.string(),
-      })
+      }),
     )
     .query(async ({ input }) => {
       const range = sqlDateRange(input);
@@ -312,7 +312,7 @@ export const adminRouter = createTRPCRouter({
           startDate: z.string(),
           endDate: z.string(),
         }),
-      })
+      }),
     )
     .query(async ({ input }) => {
       const [perUser] = await db.batch([
@@ -330,7 +330,7 @@ export const adminRouter = createTRPCRouter({
       z.object({
         startDate: z.string(),
         endDate: z.string(),
-      })
+      }),
     )
     .query(async ({ input }) => {
       const range = sqlDateRange(input);

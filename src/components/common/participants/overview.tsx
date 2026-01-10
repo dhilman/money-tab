@@ -104,7 +104,7 @@ const UserPaidBy = ({ userId, onEditPayer }: UserPaidByProps) => {
       <ListItemBody>
         <div className="w-full truncate">
           <PartyUserName user={user} />
-          <div className="text-sm text-hint">{t("paid_by")}</div>
+          <div className="text-hint text-sm">{t("paid_by")}</div>
         </div>
         <ButtonV1
           variant="secondary"
@@ -135,7 +135,7 @@ const UserListItem = ({
   const { decimals, parser } = useCurrencyAmountParser(currency);
   const original = useMemo(
     () => (participant.amount / 10 ** decimals).toFixed(decimals),
-    [participant.amount, decimals]
+    [participant.amount, decimals],
   );
   const [value, setValue] = useState("");
 
@@ -166,20 +166,20 @@ const UserListItem = ({
         <div className="ml-auto flex items-center gap-2">
           {participant.manual && (
             <button
-              className="flex h-8 w-8 items-center justify-center rounded-[8.91px] bg-tertiary"
+              className="bg-tertiary flex h-8 w-8 items-center justify-center rounded-[8.91px]"
               onClick={() => {
                 setValue("");
                 resetAmount(participant.id);
               }}
             >
-              <RefreshCwIcon className="h-4 w-4 text-foreground" />
+              <RefreshCwIcon className="text-foreground h-4 w-4" />
             </button>
           )}
           <input
             ref={setRef}
             className={cn(
-              "w-20 rounded-[8.91px] bg-tertiary px-3 py-[5px] text-right text-base",
-              participant.manual && invalid && "bg-red-500/20"
+              "bg-tertiary w-20 rounded-[8.91px] px-3 py-[5px] text-right text-base",
+              participant.manual && invalid && "bg-red-500/20",
             )}
             type="number"
             enterKeyHint="next"

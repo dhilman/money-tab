@@ -20,8 +20,8 @@ export const FormTextInput = ({ id, label, value, onChange }: Props) => {
           <label
             htmlFor={id}
             className={cn(
-              "block w-full text-sm text-hint transition-transform duration-300",
-              !isInputShown && "translate-y-[11px] text-base"
+              "text-hint block w-full text-sm transition-transform duration-300",
+              !isInputShown && "translate-y-[11px] text-base",
             )}
           >
             {label}
@@ -31,8 +31,8 @@ export const FormTextInput = ({ id, label, value, onChange }: Props) => {
             id={id}
             type="text"
             className={cn(
-              "w-full text-base text-transparent focus-visible:outline-none",
-              isInputShown && "text-foreground"
+              "w-full text-base text-transparent focus-visible:outline-hidden",
+              isInputShown && "text-foreground",
             )}
             value={value}
             onKeyDown={(e) => {

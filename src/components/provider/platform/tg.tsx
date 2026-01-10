@@ -177,7 +177,7 @@ const useSettingsButton = (webApp: WebAppOrNull) => {
     isSetup.current = true;
     const tg = window.Telegram.WebApp;
     tg.SettingsButton.onClick(
-      () => void push({ pathname: "/webapp/settings" })
+      () => void push({ pathname: "/webapp/settings" }),
     );
     tg.SettingsButton.show();
   }, [webApp, push]);

@@ -86,7 +86,7 @@ composer.on("my_chat_member", async (ctx) => {
     if (!isNew) await mutate.group.linkByTgId(ctx, chat.id);
     await queueClient.avatar(
       { type: "GROUP", id: groupId, tgId: chat.id },
-      { retries: 1 }
+      { retries: 1 },
     );
     return;
   }

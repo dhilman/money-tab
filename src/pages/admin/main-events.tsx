@@ -27,7 +27,7 @@ function Page() {
     },
     {
       enabled: !!event,
-    }
+    },
   );
 
   if (!data) return <div />;
@@ -46,17 +46,17 @@ function Page() {
           <SelectEventName />
         </div>
 
-        <div className="flex w-full flex-col gap-6 pb-4 pt-2">
+        <div className="flex w-full flex-col gap-6 pt-2 pb-4">
           <Bento>
             <BentoHeader>Per Day</BentoHeader>
-            <BentoContent className="pb-2 pt-3">
+            <BentoContent className="pt-3 pb-2">
               <DayCountAreaChart data={data.perDay} />
             </BentoContent>
           </Bento>
 
           <Bento>
             <BentoHeader>Per User</BentoHeader>
-            <BentoContent className="pb-2 pt-3">
+            <BentoContent className="pt-3 pb-2">
               <HistogramChart
                 data={data.perUser}
                 valueKey="count"
@@ -71,7 +71,7 @@ function Page() {
             labelFormatter={(label) => (
               <MyLink
                 route={{ pathname: "/admin/user/[id]", query: { id: label } }}
-                className="z-10 font-medium text-primary"
+                className="text-primary z-10 font-medium"
               >
                 {label}
               </MyLink>
@@ -118,7 +118,7 @@ const Select = <T extends string>({ options, value, onChange }: Select<T>) => {
     <select
       value={value}
       onChange={(e) => onChange(e.target.value as T)}
-      className="rounded-md border border-hint/10 bg-background px-2 py-1"
+      className="border-hint/10 bg-background rounded-md border px-2 py-1"
     >
       {options.map((option) => (
         <option key={option.value} value={option.value}>

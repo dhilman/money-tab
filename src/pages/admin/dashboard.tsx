@@ -22,7 +22,7 @@ function Page() {
       placeholderData: keepPreviousData,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-    }
+    },
   );
   const events = useMemo(() => {
     if (!data) return {};
@@ -68,7 +68,7 @@ function Page() {
                 <>
                   {data.issues?.count ?? 0}
                   {data.issues?.unique ? (
-                    <span className="ml-2 text-sm text-hint">
+                    <span className="text-hint ml-2 text-sm">
                       ({data.issues.unique} unique)
                     </span>
                   ) : null}

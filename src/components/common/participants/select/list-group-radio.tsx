@@ -45,10 +45,10 @@ export const ListGroupRadio = ({ group }: Props) => {
         </ListItemLeft>
         <ListItemBody>
           <div className="w-full">
-            <div className="truncate text-ellipsis font-medium">
+            <div className="truncate font-medium text-ellipsis">
               {group.name}
             </div>
-            <div className="text-sm text-hint">
+            <div className="text-hint text-sm">
               {t("n_members", { count: group.memberIds.length })}
             </div>
           </div>

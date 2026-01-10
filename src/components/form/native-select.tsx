@@ -58,8 +58,8 @@ export const NativeSelectContainer = ({
       className={cn(
         "grid h-9 w-fit bg-transparent",
         "rounded-md border-0 border-transparent",
-        "text-center text-base text-hint",
-        className
+        "text-hint text-center text-base",
+        className,
       )}
     >
       {children}
@@ -78,9 +78,9 @@ export const NativeSelectChevron = ({
     <ChevronsUpDownIcon
       className={cn(
         "relative right-1 z-10 col-start-1 row-start-1 h-4 w-4 self-center justify-self-end",
-        "forced-colors:hidden pointer-events-none",
+        "pointer-events-none forced-colors:hidden",
         "translate-x-1 translate-y-[0.5px] transform",
-        className
+        className,
       )}
     />
   );
@@ -108,7 +108,7 @@ export const NativeSelectTrigger = <T extends string>({
       className={cn(
         "z-10 col-start-1 row-start-1 w-full appearance-none",
         "rounded-md bg-transparent font-normal text-transparent",
-        className
+        className,
       )}
       style={{ textAlign: "inherit" }}
       value={value}
@@ -146,8 +146,8 @@ export const NativeSelectLabel = ({
       className={cn(
         "col-start-1 row-start-1 flex h-full w-full items-center truncate",
         "place-content-end text-center",
-        "pl-2 pr-6",
-        className
+        "pr-6 pl-2",
+        className,
       )}
     >
       <span className="truncate">
@@ -165,7 +165,7 @@ interface SelectOptionI18N<T extends string> {
 }
 
 export function useTranslatedOptions<T extends string>(
-  opts: readonly SelectOptionI18N<T>[]
+  opts: readonly SelectOptionI18N<T>[],
 ) {
   const { t } = useTranslation();
   return useMemo(() => {

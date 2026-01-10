@@ -7,7 +7,7 @@ import {
 export function formatAmountDecimal(
   amount: number,
   currency: string | Currency,
-  params: { rounding?: number } = {}
+  params: { rounding?: number } = {},
 ) {
   const { rounding = 0 } = params;
   const symbol = getCurrencySymbol(currency);
@@ -22,14 +22,14 @@ export function formatAmountCurrency(
     withSymbol?: boolean;
     withSign?: boolean;
     rounding?: number;
-  } = {}
+  } = {},
 ) {
   const precision = getCurrencyPrecision(currency);
   const { withSymbol = true, withSign = false, rounding = precision } = params;
 
   const formatted = formatAmountForLocale(
     Math.abs(amount / 10 ** precision),
-    rounding
+    rounding,
   );
 
   let prefix = "";

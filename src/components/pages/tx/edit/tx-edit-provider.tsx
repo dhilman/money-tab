@@ -48,7 +48,7 @@ export const TxEditProvider = ({ tx, children }: Props) => {
   const [screen, setScreen] = useState<TxEditScreen>("main");
   const [amount, setAmount] = useState(tx.amount);
   const [currency, setCurrency] = useState<Currency>(
-    getCurrencyByCodeWithDefault(tx.currencyCode)
+    getCurrencyByCodeWithDefault(tx.currencyCode),
   );
   const [description, setDescription] = useState(tx.description || "");
   const [dateTime, setDateTime] = useState(parseDateOrDateTime(tx.date));
@@ -59,7 +59,7 @@ export const TxEditProvider = ({ tx, children }: Props) => {
       key: "",
       size: v.size ?? 0,
       type: v.type ?? "",
-    }))
+    })),
   );
   const [participants, updateParticipants] = useParticipantsEditReducer({
     meId: me.id,

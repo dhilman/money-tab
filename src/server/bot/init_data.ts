@@ -22,7 +22,7 @@ const InitDataSchema = z.object({
 });
 
 export async function validateAndParseInitData(
-  data: string
+  data: string,
 ): Promise<z.infer<typeof InitDataSchema>> {
   const { hash, checkString, values } = checkStringFromInitData(data);
 
@@ -58,7 +58,7 @@ export async function validateAndParseInitData(
         init_data: data,
         structured: structured,
       },
-      "Invalid init data format"
+      "Invalid init data format",
     );
     throw new TRPCError({
       code: "BAD_REQUEST",

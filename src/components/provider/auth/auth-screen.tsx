@@ -11,15 +11,15 @@ export const AuthScreen = () => {
         <BentoContent className="flex flex-col items-center gap-7 px-6 py-12 text-center">
           <div>
             <div className="text-2xl font-bold">Welcome to MoneyTab</div>
-            <div className="mt-1 text-base font-semibold text-hint">
+            <div className="text-hint mt-1 text-base font-semibold">
               A simple way to track your expenses
             </div>
           </div>
           <div className="flex w-full flex-col items-center gap-4">
             <TelegramLoginButton />
-            <div className="text-sm font-medium text-hint">or</div>
+            <div className="text-hint text-sm font-medium">or</div>
             <a
-              className="text-sm font-medium text-foreground/90 underline underline-offset-2"
+              className="text-foreground/90 text-sm font-medium underline underline-offset-2"
               href={URLS.BOT_WEB_APP}
             >
               Open in Telegram
@@ -43,7 +43,7 @@ const TelegramLoginButton = () => {
     script.setAttribute("data-radius", "8");
     script.setAttribute(
       "data-auth-url",
-      `${env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/tg`
+      `${env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/tg`,
     );
     script.setAttribute("data-request-access", "write");
     ref.current.appendChild(script);

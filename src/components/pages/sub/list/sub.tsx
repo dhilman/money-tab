@@ -38,12 +38,12 @@ export const SubNextDate = ({ sub, absolute }: SubNextDateProps) => {
     return (
       <div
         className={cn(
-          "inline-flex items-center text-sm text-hint",
-          isRenewingSoon && "text-primary"
+          "text-hint inline-flex items-center text-sm",
+          isRenewingSoon && "text-primary",
         )}
       >
         {contrib?.reminderDate && (
-          <BellIcon className="mr-1 h-4 w-4 fill-primary stroke-[2.5px] p-[3px] text-primary" />
+          <BellIcon className="fill-primary text-primary mr-1 h-4 w-4 stroke-[2.5px] p-[3px]" />
         )}
         {formatDateFunc(sub.renewalDate)}
       </div>
@@ -53,9 +53,9 @@ export const SubNextDate = ({ sub, absolute }: SubNextDateProps) => {
   if (sub.endDate) {
     const ended = isBeforeOrEqualToToday(sub.endDate);
     return (
-      <div className="inline-flex items-center text-sm text-hint">
+      <div className="text-hint inline-flex items-center text-sm">
         {contrib?.reminderDate && (
-          <BellIcon className="mr-1 h-4 w-4 fill-primary stroke-[2.5px] p-[3px] text-primary" />
+          <BellIcon className="fill-primary text-primary mr-1 h-4 w-4 stroke-[2.5px] p-[3px]" />
         )}
         {ended ? t("ended") : t("ends")}{" "}
         {formatDate(sub.endDate, { utc: false })}
@@ -73,7 +73,7 @@ interface SubFreqBadgeProps {
 
 export const SubFreqBadge = ({ unit, value }: SubFreqBadgeProps) => {
   return (
-    <div className="inline-flex items-center justify-center gap-1 rounded-sm bg-hint/10 px-2.5 text-hint">
+    <div className="bg-hint/10 text-hint inline-flex items-center justify-center gap-1 rounded-sm px-2.5">
       <div className="text-xs font-medium">
         <SubFrequency unit={unit} value={value} />
       </div>

@@ -25,7 +25,7 @@ function Page() {
     const totals: { key: Date; count: number }[] = [];
     data.counts.forEach((c) => {
       const existing = totals.find((t) =>
-        dayjs(t.key).isSame(dayjs(c.key), "day")
+        dayjs(t.key).isSame(dayjs(c.key), "day"),
       );
       if (existing) {
         existing.count += c.count;
@@ -64,7 +64,7 @@ function Page() {
 
         <Bento>
           <BentoHeader>Total Notifications</BentoHeader>
-          <BentoContent className="pb-2 pt-3">
+          <BentoContent className="pt-3 pb-2">
             <DayCountAreaChart data={totalsByDay} />
           </BentoContent>
         </Bento>

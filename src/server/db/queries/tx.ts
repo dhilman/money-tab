@@ -33,7 +33,7 @@ const txIdsBetweenUsers = (userIds: string[]) => {
     .where(inArray(schema.contribution.userId, userIds))
     .groupBy(({ id }) => id)
     .having(
-      eq(sql`count(DISTINCT ${schema.contribution.userId})`, userIds.length)
+      eq(sql`count(DISTINCT ${schema.contribution.userId})`, userIds.length),
     );
 };
 
@@ -46,7 +46,7 @@ export function list<T extends WithInputMany>(
     archived?: boolean;
     limit?: number;
   },
-  withInput: T
+  withInput: T,
 ) {
   const {
     userId = "",
@@ -65,14 +65,16 @@ export function list<T extends WithInputMany>(
             .where(
               and(
                 eq(schema.contribution.transactionId, id),
-                eq(schema.contribution.userId, userId)
-              )
-            )
+                eq(schema.contribution.userId, userId),
+              ),
+            ),
         ).if(userId !== ""),
         isNotNull(schema.transaction.archivedAt).if(archived),
         isNull(schema.transaction.archivedAt).if(!archived),
         eq(schema.transaction.groupId, groupId).if(groupId),
-        ...(userIds.length > 0 ? [inArray(id, txIdsBetweenUsers(userIds))] : [])
+        ...(userIds.length > 0
+          ? [inArray(id, txIdsBetweenUsers(userIds))]
+          : []),
       ),
     with: withInput,
     orderBy: (cols, { desc }) => [desc(cols.createdAt)],
@@ -108,10 +110,10 @@ export function balance(ctx: DbCtx, params: BalanceParams) {
         isNull(schema.transaction.archivedAt),
         or(
           and(gt(c1.amountPaid, 0), gt(c2.amountOwed, 0)),
-          and(gt(c1.amountOwed, 0), gt(c2.amountPaid, 0))
+          and(gt(c1.amountOwed, 0), gt(c2.amountPaid, 0)),
         ),
-        gt(schema.transaction.createdAt, params.fromDate!).if(params.fromDate)
-      )
+        gt(schema.transaction.createdAt, params.fromDate!).if(params.fromDate),
+      ),
     )
     .groupBy(c2.userId, schema.transaction.currencyCode);
 }
@@ -119,7 +121,7 @@ export function balance(ctx: DbCtx, params: BalanceParams) {
 export async function byIdLike<T extends WithInput>(
   ctx: DbCtx,
   id: string,
-  withParams: T
+  withParams: T,
 ) {
   const tx = await ctx.db.query.transaction.findFirst({
     where: (v) => prefix(v.id, id),

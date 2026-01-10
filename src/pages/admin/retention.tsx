@@ -76,7 +76,7 @@ function Page() {
           <NativeSelect
             value={lastDays.toString()}
             onChange={(v) => setLastDays(parseInt(v))}
-            className="w-28 shrink-0 bg-background"
+            className="bg-background w-28 shrink-0"
             options={[
               { label: "1 day", value: "1" },
               { label: "2 days", value: "2" },
@@ -97,7 +97,7 @@ function Page() {
                     setEventNames((prev) =>
                       checked
                         ? [...prev, event]
-                        : prev.filter((e) => e !== event)
+                        : prev.filter((e) => e !== event),
                     )
                   }
                 />
@@ -108,7 +108,7 @@ function Page() {
         </Bento>
 
         <Bento>
-          <BentoContent className="pb-2 pt-3">
+          <BentoContent className="pt-3 pb-2">
             <HistogramChart
               data={data.perUser}
               valueKey="count"
@@ -123,7 +123,7 @@ function Page() {
           labelFormatter={(label) => (
             <MyLink
               route={{ pathname: "/admin/user/[id]", query: { id: label } }}
-              className="z-10 font-medium text-primary"
+              className="text-primary z-10 font-medium"
             >
               {label}
             </MyLink>

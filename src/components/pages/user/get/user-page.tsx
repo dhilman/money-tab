@@ -83,15 +83,15 @@ const ShareSelf = () => {
       <BentoContent
         className={cn("relative z-10 h-40 overflow-hidden rounded-2xl p-0.5")}
       >
-        <div className="absolute inset-0 h-full w-full animate-rotate rounded-full bg-[conic-gradient(#0ea5e9_20deg,transparent_120deg)]"></div>
+        <div className="animate-rotate absolute inset-0 h-full w-full rounded-full bg-[conic-gradient(#0ea5e9_20deg,transparent_120deg)]"></div>
         <div
-          className="relative flex h-full w-full flex-col items-center justify-center gap-3 rounded-2xl bg-background px-4"
+          className="bg-background relative flex h-full w-full flex-col items-center justify-center gap-3 rounded-2xl px-4"
           onClick={shareProfile}
         >
-          <SendIcon className="h-7 w-7 text-primary" />
+          <SendIcon className="text-primary h-7 w-7" />
           <div className="space-y-1 text-center">
             <div>{t("share_your_profile_with_others")}</div>
-            <div className="text-sm text-hint">
+            <div className="text-hint text-sm">
               {t("others_will_be_able_to_connect")}
             </div>
           </div>
@@ -108,7 +108,7 @@ const ActionButtons = () => {
   if (isLoading) {
     return (
       <div className="flex w-full justify-center px-2">
-        <div className="h-12 w-full animate-pulse rounded-xl bg-background/50" />
+        <div className="bg-background/50 h-12 w-full animate-pulse rounded-xl" />
       </div>
     );
   }

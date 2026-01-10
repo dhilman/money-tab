@@ -7,12 +7,12 @@ interface ListProps {
 
 export const List = ({ className, children }: ListProps) => (
   <ul
-    className={cn("flex w-full flex-col rounded-xl bg-background", className)}
+    className={cn("bg-background flex w-full flex-col rounded-xl", className)}
   >
     {children}
   </ul>
 );
 
 export const Separator = ({ className }: { className?: string }) => {
-  return <div className={cn("h-[0.5px] w-full bg-border", className)} />;
+  return <div className={cn("bg-border h-[0.5px] w-full", className)} />;
 };

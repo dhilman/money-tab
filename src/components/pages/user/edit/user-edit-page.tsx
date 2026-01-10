@@ -116,7 +116,7 @@ const RemoveContactButton = ({ id }: { id: string }) => {
       >
         {t("delete_contact")}
       </Button>
-      <div className="w-full px-2 pt-1 text-left text-sm text-hint">
+      <div className="text-hint w-full px-2 pt-1 text-left text-sm">
         {t("delete_contact_note")}
       </div>
     </Bento>

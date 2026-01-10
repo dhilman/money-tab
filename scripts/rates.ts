@@ -23,7 +23,7 @@ async function getRates() {
   const data = Response.parse(body);
 
   return Object.fromEntries(
-    Object.entries(data.data).map(([key, { value }]) => [key, value])
+    Object.entries(data.data).map(([key, { value }]) => [key, value]),
   );
 }
 

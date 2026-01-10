@@ -31,8 +31,8 @@ export const subUpdateReminderHandler = privateProcedure
           endDate: sub.endDate,
           cycle: { unit: sub.cycleUnit, value: sub.cycleValue },
         },
-        input.reminder
-      )
+        input.reminder,
+      ),
     );
 
     await mutate.sub.updateReminder({

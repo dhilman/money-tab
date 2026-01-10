@@ -46,8 +46,8 @@ export const FormAmountInput = ({
           <label
             htmlFor="amount"
             className={cn(
-              "block w-full text-sm text-hint transition-transform duration-300",
-              !isInputShown && "translate-y-[13px] text-base"
+              "text-hint block w-full text-sm transition-transform duration-300",
+              !isInputShown && "translate-y-[13px] text-base",
             )}
           >
             {label}
@@ -101,7 +101,7 @@ const AmountInput = ({
         id={id}
         type="text"
         inputMode="decimal"
-        className="w-full placeholder-transparent focus:placeholder-hint"
+        className="focus:placeholder-hint w-full placeholder-transparent"
         value={value}
         onChange={(e) => onValueChange(e.target.value)}
         placeholder={formatAmountCurrency(0, currency, {
@@ -120,10 +120,13 @@ function useCurrencyCounts() {
   return React.useMemo(() => {
     const codeToCount = transactions
       .map((t) => t.currencyCode)
-      .reduce((acc, cur) => {
-        acc[cur] = (acc[cur] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      .reduce(
+        (acc, cur) => {
+          acc[cur] = (acc[cur] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
     return Object.entries(codeToCount)
       .map(([code, count]) => ({ code, count }))
       .sort((a, b) => b.count - a.count);

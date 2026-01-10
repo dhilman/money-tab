@@ -93,9 +93,9 @@ export const SubsTotalSpend = () => {
     <div className="flex w-full flex-col gap-4">
       <Bento>
         <div className="w-full px-2">
-          <div className="flex items-center gap-2 text-base text-hint">
+          <div className="text-hint flex items-center gap-2 text-base">
             <div className="font-semibold">{t("total")}</div>
-            <div className="h-1 w-1 rounded-full bg-hint" />
+            <div className="bg-hint h-1 w-1 rounded-full" />
             <div className="">{intervalToLabel(interval, selected)}</div>
           </div>
           <div className="text-4xl font-bold">{total}</div>
@@ -200,13 +200,13 @@ function getDateRanges(start: dayjs.Dayjs, interval: Interval) {
   const startOfDay = start.startOf(intervalToStartOf(interval)).startOf("day");
   return splitDateRange(
     { start: startOfDay, end: startOfDay.add(1, interval) },
-    intervalToGap(interval)
+    intervalToGap(interval),
   );
 }
 
 function splitDateRange(
   dateRange: DateRange,
-  splitBy: "day" | "week" | "month"
+  splitBy: "day" | "week" | "month",
 ) {
   const start = dayjs(dateRange.start);
   const end = dayjs(dateRange.end);

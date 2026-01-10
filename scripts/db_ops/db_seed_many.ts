@@ -67,8 +67,8 @@ async function createManyTxs(params: {
   await Promise.all(
     params.userIds.map(
       async (userId, i) =>
-        await upsertConnections(userId, params.userIds.slice(i + 1))
-    )
+        await upsertConnections(userId, params.userIds.slice(i + 1)),
+    ),
   );
 
   for (let i = 0; i < params.n; i++) {

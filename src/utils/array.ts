@@ -2,7 +2,7 @@ export function reduceArr<T, R>(
   arr: T[],
   reducer: (acc: R, val: T) => R,
   initial: R,
-  filter?: (val: T) => boolean
+  filter?: (val: T) => boolean,
 ): R {
   return arr.reduce((acc, val) => {
     if (filter && !filter(val)) return acc;
@@ -13,7 +13,7 @@ export function reduceArr<T, R>(
 export function arrCombine<T>(
   arrays: T[][],
   key: (item: T) => string,
-  combine: (acc: T, item: T) => T
+  combine: (acc: T, item: T) => T,
 ) {
   return Array.from(
     arrays.reduce((acc, arr) => {
@@ -27,6 +27,6 @@ export function arrCombine<T>(
         }
       });
       return acc;
-    }, new Map<string, T>())
+    }, new Map<string, T>()),
   ).map(([_, item]) => item);
 }

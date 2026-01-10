@@ -30,7 +30,7 @@ export const ListUserRadio = ({
         <UserAvatarOrPlaceholder size="xl" user={user} accentHash={userId} />
       </ListItemLeft>
       <ListItemBody>
-        <div className="truncate text-ellipsis font-medium">
+        <div className="truncate font-medium text-ellipsis">
           {user?.name || t("someone_new")}
         </div>
         <RadioCheck className="ml-auto" selected={selected} />

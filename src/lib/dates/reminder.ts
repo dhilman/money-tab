@@ -19,7 +19,7 @@ export const isReminderDue = (params: {
 
   const reminderDateTime = dayjs.tz(
     `${params.reminderDate} 12:59`,
-    params.timezone
+    params.timezone,
   );
 
   return now.isAfter(reminderDateTime);

@@ -14,7 +14,7 @@ export const TgThemeParams = () => {
 
   return (
     <Bento>
-      <BentoContent className="overflow-x-auto whitespace-pre p-2 font-mono text-sm">
+      <BentoContent className="overflow-x-auto p-2 font-mono text-sm whitespace-pre">
         {params}
       </BentoContent>
     </Bento>

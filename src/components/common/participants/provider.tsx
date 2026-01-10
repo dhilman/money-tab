@@ -31,7 +31,7 @@ export function useParticipantsCtx() {
   const ctx = useContext(ParticipantsContext);
   if (!ctx)
     throw new Error(
-      "useParticipantsCtx must be used within ParticipantsProvider"
+      "useParticipantsCtx must be used within ParticipantsProvider",
     );
   return ctx;
 }

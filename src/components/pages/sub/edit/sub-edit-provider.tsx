@@ -84,7 +84,7 @@ export const SubEditProvider = ({ sub, children }: Props) => {
   const [name, setName] = useState(sub.name);
   const [amount, setAmount] = useState(sub.amount);
   const [currency, setCurrency] = useState(
-    getCurrencyByCodeWithDefault(sub.currencyCode)
+    getCurrencyByCodeWithDefault(sub.currencyCode),
   );
   const [startDate, setStartDate] = useState(sub.startDate);
   const [endDate, setEndDate] = useState(sub.endDate ?? "");

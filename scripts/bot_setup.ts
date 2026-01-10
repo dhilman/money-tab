@@ -14,7 +14,7 @@ const OPS = [
     func: async () => {
       const url = `${env.NEXT_PUBLIC_BASE_URL}/api/webhook/tg`;
       await inputConfirm(
-        `Set webhook for ${env.NEXT_PUBLIC_BOT_NAME} to ${url}`
+        `Set webhook for ${env.NEXT_PUBLIC_BOT_NAME} to ${url}`,
       );
 
       await bot.api.setWebhook(url, {
@@ -70,18 +70,18 @@ const OPS = [
     func: async () => {
       await bot.api.setMyCommands(
         [{ command: "start", description: "My MoneyTab" }],
-        { scope: { type: "all_private_chats" } }
+        { scope: { type: "all_private_chats" } },
       );
       await bot.api.setMyCommands(
         [{ command: "tab", description: "Group's MoneyTab" }],
-        { scope: { type: "all_group_chats" } }
+        { scope: { type: "all_group_chats" } },
       );
     },
   },
 ];
 
 console.log(
-  `Running for ${env.NEXT_PUBLIC_BOT_NAME}, ID: ${env.NEXT_PUBLIC_BOT_ID}`
+  `Running for ${env.NEXT_PUBLIC_BOT_NAME}, ID: ${env.NEXT_PUBLIC_BOT_ID}`,
 );
 
 const opName = await select({

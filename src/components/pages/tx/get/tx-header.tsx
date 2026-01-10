@@ -25,8 +25,8 @@ export const TxHeader = () => {
 
   return (
     <div className="flex w-full flex-col items-center">
-      <div className="text-lg text-hint/80">{t("expense")}</div>
-      <div className="mt-2 text-foreground">
+      <div className="text-hint/80 text-lg">{t("expense")}</div>
+      <div className="text-foreground mt-2">
         <CurrencyAmount
           size="5xl"
           className="font-bold"
@@ -37,8 +37,8 @@ export const TxHeader = () => {
       </div>
       <div
         className={cn(
-          "mt-1.5 px-4 text-center font-rounded text-xl font-semibold",
-          desc || "text-hint"
+          "font-rounded mt-1.5 px-4 text-center text-xl font-semibold",
+          desc || "text-hint",
         )}
       >
         <LoadingProvider
@@ -63,7 +63,7 @@ const TxHeaderGroup = () => {
   if (!group) return null;
 
   return (
-    <div className="flex w-full items-center justify-between border-t border-hint/10 px-3 py-2">
+    <div className="border-hint/10 flex w-full items-center justify-between border-t px-3 py-2">
       <div>{t("group")}</div>
       <MyLink
         route={{ pathname: "/webapp/group/[id]", query: { id: group.id } }}
@@ -85,7 +85,7 @@ const Attachements = () => {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <div className="flex w-full items-center justify-between border-t border-hint/10 px-3 py-2">
+        <div className="border-hint/10 flex w-full items-center justify-between border-t px-3 py-2">
           <div>{t("attachments")}</div>
           <div className="flex w-full items-center justify-end gap-2">
             {tx.files.map((f) => (
@@ -100,7 +100,7 @@ const Attachements = () => {
         </div>
       </DrawerTrigger>
       <DrawerContent className="h-[calc(100vh-4rem)]">
-        <div className="flex w-full justify-center overflow-y-auto bg-background">
+        <div className="bg-background flex w-full justify-center overflow-y-auto">
           <div className="min-h-screen w-full max-w-xl pb-12">
             <DrawerHeader className="pt-2">
               <DrawerTitle>{t("attachments")}</DrawerTitle>
@@ -111,7 +111,7 @@ const Attachements = () => {
                   key={f.id}
                   src={f.url}
                   alt="attachment"
-                  className="h-fit w-full rounded-md bg-canvas/10 object-contain"
+                  className="bg-canvas/10 h-fit w-full rounded-md object-contain"
                 />
               ))}
             </div>

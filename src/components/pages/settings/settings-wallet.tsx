@@ -50,7 +50,7 @@ function ListItemWalletConnected() {
             <div>{friendlyShort}</div>
             <div className="ml-auto inline-flex items-center gap-2 text-green-500">
               <span>{t("connected")}</span>
-              <LinkIcon className="h-4 w-4 " />
+              <LinkIcon className="h-4 w-4" />
             </div>
           </ListItemBody>
         </ListItem>
@@ -78,9 +78,9 @@ function ListItemWalletReconnect() {
       <ListItemTonIcon />
       <ListItemBody size="sm" className="w-full gap-2">
         <div>{friendlyShort}</div>
-        <div className="ml-auto inline-flex items-center gap-2 text-primary">
+        <div className="text-primary ml-auto inline-flex items-center gap-2">
           <span>{t("reconnect")}</span>
-          <LinkIcon className="h-4 w-4 " />
+          <LinkIcon className="h-4 w-4" />
         </div>
       </ListItemBody>
     </ListItem>
@@ -94,7 +94,7 @@ function ListItemWalletConnect() {
   return (
     <ListItem as="button" onClick={connect}>
       <ListItemTonIcon />
-      <ListItemBody size="sm" className="w-full gap-2 text-primary">
+      <ListItemBody size="sm" className="text-primary w-full gap-2">
         <div>{t("connect_wallet")}</div>
       </ListItemBody>
     </ListItem>

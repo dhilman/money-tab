@@ -24,20 +24,20 @@ export const DayCountAreaChart = ({ data }: Props) => {
         <XAxis
           dataKey="key"
           tickFormatter={(date: Date) => dayjs(date).format("D/MM")}
-          className="!text-xs !text-foreground"
+          className="text-foreground! text-xs!"
         />
-        <YAxis dataKey="count" className="!text-xs !text-foreground" />
+        <YAxis dataKey="count" className="text-foreground! text-xs!" />
         <Area
           dataKey="count"
-          className="!fill-primary/30 !stroke-primary"
+          className="fill-primary/30! stroke-primary!"
           fill="var(--color-primary)"
           stroke="var(--color-primary)"
           type="monotone"
         />
         <Tooltip
           labelFormatter={(date: Date) => dayjs(date).format("D MMM YYYY")}
-          wrapperClassName="!bg-background !border !border-hint/30 !rounded-md"
-          labelClassName="!text-foreground"
+          wrapperClassName="bg-background! border! border-hint/30! rounded-md!"
+          labelClassName="text-foreground!"
         />
       </AreaChart>
     </ResponsiveContainer>

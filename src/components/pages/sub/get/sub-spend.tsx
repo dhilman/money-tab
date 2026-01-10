@@ -98,7 +98,7 @@ const SubSpendBreakdown = () => {
         <div className="font-semibold capitalize">{t("spend_breakdown")}</div>
         {sub.contribs.length > 1 && (
           <NativeSelect
-            className="ml-auto h-6 py-0 text-center text-xs capitalize text-primary"
+            className="text-primary ml-auto h-6 py-0 text-center text-xs capitalize"
             value={filter}
             onChange={(v) => setFilter(v)}
             options={[
@@ -204,7 +204,7 @@ function calcSpendSinceStart(
     startDate: AnyDate;
     endDate: AnyDate | null;
     cycle: Cycle;
-  }
+  },
 ) {
   const cycles = calcRenewalsPassed(params);
   return cycles * amount;

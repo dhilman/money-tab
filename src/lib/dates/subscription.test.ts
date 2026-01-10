@@ -84,13 +84,13 @@ describe("get next cycle date after", () => {
             endDate: null,
             cycle: tc.cycle,
           },
-          tc.afterDay
+          tc.afterDay,
         );
         expect(res ? res.toISOString() : null).toEqual(
-          tc.expected.toISOString()
+          tc.expected.toISOString(),
         );
       },
-      day
+      day,
     );
   });
 });
@@ -163,7 +163,7 @@ describe("client renewal", () => {
         const want = tc.expected ? tc.expected.toISOString() : null;
         expect(res ? res.toISOString() : null).toEqual(want);
       },
-      tc._today || today
+      tc._today || today,
     );
   });
 });
@@ -223,7 +223,7 @@ describe("server renewal", () => {
         const want = tc.expected ? tc.expected.toISOString() : null;
         expect(res ? res.toISOString() : null).toEqual(want);
       },
-      today
+      today,
     );
   });
 });
@@ -281,7 +281,7 @@ describe("number of cycles to date", () => {
         });
         expect(res).toEqual(tc.expected);
       },
-      today
+      today,
     );
   });
 });
@@ -382,7 +382,7 @@ describe("calc num cycles in range", () => {
         {
           start: tc.fromDate,
           end: tc.toDate,
-        }
+        },
       );
       expect(res).toEqual(tc.expected);
     });
@@ -463,12 +463,12 @@ describe("reminder", () => {
             endDate: tc.endDate ? tc.endDate : null,
             cycle: tc.cycle,
           },
-          tc.reminder
+          tc.reminder,
         );
         const want = tc.expected ? tc.expected.toISOString() : null;
         expect(res ? res.toISOString() : null).toEqual(want);
       },
-      tc._today || today
+      tc._today || today,
     );
   });
 });

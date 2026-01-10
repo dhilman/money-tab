@@ -34,7 +34,7 @@ export const IssueDetails = ({ issue, instances }: Props) => {
         <Bento>
           <BentoHeader>Stack</BentoHeader>
           <BentoContent>
-            <pre className="overflow-x-auto whitespace-pre p-2 text-sm">
+            <pre className="overflow-x-auto p-2 text-sm whitespace-pre">
               {issue.stack}
             </pre>
           </BentoContent>
@@ -74,7 +74,7 @@ const IssueInstance = ({ issue }: IssueInstanceProps) => {
                   pathname: "/admin/user/[id]",
                   query: { id: issue.userId ?? "" },
                 }}
-                className="font-medium text-primary"
+                className="text-primary font-medium"
               >
                 {issue.userId}
               </MyLink>
@@ -94,7 +94,7 @@ const IssueStack = ({ stack }: { stack: string | null }) => {
   if (!stack) return null;
 
   return (
-    <div className="w-full space-y-2 rounded-lg bg-canvas/50 p-2">
+    <div className="bg-canvas/50 w-full space-y-2 rounded-lg p-2">
       <div className="flex w-full items-center justify-between">
         <div className="text-sm font-semibold">Stack</div>
         <Button
@@ -106,7 +106,7 @@ const IssueStack = ({ stack }: { stack: string | null }) => {
         </Button>
       </div>
       {expanded && (
-        <pre className="overflow-x-auto whitespace-pre p-2 text-sm">
+        <pre className="overflow-x-auto p-2 text-sm whitespace-pre">
           {stack}
         </pre>
       )}
@@ -120,7 +120,7 @@ const IssueProperties = ({ properties }: { properties: unknown }) => {
   if (!properties) return null;
 
   return (
-    <div className="w-full space-y-2 rounded-lg bg-canvas/50 p-2">
+    <div className="bg-canvas/50 w-full space-y-2 rounded-lg p-2">
       <div className="flex w-full items-center justify-between">
         <div className="text-sm font-semibold">Properties</div>
         <Button
@@ -132,7 +132,7 @@ const IssueProperties = ({ properties }: { properties: unknown }) => {
         </Button>
       </div>
       {expanded && (
-        <pre className="overflow-x-auto whitespace-pre-wrap text-sm">
+        <pre className="overflow-x-auto text-sm whitespace-pre-wrap">
           {JSON.stringify(properties, null, 2)}
         </pre>
       )}

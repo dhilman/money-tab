@@ -57,12 +57,12 @@ export const BentoIssuesList = ({ issues }: Props) => {
                       setSelectedHashes((prev) =>
                         prev.includes(issue.hash)
                           ? prev.filter((hash) => hash !== issue.hash)
-                          : [...prev, issue.hash]
+                          : [...prev, issue.hash],
                       );
                     }}
                   />
                   {i < issues.length - 1 && (
-                    <div className="h-px w-full bg-hint/20" />
+                    <div className="bg-hint/20 h-px w-full" />
                   )}
                 </div>
               ))}
@@ -85,14 +85,14 @@ const IssueListItem = ({ issue, selected, onToggle }: IssueListItemProps) => {
     <div className="relative flex w-full flex-col gap-1.5 rounded-lg px-2 py-2">
       <MyLink
         route={{ pathname: "/admin/issue/[hash]", query: { hash: issue.hash } }}
-        className="absolute left-0 top-0 z-10 h-full w-3/4"
+        className="absolute top-0 left-0 z-10 h-full w-3/4"
       />
-      <div className="flex w-full items-center justify-between gap-2 text-sm text-hint">
+      <div className="text-hint flex w-full items-center justify-between gap-2 text-sm">
         <div className="inline-flex items-center gap-1.5">
           <span className="rounded-md bg-blue-500/5 px-3 text-blue-500">
             {adminFormatDate(issue.timestamp ?? "")}
           </span>
-          <div className="h-1 w-1 rounded-full bg-hint" />
+          <div className="bg-hint h-1 w-1 rounded-full" />
           <span className="rounded-md bg-red-500/10 px-3 text-red-500">
             {issue.count}
           </span>
@@ -103,15 +103,15 @@ const IssueListItem = ({ issue, selected, onToggle }: IssueListItemProps) => {
         <span>{issue.path ?? "no-path"}</span>
         {issue.procedure && (
           <>
-            <div className="h-1 w-1 rounded-full bg-hint" />
+            <div className="bg-hint h-1 w-1 rounded-full" />
             <span>{issue.procedure}</span>
           </>
         )}
-        <div className="h-1 w-1 rounded-full bg-hint" />
+        <div className="bg-hint h-1 w-1 rounded-full" />
         <span>{issue.type}</span>
       </div>
       {issue.message && (
-        <div className="w-full truncate text-left text-sm text-hint">
+        <div className="text-hint w-full truncate text-left text-sm">
           {issue.message}
         </div>
       )}

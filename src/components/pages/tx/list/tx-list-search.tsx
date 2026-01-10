@@ -44,13 +44,13 @@ export const TxListSearch = (props: Props) => {
     <Bento className="flex flex-col gap-2">
       <div
         className={cn(
-          "flex h-9 w-full items-center gap-1 rounded-lg bg-hint/10 px-3 text-hint",
-          "bg-[#747480]/[0.12] text-foreground dark:bg-[#767680]/[0.24]"
+          "bg-hint/10 text-hint flex h-9 w-full items-center gap-1 rounded-lg px-3",
+          "text-foreground bg-[#747480]/12 dark:bg-[#767680]/24",
         )}
       >
-        <SearchIcon className="h-5 w-5 text-hint" />
+        <SearchIcon className="text-hint h-5 w-5" />
         <TextInput
-          className="h-7 w-full bg-transparent pl-1 pr-2 text-sm"
+          className="h-7 w-full bg-transparent pr-2 pl-1 text-sm"
           placeholder={t("search_txs")}
           value={props.query}
           onChange={(v) => props.setQuery(v)}
@@ -93,7 +93,7 @@ const UserSelectDrawer = ({ userId, setUserId }: UserSelectDrawerProps) => {
         <ButtonV1
           variant="tertiary"
           size="picker"
-          className="gap-1.5 rounded-full border border-hint/20 px-4 py-1.5 font-medium"
+          className="border-hint/20 gap-1.5 rounded-full border px-4 py-1.5 font-medium"
         >
           <TriggerContent />
         </ButtonV1>
@@ -152,7 +152,7 @@ const GroupSelectDrawer = ({ groupId, setGroupId }: GroupSelectDrawerProps) => {
         <ButtonV1
           variant="tertiary"
           size="picker"
-          className="gap-1.5 rounded-full border border-hint/20 px-4 py-1.5 font-medium"
+          className="border-hint/20 gap-1.5 rounded-full border px-4 py-1.5 font-medium"
         >
           <TriggerContent />
         </ButtonV1>

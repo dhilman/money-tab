@@ -73,7 +73,7 @@ const CreateUser = () => {
 
   return (
     <Bento>
-      <Accordion type="multiple" className="w-full rounded-xl bg-background">
+      <Accordion type="multiple" className="bg-background w-full rounded-xl">
         <AccordionItem value="create" className="border-b-0">
           <AccordionTrigger className="px-4">Create User</AccordionTrigger>
           <AccordionContent className="flex w-full flex-col gap-2 px-3">
@@ -81,7 +81,7 @@ const CreateUser = () => {
               <Label>First Name</Label>
               <Input
                 value={firstName}
-                className="border border-hint/30"
+                className="border-hint/30 border"
                 onChange={(e) => setFirstName(e.target.value)}
               />
             </div>
@@ -89,7 +89,7 @@ const CreateUser = () => {
               <Label>Last Name</Label>
               <Input
                 value={lastName}
-                className="border border-hint/30"
+                className="border-hint/30 border"
                 onChange={(e) => setLastName(e.target.value)}
               />
             </div>
@@ -97,7 +97,7 @@ const CreateUser = () => {
               <Label>Username</Label>
               <Input
                 value={username}
-                className="border border-hint/30"
+                className="border-hint/30 border"
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>

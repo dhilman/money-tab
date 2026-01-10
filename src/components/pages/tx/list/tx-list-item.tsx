@@ -34,8 +34,8 @@ export const TxLoading = () => {
   return (
     <ListItem>
       <ListItemLeft>
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-canvas/50">
-          <div className="h-6 w-6 animate-pulse rounded-lg bg-canvas/50" />
+        <div className="bg-canvas/50 flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
+          <div className="bg-canvas/50 h-6 w-6 animate-pulse rounded-lg" />
         </div>
       </ListItemLeft>
       <ListItemBody className="h-16 gap-4">
@@ -45,9 +45,9 @@ export const TxLoading = () => {
         <div className="ml-auto flex shrink-0 flex-col items-end justify-center gap-1">
           <div className="inline-flex items-center justify-center gap-1">
             <LoadingText text="20.00" className="text-sm font-semibold" />
-            <ChevronRightIcon className="h-4 w-4 text-hint/50" />
+            <ChevronRightIcon className="text-hint/50 h-4 w-4" />
           </div>
-          <div className="h-4 w-16 rounded-md bg-canvas/50" />
+          <div className="bg-canvas/50 h-4 w-16 rounded-md" />
         </div>
       </ListItemBody>
     </ListItem>
@@ -80,7 +80,7 @@ export const TxContainer = ({ transaction, children }: TxContainerProps) => {
         <div
           className={cn(
             "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
-            style.colorbg
+            style.colorbg,
           )}
         >
           <TxIcon
@@ -88,7 +88,7 @@ export const TxContainer = ({ transaction, children }: TxContainerProps) => {
             className={cn(
               "shrink-0 rounded-full bg-white stroke-[2.5px] p-1.5",
               "h-[26px] w-[26px]",
-              style.color
+              style.color,
             )}
           />
         </div>
@@ -96,7 +96,7 @@ export const TxContainer = ({ transaction, children }: TxContainerProps) => {
 
       <ListItemBody className="h-16 w-full gap-4 overflow-hidden">
         {/* Counterparty + Description */}
-        <div className="w-full truncate text-ellipsis text-left">
+        <div className="w-full truncate text-left text-ellipsis">
           {children}
         </div>
 
@@ -130,8 +130,8 @@ export const TxDescription = ({
   return (
     <div
       className={cn(
-        "w-full max-w-full truncate whitespace-nowrap text-base",
-        className
+        "w-full max-w-full truncate text-base whitespace-nowrap",
+        className,
       )}
     >
       {type === "SETTLE" ? t("settlement") : desc || t("no_desc")}
@@ -155,7 +155,7 @@ const TxUsers = ({ contribs }: TxUsersProps) => {
 
   return (
     <UserNamesList
-      className="text-sm text-hint"
+      className="text-hint text-sm"
       userIds={others.map((c) => c.userId as string)}
     />
   );
@@ -171,7 +171,7 @@ function getTransactionStyling(tr: BaseTransaction): TransactionStyling {
   if (tr.type === "SETTLE") {
     return {
       color: "text-blue-500",
-      colorbg: "bg-gradient-to-b from-cyan-300 to-blue-500",
+      colorbg: "bg-linear-to-b from-cyan-300 to-blue-500",
       icon: "settle",
     };
   }
@@ -179,7 +179,7 @@ function getTransactionStyling(tr: BaseTransaction): TransactionStyling {
   if (tr.net === 0) {
     return {
       color: "text-hint",
-      colorbg: "bg-gradient-to-b from-hint/50 to-hint/50",
+      colorbg: "bg-linear-to-b from-hint/50 to-hint/50",
       icon: "borrow",
     };
   }
@@ -187,14 +187,14 @@ function getTransactionStyling(tr: BaseTransaction): TransactionStyling {
   if (tr.net < 0) {
     return {
       color: "text-red-500",
-      colorbg: "bg-gradient-to-b from-pink-300 to-red-500",
+      colorbg: "bg-linear-to-b from-pink-300 to-red-500",
       icon: "borrow",
     };
   }
 
   return {
     color: "text-green-500",
-    colorbg: "bg-gradient-to-b from-green-300 to-green-500",
+    colorbg: "bg-linear-to-b from-green-300 to-green-500",
     icon: "lend",
   };
 }

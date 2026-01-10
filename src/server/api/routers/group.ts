@@ -18,7 +18,7 @@ export const groupRouter = createTRPCRouter({
         memberships: {
           with: { user: SelectUserColumns },
         },
-      }
+      },
     );
     return groups.map((group) => {
       const { memberships, ...rest } = group;

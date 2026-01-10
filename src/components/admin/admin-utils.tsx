@@ -24,11 +24,11 @@ export const AdminTable = ({ values }: TableProps) => {
           key={v.key}
           className={cn(
             "grid w-full grid-cols-3 gap-2 p-2",
-            i % 2 === 0 ? "bg-canvas/50" : "bg-canvas/10"
+            i % 2 === 0 ? "bg-canvas/50" : "bg-canvas/10",
           )}
         >
           <div className="self-center text-sm font-semibold">{v.key}</div>
-          <div className="col-span-2 flex w-full select-text justify-end self-center text-right text-sm">
+          <div className="col-span-2 flex w-full justify-end self-center text-right text-sm select-text">
             {v.value}
           </div>
         </div>

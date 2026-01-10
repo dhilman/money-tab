@@ -30,7 +30,7 @@ function Page() {
 
         <Bento>
           <BentoHeader>Unique Users</BentoHeader>
-          <BentoContent className="pb-2 pt-3">
+          <BentoContent className="pt-3 pb-2">
             <DayCountAreaChart data={data.users} />
           </BentoContent>
         </Bento>
