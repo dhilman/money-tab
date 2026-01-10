@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { env } from "~/env.mjs";
 import { parseTgSearchParams } from "~/lib/url/share-url";
 
-export function middleware(req: NextRequest) {
+export default function proxy(req: NextRequest) {
   const data = parseTgSearchParams(req.nextUrl.searchParams);
   if (!data) return NextResponse.next();
 
