@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCurrencyAmountParser } from "~/components/form/amount-utils";
 import { useProfile } from "~/components/provider/auth/auth-provider";
@@ -30,6 +30,19 @@ export const FormAmountInput = ({
     if (amount === 0) return "";
     return (amount / 10 ** decimals).toFixed(decimals);
   });
+
+  // Sync internal value when amount changes externally (e.g., from receipt scan)
+  useEffect(() => {
+    const currentParsed = parser(value) ?? 0;
+    if (currentParsed !== amount) {
+      if (amount === 0) {
+        setValue("");
+      } else {
+        setValue((amount / 10 ** decimals).toFixed(decimals));
+      }
+    }
+  }, [amount, decimals, parser, value]);
+
   const onAmountChange = (v: string) => {
     const int = parser(v);
     if (int === null) return;

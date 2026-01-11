@@ -1,11 +1,12 @@
 /**
  * Receipt OCR provider using Vercel AI SDK with OpenRouter/Gemini.
  *
- * Uses structured output (generateObject) for reliable receipt parsing.
+ * Uses the official @openrouter/ai-sdk-provider with generateText + Output.object()
+ * for structured output generation.
  */
 
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { generateObject } from "ai";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { generateText, Output } from "ai";
 import { z } from "zod";
 import { env } from "~/env.mjs";
 
@@ -14,7 +15,7 @@ const ReceiptItemSchema = z.object({
   name: z.string().describe("Item name/description"),
   quantity: z.number().int().nullable().describe("Quantity purchased"),
   unit_price: z.number().int().nullable().describe("Price per unit in cents"),
-  total: z.number().int().describe("Total price for this item in cents"),
+  total: z.number().int().nullable().describe("Total price for this item in cents"),
 });
 
 const ReceiptParseSchema = z.object({
@@ -52,14 +53,8 @@ function getModel() {
   if (!env.OPENROUTER_API_KEY) {
     throw new Error("OPENROUTER_API_KEY is not configured");
   }
-  const openrouter = createOpenAICompatible({
-    name: "openrouter",
-    baseURL: "https://openrouter.ai/api/v1",
-    headers: {
-      Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
-      "HTTP-Referer": "https://moneytab.app",
-      "X-Title": "MoneyTab",
-    },
+  const openrouter = createOpenRouter({
+    apiKey: env.OPENROUTER_API_KEY,
   });
   return openrouter("google/gemini-3-flash-preview");
 }
@@ -112,33 +107,52 @@ export async function parseReceipt(
     : "";
 
   try {
-    const result = await generateObject({
-      model,
-      schema: ReceiptParseSchema,
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        {
-          role: "user",
-          content: [
-            {
-              type: "image",
-              image: imageContent,
-            },
-            {
-              type: "text",
-              text: `Parse this receipt image and extract all information.${currencyNote}`,
-            },
-          ],
-        },
-      ],
-    });
+    console.log("[receipt.ocr] Calling OpenRouter with Gemini 3 Flash...");
+    console.log("[receipt.ocr] Image size:", imageContent.length, "chars");
+
+    // Add timeout via AbortController (60 seconds)
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60000);
+
+    let result;
+    try {
+      result = await generateText({
+        model,
+        output: Output.object({
+          schema: ReceiptParseSchema,
+        }),
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          {
+            role: "user",
+            content: [
+              {
+                type: "image",
+                image: imageContent,
+              },
+              {
+                type: "text",
+                text: `Parse this receipt image and extract all information.${currencyNote}`,
+              },
+            ],
+          },
+        ],
+        abortSignal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    console.log("[receipt.ocr] Parsed successfully, output:", result.output);
 
     return {
-      receipt: result.object,
+      receipt: result.output!,
       latencyMs: Date.now() - startTime,
     };
   } catch (err) {
-    console.error("Receipt OCR failed:", err);
-    throw new Error("Failed to parse receipt");
+    const errMessage =
+      err instanceof Error ? err.message : JSON.stringify(err);
+    console.error("Receipt OCR failed:", errMessage, err);
+    throw new Error(`Failed to parse receipt: ${errMessage}`);
   }
 }

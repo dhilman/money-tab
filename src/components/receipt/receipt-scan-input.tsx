@@ -29,10 +29,7 @@ export const ReceiptScanInput = ({ disabled }: ReceiptScanInputProps) => {
   const receiptCtx = useReceiptCtxOptional();
 
   const parseMutation = api.receipt.parse.useMutation({
-    onSuccess: (data) => {
-      receiptCtx?.setReceipt(data);
-    },
-    // Error handling is done in the catch block below to avoid double toast
+    // Success is handled in onFileChange to include file metadata
   });
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,8 +54,17 @@ export const ReceiptScanInput = ({ disabled }: ReceiptScanInputProps) => {
         return;
       }
 
-      await parseMutation.mutateAsync({
+      const result = await parseMutation.mutateAsync({
         fileUrl: meta.url,
+      });
+
+      // Set receipt with file metadata for auto-attachment
+      receiptCtx?.setReceipt(result, {
+        id: meta.id,
+        url: meta.url,
+        key: meta.key,
+        size: file.size,
+        type: file.type,
       });
     } catch {
       toast.error(t("error.receipt_scan"));

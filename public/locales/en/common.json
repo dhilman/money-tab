@@ -199,7 +199,7 @@
     "scan": "Scan Receipt",
     "scanning": "Scanning...",
     "scanned": "Receipt Scanned",
-    "use_total": "Use Total",
+    "use_total": "Use",
     "split_by_items": "Split by Items",
     "items_count_one": "{{count}} item",
     "items_count_other": "{{count}} items"

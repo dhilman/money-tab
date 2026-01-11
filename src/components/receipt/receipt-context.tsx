@@ -13,6 +13,7 @@ import type {
   ReceiptItem,
   ReceiptParse,
 } from "~/lib/receipt";
+import type { Attachment } from "~/components/form/file-input";
 
 // ============================================================================
 // Types
@@ -21,6 +22,8 @@ import type {
 interface ReceiptState {
   /** The parsed receipt from OCR, or null if no receipt scanned */
   receipt: ReceiptParse | null;
+  /** The receipt image file metadata for attachment */
+  receiptFile: Attachment | null;
   /** Item-to-participant assignments */
   assignments: ItemAssignment[];
   /** Extra charges (tax, tip, etc.) with allocation methods */
@@ -30,8 +33,8 @@ interface ReceiptState {
 }
 
 interface ReceiptContextValue extends ReceiptState {
-  /** Set the parsed receipt from OCR */
-  setReceipt: (receipt: ReceiptParse | null) => void;
+  /** Set the parsed receipt from OCR with file metadata */
+  setReceipt: (receipt: ReceiptParse | null, file?: Attachment | null) => void;
   /** Clear the receipt and all assignments */
   clearReceipt: () => void;
 
@@ -91,59 +94,65 @@ export function ReceiptProvider({
   children,
 }: ReceiptProviderProps) {
   const [receipt, setReceiptState] = useState<ReceiptParse | null>(null);
+  const [receiptFile, setReceiptFile] = useState<Attachment | null>(null);
   const [assignments, setAssignments] = useState<ItemAssignment[]>([]);
   const [extras, setExtras] = useState<ExtraCharge[]>([]);
   const [splitEnabled, setSplitEnabled] = useState(false);
 
   // Initialize extras from receipt
-  const setReceipt = useCallback((newReceipt: ReceiptParse | null) => {
-    setReceiptState(newReceipt);
-    setAssignments([]);
-    setSplitEnabled(false);
+  const setReceipt = useCallback(
+    (newReceipt: ReceiptParse | null, file?: Attachment | null) => {
+      setReceiptState(newReceipt);
+      setReceiptFile(file ?? null);
+      setAssignments([]);
+      setSplitEnabled(false);
 
-    if (newReceipt) {
-      // Initialize extras from receipt
-      const newExtras: ExtraCharge[] = [];
-      if (newReceipt.tax) {
-        newExtras.push({
-          id: "tax",
-          label: "Tax",
-          amount: newReceipt.tax,
-          method: { type: "proportional_to_subtotal" },
-        });
+      if (newReceipt) {
+        // Initialize extras from receipt
+        const newExtras: ExtraCharge[] = [];
+        if (newReceipt.tax) {
+          newExtras.push({
+            id: "tax",
+            label: "Tax",
+            amount: newReceipt.tax,
+            method: { type: "proportional_to_subtotal" },
+          });
+        }
+        if (newReceipt.tip) {
+          newExtras.push({
+            id: "tip",
+            label: "Tip",
+            amount: newReceipt.tip,
+            method: { type: "even_among_involved" },
+          });
+        }
+        if (newReceipt.service) {
+          newExtras.push({
+            id: "service",
+            label: "Service",
+            amount: newReceipt.service,
+            method: { type: "proportional_to_subtotal" },
+          });
+        }
+        if (newReceipt.discount) {
+          newExtras.push({
+            id: "discount",
+            label: "Discount",
+            amount: -newReceipt.discount, // Negative for discount
+            method: { type: "proportional_to_subtotal" },
+          });
+        }
+        setExtras(newExtras);
+      } else {
+        setExtras([]);
       }
-      if (newReceipt.tip) {
-        newExtras.push({
-          id: "tip",
-          label: "Tip",
-          amount: newReceipt.tip,
-          method: { type: "even_among_involved" },
-        });
-      }
-      if (newReceipt.service) {
-        newExtras.push({
-          id: "service",
-          label: "Service",
-          amount: newReceipt.service,
-          method: { type: "proportional_to_subtotal" },
-        });
-      }
-      if (newReceipt.discount) {
-        newExtras.push({
-          id: "discount",
-          label: "Discount",
-          amount: -newReceipt.discount, // Negative for discount
-          method: { type: "proportional_to_subtotal" },
-        });
-      }
-      setExtras(newExtras);
-    } else {
-      setExtras([]);
-    }
-  }, []);
+    },
+    []
+  );
 
   const clearReceipt = useCallback(() => {
     setReceiptState(null);
+    setReceiptFile(null);
     setAssignments([]);
     setExtras([]);
     setSplitEnabled(false);
@@ -235,6 +244,7 @@ export function ReceiptProvider({
   const value = useMemo<ReceiptContextValue>(
     () => ({
       receipt,
+      receiptFile,
       assignments,
       extras,
       splitEnabled,
@@ -251,6 +261,7 @@ export function ReceiptProvider({
     }),
     [
       receipt,
+      receiptFile,
       assignments,
       extras,
       splitEnabled,

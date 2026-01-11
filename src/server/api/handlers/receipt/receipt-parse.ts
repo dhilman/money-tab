@@ -22,8 +22,14 @@ const input = z.object({
 export const receiptParseHandler = privateProcedure
   .input(input)
   .mutation(async ({ input }): Promise<ReceiptParse> => {
+    console.log("[receipt.parse] Starting parse for:", input.fileUrl);
+
     // Validate URL is from our S3 bucket (prevent SSRF)
     if (!input.fileUrl.startsWith(env.S3_URL)) {
+      console.log(
+        "[receipt.parse] URL validation failed. Expected prefix:",
+        env.S3_URL,
+      );
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: "Invalid file URL",
@@ -55,6 +61,11 @@ export const receiptParseHandler = privateProcedure
 
     const imageBuffer = await imageResponse.arrayBuffer();
     const imageData = Buffer.from(imageBuffer).toString("base64");
+    console.log(
+      "[receipt.parse] Image fetched, size:",
+      imageBuffer.byteLength,
+      "bytes",
+    );
 
     // Determine media type from content-type header or URL
     let mediaType = imageResponse.headers.get("content-type") ?? "image/jpeg";
@@ -70,20 +81,32 @@ export const receiptParseHandler = privateProcedure
     }
 
     // Parse the receipt
-    const result = await parseReceipt({
-      imageData,
-      mediaType,
-      currencyHint: input.currencyCode,
-    });
+    let result;
+    try {
+      result = await parseReceipt({
+        imageData,
+        mediaType,
+        currencyHint: input.currencyCode,
+      });
+    } catch (err) {
+      console.error("Receipt parsing failed:", err);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: err instanceof Error ? err.message : "Failed to parse receipt",
+      });
+    }
 
     // Transform to our ReceiptParse type with IDs
-    const items: ReceiptItem[] = (result.receipt.items ?? []).map((item) => ({
-      id: createId(),
-      name: item.name,
-      quantity: item.quantity ?? undefined,
-      unitPrice: item.unit_price ?? undefined,
-      total: item.total,
-    }));
+    // Filter out items without totals (they're not useful for splitting)
+    const items: ReceiptItem[] = (result.receipt.items ?? [])
+      .filter((item) => item.total != null)
+      .map((item) => ({
+        id: createId(),
+        name: item.name,
+        quantity: item.quantity ?? undefined,
+        unitPrice: item.unit_price ?? undefined,
+        total: item.total!,
+      }));
 
     return {
       sourceUrl: input.fileUrl,
