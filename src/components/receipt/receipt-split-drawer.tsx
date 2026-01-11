@@ -52,7 +52,7 @@ export const ReceiptSplitDrawer = ({
   if (!receipt) return null;
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
+    <Drawer open={open} onOpenChange={onOpenChange} handleOnly>
       <DrawerContent className="max-h-[85vh]">
         <DrawerHeader>
           <DrawerTitle>{t("receipt.split_by_items")}</DrawerTitle>

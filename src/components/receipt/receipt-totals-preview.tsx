@@ -33,6 +33,8 @@ export const ReceiptTotalsPreview = () => {
           <PersonTotalItem
             key={pt.userId}
             userId={pt.userId}
+            itemsSubtotal={pt.itemsSubtotal}
+            extrasTotal={pt.extrasTotal}
             total={pt.total}
             currencyCode={currencyCode}
           />
@@ -44,13 +46,16 @@ export const ReceiptTotalsPreview = () => {
 
 interface PersonTotalItemProps {
   userId: string;
+  itemsSubtotal: number;
+  extrasTotal: number;
   total: number;
   currencyCode: string;
 }
 
 const PersonTotalItem = ({
   userId,
-  total,
+  itemsSubtotal,
+  extrasTotal,
   currencyCode,
 }: PersonTotalItemProps) => {
   const user = useUser(userId);
@@ -58,9 +63,17 @@ const PersonTotalItem = ({
   return (
     <div className="flex shrink-0 flex-col items-center gap-1">
       <UserAvatarOrPlaceholder size="md" user={user} accentHash={userId} />
-      <span className="text-xs font-medium text-primary">
-        {formatAmountCurrency(total, currencyCode)}
-      </span>
+      <div className="flex flex-col items-center">
+        <span className="text-xs font-medium text-primary">
+          {formatAmountCurrency(itemsSubtotal, currencyCode)}
+        </span>
+        {extrasTotal !== 0 && (
+          <span className="text-[10px] font-medium text-orange-500">
+            {extrasTotal > 0 ? "+" : ""}
+            {formatAmountCurrency(extrasTotal, currencyCode)}
+          </span>
+        )}
+      </div>
     </div>
   );
 };
