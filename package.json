@@ -30,6 +30,7 @@
     "run:staging": "bun run --env-file=./.envs/.env.staging ..."
   },
   "dependencies": {
+    "@ai-sdk/openai-compatible": "^2.0.4",
     "@aws-sdk/client-s3": "^3.966.0",
     "@aws-sdk/s3-request-presigner": "^3.966.0",
     "@grammyjs/parse-mode": "^1.11.1",
@@ -56,6 +57,7 @@
     "@trpc/react-query": "^11.8.1",
     "@trpc/server": "^11.8.1",
     "@upstash/qstash": "^2.8.4",
+    "ai": "^6.0.27",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cookie": "^1.1.1",
