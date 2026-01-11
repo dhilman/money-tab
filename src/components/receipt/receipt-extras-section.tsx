@@ -1,9 +1,13 @@
 "use client";
 
 import { MinusIcon, PlusIcon, XIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useCurrencyAmountParser } from "~/components/form/amount-utils";
+import { useCurrencies } from "~/lib/amount/currencies";
 import { formatAmountCurrency } from "~/lib/amount/format-amount";
 import type { ExtraCharge, ExtrasAllocationMethod } from "~/lib/receipt";
+import { cn } from "~/lib/utils";
 import { SelectSimple } from "../ui/select-simple";
 import { useReceiptCtx } from "./receipt-context";
 
@@ -15,7 +19,8 @@ type AllocationMethodType = ExtrasAllocationMethod["type"];
  */
 export const ReceiptExtrasSection = () => {
   const { t } = useTranslation();
-  const { receipt, extras, setExtraMethod, removeExtra } = useReceiptCtx();
+  const { receipt, extras, setExtraMethod, setExtraAmount, removeExtra } =
+    useReceiptCtx();
 
   if (!extras.length) {
     return null;
@@ -80,6 +85,7 @@ export const ReceiptExtrasSection = () => {
             currencyCode={currencyCode}
             options={allocationOptions}
             onMethodChange={(method) => handleMethodChange(extra.id, method)}
+            onAmountChange={(amount) => setExtraAmount(extra.id, amount)}
             onRemove={() => removeExtra(extra.id)}
           />
         ))}
@@ -93,6 +99,7 @@ interface ExtraChargeRowProps {
   currencyCode: string;
   options: { label: string; value: AllocationMethodType; labelLong: string }[];
   onMethodChange: (method: AllocationMethodType) => void;
+  onAmountChange: (amount: number) => void;
   onRemove: () => void;
 }
 
@@ -108,12 +115,52 @@ const ExtraChargeRow = ({
   currencyCode,
   options,
   onMethodChange,
+  onAmountChange,
   onRemove,
 }: ExtraChargeRowProps) => {
   const { t } = useTranslation();
+  const currencies = useCurrencies();
+  // Fallback to USD if currency not found
+  const currency = currencies[currencyCode] ?? currencies["USD"]!;
+  const { decimals, parser } = useCurrencyAmountParser(currency);
+
   const isDiscount = extra.amount < 0;
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const label = t(extraLabels[extra.id]);
+
+  // Focus input when entering edit mode
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditing]);
+
+  const startEditing = () => {
+    const absAmount = Math.abs(extra.amount);
+    setEditValue((absAmount / 10 ** decimals).toFixed(decimals));
+    setIsEditing(true);
+  };
+
+  const commitEdit = () => {
+    const parsed = parser(editValue);
+    if (parsed !== null && parsed >= 0) {
+      // Preserve sign for discounts
+      onAmountChange(isDiscount ? -parsed : parsed);
+    }
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      commitEdit();
+    } else if (e.key === "Escape") {
+      setIsEditing(false);
+    }
+  };
 
   return (
     <div className="flex items-center justify-between gap-2 rounded-lg border border-hint/10 bg-background p-3">
@@ -131,9 +178,32 @@ const ExtraChargeRow = ({
           onChange={onMethodChange}
           options={options}
         />
-        <span className="text-sm font-medium text-primary">
-          {formatAmountCurrency(Math.abs(extra.amount), currencyCode)}
-        </span>
+        {isEditing ? (
+          <div className="flex items-center">
+            <span className="text-sm text-hint">{currency.symbol}</span>
+            <input
+              ref={inputRef}
+              type="text"
+              inputMode="decimal"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={commitEdit}
+              onKeyDown={handleKeyDown}
+              className={cn(
+                "w-16 bg-transparent text-right text-sm font-medium text-primary",
+                "border-b border-primary outline-none",
+              )}
+            />
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={startEditing}
+            className="text-sm font-medium text-primary hover:underline"
+          >
+            {formatAmountCurrency(Math.abs(extra.amount), currencyCode)}
+          </button>
+        )}
         <button
           type="button"
           onClick={onRemove}
