@@ -47,19 +47,22 @@ const ReceiptParseSchema = z.object({
 
 export type ParsedReceipt = z.infer<typeof ReceiptParseSchema>;
 
-// Create OpenRouter provider for Gemini
-const openrouter = createOpenAICompatible({
-  name: "openrouter",
-  baseURL: "https://openrouter.ai/api/v1",
-  headers: {
-    Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
-    "HTTP-Referer": "https://moneytab.app",
-    "X-Title": "MoneyTab",
-  },
-});
-
-// Gemini 3 Flash - best price/performance for receipt OCR
-const model = openrouter("google/gemini-3-flash-preview");
+// Lazily create OpenRouter provider (avoids failure at import time if key missing)
+function getModel() {
+  if (!env.OPENROUTER_API_KEY) {
+    throw new Error("OPENROUTER_API_KEY is not configured");
+  }
+  const openrouter = createOpenAICompatible({
+    name: "openrouter",
+    baseURL: "https://openrouter.ai/api/v1",
+    headers: {
+      Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
+      "HTTP-Referer": "https://moneytab.app",
+      "X-Title": "MoneyTab",
+    },
+  });
+  return openrouter("google/gemini-3-flash-preview");
+}
 
 const SYSTEM_PROMPT = `You are a receipt parser. Extract structured data from receipt images.
 
@@ -96,10 +99,7 @@ export interface ParseReceiptResult {
 export async function parseReceipt(
   input: ParseReceiptInput
 ): Promise<ParseReceiptResult> {
-  if (!env.OPENROUTER_API_KEY) {
-    throw new Error("OPENROUTER_API_KEY is not configured");
-  }
-
+  const model = getModel();
   const startTime = Date.now();
 
   // Build the image content - support both base64 and URLs
@@ -111,31 +111,34 @@ export async function parseReceipt(
     ? ` The expected currency is ${input.currencyHint}.`
     : "";
 
-  const result = await generateObject({
-    model,
-    schema: ReceiptParseSchema,
-    messages: [
-      { role: "system", content: SYSTEM_PROMPT },
-      {
-        role: "user",
-        content: [
-          {
-            type: "image",
-            image: imageContent,
-          },
-          {
-            type: "text",
-            text: `Parse this receipt image and extract all information.${currencyNote}`,
-          },
-        ],
-      },
-    ],
-  });
+  try {
+    const result = await generateObject({
+      model,
+      schema: ReceiptParseSchema,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        {
+          role: "user",
+          content: [
+            {
+              type: "image",
+              image: imageContent,
+            },
+            {
+              type: "text",
+              text: `Parse this receipt image and extract all information.${currencyNote}`,
+            },
+          ],
+        },
+      ],
+    });
 
-  const latencyMs = Date.now() - startTime;
-
-  return {
-    receipt: result.object,
-    latencyMs,
-  };
+    return {
+      receipt: result.object,
+      latencyMs: Date.now() - startTime,
+    };
+  } catch (err) {
+    console.error("Receipt OCR failed:", err);
+    throw new Error("Failed to parse receipt");
+  }
 }

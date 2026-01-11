@@ -232,22 +232,39 @@ export function ReceiptProvider({
     return unassignedItems.length === 0 && totalsDifference === 0;
   }, [splitEnabled, unassignedItems, totalsDifference]);
 
-  const value: ReceiptContextValue = {
-    receipt,
-    assignments,
-    extras,
-    splitEnabled,
-    setReceipt,
-    clearReceipt,
-    toggleItemAssignment,
-    setItemShare,
-    setExtraMethod,
-    setSplitEnabled,
-    personTotals,
-    unassignedItems,
-    totalsDifference,
-    isValid,
-  };
+  const value = useMemo<ReceiptContextValue>(
+    () => ({
+      receipt,
+      assignments,
+      extras,
+      splitEnabled,
+      setReceipt,
+      clearReceipt,
+      toggleItemAssignment,
+      setItemShare,
+      setExtraMethod,
+      setSplitEnabled,
+      personTotals,
+      unassignedItems,
+      totalsDifference,
+      isValid,
+    }),
+    [
+      receipt,
+      assignments,
+      extras,
+      splitEnabled,
+      setReceipt,
+      clearReceipt,
+      toggleItemAssignment,
+      setItemShare,
+      setExtraMethod,
+      personTotals,
+      unassignedItems,
+      totalsDifference,
+      isValid,
+    ]
+  );
 
   return (
     <ReceiptContext.Provider value={value}>{children}</ReceiptContext.Provider>

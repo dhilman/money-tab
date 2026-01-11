@@ -4,8 +4,10 @@
  * Takes an image URL (from S3), fetches it, and parses using OCR.
  */
 
+import { TRPCError } from "@trpc/server";
 import { createId } from "@paralleldrive/cuid2";
 import { z } from "zod";
+import { env } from "~/env.mjs";
 import type { ReceiptItem, ReceiptParse } from "~/lib/receipt/types";
 import { privateProcedure } from "~/server/api/trpc";
 import { parseReceipt } from "./ocr-provider";
@@ -20,10 +22,35 @@ const input = z.object({
 export const receiptParseHandler = privateProcedure
   .input(input)
   .mutation(async ({ input }): Promise<ReceiptParse> => {
-    // Fetch the image from S3
-    const imageResponse = await fetch(input.fileUrl);
+    // Validate URL is from our S3 bucket (prevent SSRF)
+    if (!input.fileUrl.startsWith(env.S3_URL)) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Invalid file URL",
+      });
+    }
+
+    // Fetch the image from S3 with timeout
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+
+    let imageResponse: Response;
+    try {
+      imageResponse = await fetch(input.fileUrl, { signal: controller.signal });
+    } catch (err) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to fetch image",
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+
     if (!imageResponse.ok) {
-      throw new Error(`Failed to fetch image: ${imageResponse.status}`);
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Image not found",
+      });
     }
 
     const imageBuffer = await imageResponse.arrayBuffer();
