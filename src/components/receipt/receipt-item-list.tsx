@@ -81,6 +81,7 @@ const ReceiptItemRow = ({
     <div
       className={cn(
         "rounded-lg border border-hint/10 bg-background p-3",
+        "touch-manipulation", // Prevent touch delays
         isUnassigned && "border-orange-500/50",
       )}
     >
