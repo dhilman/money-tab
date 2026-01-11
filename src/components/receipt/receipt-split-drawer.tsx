@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Drawer,
@@ -33,6 +34,14 @@ export const ReceiptSplitDrawer = ({
   const { receipt, isValid, clearReceipt, setSplitEnabled } = useReceiptCtx();
   const { applyToTransaction } = useApplyReceipt();
 
+  // Enable split mode when drawer opens (useEffect because onOpenChange isn't
+  // called when programmatically opening the drawer)
+  useEffect(() => {
+    if (open) {
+      setSplitEnabled(true);
+    }
+  }, [open, setSplitEnabled]);
+
   const handleApply = () => {
     if (!isValid) return;
     applyToTransaction();
@@ -40,18 +49,10 @@ export const ReceiptSplitDrawer = ({
     onOpenChange(false);
   };
 
-  const handleOpenChange = (nextOpen: boolean) => {
-    if (nextOpen) {
-      // Enable split mode when drawer opens
-      setSplitEnabled(true);
-    }
-    onOpenChange(nextOpen);
-  };
-
   if (!receipt) return null;
 
   return (
-    <Drawer open={open} onOpenChange={handleOpenChange}>
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="max-h-[85vh]">
         <DrawerHeader>
           <DrawerTitle>{t("receipt.split_by_items")}</DrawerTitle>
