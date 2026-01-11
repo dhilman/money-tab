@@ -248,7 +248,7 @@ const UserListItem = ({
           <div className="text-sm text-hint">
             {isPayer
               ? t("your_share", { amount: amountOwed })
-              : t("owes", { amount: amountOwed })}
+              : t("their_share", { amount: amountOwed })}
           </div>
         </div>
         <div className="ml-auto flex items-center gap-2">

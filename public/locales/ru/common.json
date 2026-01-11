@@ -193,7 +193,7 @@
   "others_other": "ещё {{count}}",
   "others_will_be_able_to_connect": "Люди смогут добавить вас в свои контакты, посетив эту ссылку",
   "owed_to_you": "Должны вам",
-  "owes": "Должен {{amount}}",
+  "their_share": "Их доля: {{amount}}",
   "paid_by": "Плательщик",
   "participants": "Участники",
   "participants_placeholder": "Участники (только вы)",
