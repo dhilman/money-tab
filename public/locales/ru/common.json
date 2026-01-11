@@ -207,10 +207,36 @@
     "scanned": "Чек Отсканирован",
     "use_total": "Применить",
     "split_by_items": "Разделить по Позициям",
+    "apply_split": "Применить",
     "items_count_one": "{{count}} позиция",
     "items_count_few": "{{count}} позиции",
     "items_count_many": "{{count}} позиций",
-    "items_count_other": "{{count}} позиций"
+    "items_count_other": "{{count}} позиций",
+    "extras": "Дополнительно",
+    "assign_items_hint": "Нажмите на позиции чтобы назначить участников",
+    "extra": {
+      "tax": "Налог",
+      "tip": "Чаевые",
+      "service": "Сервис",
+      "discount": "Скидка"
+    },
+    "allocation": {
+      "proportional": "Пропорц.",
+      "proportional_long": "Пропорционально позициям",
+      "even_involved": "Поровну (уч.)",
+      "even_involved_long": "Поровну среди тех кто участвует",
+      "even_all": "Поровну (все)",
+      "even_all_long": "Поровну среди всех участников"
+    },
+    "validation": {
+      "ready": "Готово к применению",
+      "unassigned_items_one": "{{count}} позиция не назначена",
+      "unassigned_items_few": "{{count}} позиции не назначены",
+      "unassigned_items_many": "{{count}} позиций не назначено",
+      "unassigned_items_other": "{{count}} позиций не назначено",
+      "over_total": "{{amount}} больше суммы чека",
+      "under_total": "{{amount}} меньше суммы чека"
+    }
   },
   "recent": "Недавние",
   "recent_expenses": "Недавние Расходы",

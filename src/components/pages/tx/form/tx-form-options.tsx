@@ -5,8 +5,10 @@ import { Bento, BentoContent } from "~/components/bento-box";
 import { AddDateButton, DateInputV1 } from "~/components/form/date-input-v1";
 import { FileInput, FilePreviewList } from "~/components/form/file-input";
 import { useTxEditCtx } from "~/components/pages/tx/form/tx-form-ctx";
+import { useTgDrawerState } from "~/components/provider/platform/tg";
 import {
   ReceiptScanInput,
+  ReceiptSplitDrawer,
   ReceiptSummaryCard,
   useReceiptCtxOptional,
 } from "~/components/receipt";
@@ -15,6 +17,9 @@ import { getDateYYYYMMDD } from "~/lib/dates/dates";
 export const TxEditOptions = () => {
   const { files, setFiles } = useTxEditCtx();
   const receiptCtx = useReceiptCtxOptional();
+  const splitDrawer = useTgDrawerState();
+
+  const hasItems = (receiptCtx?.receipt?.items.length ?? 0) > 0;
 
   return (
     <div className="w-full space-y-5">
@@ -40,11 +45,21 @@ export const TxEditOptions = () => {
           />
         </BentoContent>
       </Bento>
-      {receiptCtx?.receipt && <ReceiptSummaryCard />}
+      {receiptCtx?.receipt && (
+        <ReceiptSummaryCard
+          onSplitByItems={hasItems ? splitDrawer.onOpen : undefined}
+        />
+      )}
       <FilePreviewList
         files={files}
         onRemove={(id) => setFiles((prev) => prev.filter((x) => x.id !== id))}
       />
+      {receiptCtx && (
+        <ReceiptSplitDrawer
+          open={splitDrawer.open}
+          onOpenChange={splitDrawer.onOpenChange}
+        />
+      )}
     </div>
   );
 };

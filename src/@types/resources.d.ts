@@ -247,8 +247,32 @@ interface Resources {
       "scanned": "Receipt Scanned",
       "use_total": "Use Total",
       "split_by_items": "Split by Items",
+      "apply_split": "Apply Split",
       "items_count_one": "{{count}} item",
-      "items_count_other": "{{count}} items"
+      "items_count_other": "{{count}} items",
+      "extras": "Extras",
+      "assign_items_hint": "Tap items to assign participants",
+      "extra": {
+        "tax": "Tax",
+        "tip": "Tip",
+        "service": "Service",
+        "discount": "Discount"
+      },
+      "allocation": {
+        "proportional": "Proportional",
+        "proportional_long": "Split proportionally to items",
+        "even_involved": "Even (involved)",
+        "even_involved_long": "Split evenly among those with items",
+        "even_all": "Even (all)",
+        "even_all_long": "Split evenly among all participants"
+      },
+      "validation": {
+        "ready": "Ready to apply",
+        "unassigned_items_one": "{{count}} item not assigned",
+        "unassigned_items_other": "{{count}} items not assigned",
+        "over_total": "{{amount}} over receipt total",
+        "under_total": "{{amount}} under receipt total"
+      }
     },
     "recent": "Recent",
     "recent_expenses": "Recent Expenses",
