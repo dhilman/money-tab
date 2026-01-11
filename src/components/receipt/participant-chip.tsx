@@ -27,17 +27,21 @@ export const ParticipantChip = ({
   return (
     <button
       type="button"
-      onClick={onToggle}
+      onClick={(e) => {
+        e.stopPropagation();
+        onToggle();
+      }}
       disabled={disabled}
       className={cn(
         "relative flex h-8 w-8 items-center justify-center rounded-full transition-all",
+        "touch-manipulation select-none", // Improves touch responsiveness
         selected ? "ring-2 ring-primary ring-offset-1" : "opacity-40",
         disabled && "pointer-events-none",
       )}
     >
       <UserAvatarOrPlaceholder size="sm" user={user} accentHash={userId} />
       {selected && (
-        <div className="absolute -right-0.5 -bottom-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-white">
+        <div className="absolute -right-0.5 -bottom-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-white pointer-events-none">
           <CheckIcon className="h-2.5 w-2.5" />
         </div>
       )}
