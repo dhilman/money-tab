@@ -178,6 +178,7 @@ const UserListItem = ({
     resetSplitValue,
     invalid,
     payerId,
+    meId,
   } = useParticipantsCtx();
   const { decimals, parser } = useCurrencyAmountParser(currency);
   const [value, setValue] = useState("");
@@ -203,6 +204,26 @@ const UserListItem = ({
 
   const amountOwed = formatAmountCurrency(participant.amount, currency);
   const isPayer = participant.id === payerId;
+  const isMe = participant.id === meId;
+  const iAmPayer = meId === payerId;
+
+  // Determine the share label based on who paid and who this participant is
+  const getShareLabel = () => {
+    if (iAmPayer) {
+      // I paid: my share vs others owe
+      return isMe
+        ? t("your_share", { amount: amountOwed })
+        : t("owes", { amount: amountOwed });
+    } else {
+      // Someone else paid: their share vs I owe vs others owe
+      if (isPayer) {
+        return t("their_share", { amount: amountOwed });
+      }
+      return isMe
+        ? t("you_owe_amount", { amount: amountOwed })
+        : t("owes", { amount: amountOwed });
+    }
+  };
 
   const parseInputValue = (v: string): number | null => {
     switch (splitMode) {
@@ -245,11 +266,7 @@ const UserListItem = ({
       <ListItemBody>
         <div className="w-full truncate">
           <PartyUserName user={user} />
-          <div className="text-sm text-hint">
-            {isPayer
-              ? t("your_share", { amount: amountOwed })
-              : t("their_share", { amount: amountOwed })}
-          </div>
+          <div className="text-sm text-hint">{getShareLabel()}</div>
         </div>
         <div className="ml-auto flex items-center gap-2">
           {isManual && (
