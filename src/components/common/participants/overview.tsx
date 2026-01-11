@@ -10,9 +10,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Bento } from "~/components/bento-box";
 import { useParticipantsCtx } from "~/components/common/participants/provider";
-import type {
-  Participant,
-  SplitMode,
+import {
+  getSplitValue,
+  PERCENTAGE_SCALE,
+  type Participant,
+  type SplitMode,
 } from "~/components/common/participants/reducer";
 import { PartyUserName } from "~/components/common/participants/username";
 import { useCurrencyAmountParser } from "~/components/form/amount-utils";
@@ -162,19 +164,6 @@ interface UserListItemProps {
   participant: Participant;
 }
 
-const PERCENTAGE_SCALE = 100;
-
-function getSplitValue(participant: Participant, mode: SplitMode) {
-  switch (mode) {
-    case "amount":
-      return participant.splitAmount;
-    case "percentage":
-      return participant.splitPercentage;
-    case "shares":
-      return participant.splitShares;
-  }
-}
-
 const UserListItem = ({
   setRef,
   onKeyDown,
@@ -215,42 +204,32 @@ const UserListItem = ({
   const amountOwed = formatAmountCurrency(participant.amount, currency);
   const isPayer = participant.id === payerId;
 
+  const parseInputValue = (v: string): number | null => {
+    switch (splitMode) {
+      case "amount":
+        return parser(v);
+      case "percentage":
+        if (!/^\d*\.?\d{0,2}$/.test(v)) return null;
+        const num = parseFloat(v);
+        if (isNaN(num)) return null;
+        return Math.round(num * PERCENTAGE_SCALE);
+      case "shares":
+        if (!/^\d+$/.test(v)) return null;
+        const int = parseInt(v, 10);
+        return isNaN(int) ? null : int;
+    }
+  };
+
   const onInputChange = (v: string) => {
     if (v === "") {
       setValue("");
       setSplitValue(participant.id, 0);
       return;
     }
-
-    switch (splitMode) {
-      case "amount": {
-        const int = parser(v);
-        if (int === null) return;
-        setSplitValue(participant.id, int);
-        setValue(v);
-        break;
-      }
-      case "percentage": {
-        // Allow decimals up to 2 places for percentage
-        if (!/^\d*\.?\d{0,2}$/.test(v)) return;
-        const num = parseFloat(v);
-        if (isNaN(num)) return;
-        // Store as scaled integer (e.g., 25.50% -> 2550)
-        const scaled = Math.round(num * PERCENTAGE_SCALE);
-        setSplitValue(participant.id, scaled);
-        setValue(v);
-        break;
-      }
-      case "shares": {
-        // Only allow integers for shares
-        if (!/^\d+$/.test(v)) return;
-        const int = parseInt(v, 10);
-        if (isNaN(int)) return;
-        setSplitValue(participant.id, int);
-        setValue(v);
-        break;
-      }
-    }
+    const parsed = parseInputValue(v);
+    if (parsed === null) return;
+    setSplitValue(participant.id, parsed);
+    setValue(v);
   };
 
   return (

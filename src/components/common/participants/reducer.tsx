@@ -5,9 +5,39 @@ import { splitAmount } from "~/lib/amount/split-amount";
 
 export type SplitMode = "amount" | "percentage" | "shares";
 
+/** Scale factor for percentage values (100 = 1%, 10000 = 100%) */
+export const PERCENTAGE_SCALE = 100;
+
 export interface SplitValue {
   value: number;
   manual: boolean;
+}
+
+/** Get the split value for a participant based on the current mode */
+export function getSplitValue(
+  participant: Participant,
+  mode: SplitMode,
+): SplitValue {
+  switch (mode) {
+    case "amount":
+      return participant.splitAmount;
+    case "percentage":
+      return participant.splitPercentage;
+    case "shares":
+      return participant.splitShares;
+  }
+}
+
+/** Get the default (non-manual) value for a split mode */
+function getDefaultSplitValue(mode: SplitMode): SplitValue {
+  switch (mode) {
+    case "amount":
+      return { value: 0, manual: false };
+    case "percentage":
+      return { value: 0, manual: false };
+    case "shares":
+      return { value: 1, manual: false };
+  }
 }
 
 export interface Participant {
@@ -185,7 +215,7 @@ function reducer(state: State, action: Action): State {
       newState = {
         ...state,
         groupId: action.groupId,
-        parties: partiesReducer(parties, action, state.splitMode),
+        parties: partiesReducer(parties, action),
       };
       break;
     }
@@ -193,13 +223,13 @@ function reducer(state: State, action: Action): State {
       newState = {
         ...state,
         groupId: "",
-        parties: partiesReducer(state.parties, action, state.splitMode),
+        parties: partiesReducer(state.parties, action),
       };
       break;
     default:
       newState = {
         ...state,
-        parties: partiesReducer(state.parties, action, state.splitMode),
+        parties: partiesReducer(state.parties, action),
       };
   }
 
@@ -213,7 +243,6 @@ function reducer(state: State, action: Action): State {
 function partiesReducer(
   arr: Participant[],
   action: PartiesAction,
-  _splitMode: SplitMode,
 ): Participant[] {
   switch (action.type) {
     case "add":
@@ -240,47 +269,35 @@ function partiesReducer(
     case "set_split_value":
       return arr.map((p) => {
         if (p.id !== action.id) return p;
-        switch (action.mode) {
-          case "amount":
-            return {
-              ...p,
-              splitAmount: { value: action.value, manual: true },
-            };
-          case "percentage":
-            return {
-              ...p,
-              splitPercentage: { value: action.value, manual: true },
-            };
-          case "shares":
-            return {
-              ...p,
-              splitShares: { value: action.value, manual: true },
-            };
-        }
+        return updateSplitValue(p, action.mode, {
+          value: action.value,
+          manual: true,
+        });
       });
     case "reset_split_value":
       return arr.map((p) => {
         if (p.id !== action.id) return p;
-        switch (action.mode) {
-          case "amount":
-            // Set amount: 0 so recalculation detects this participant needs a fresh value
-            return {
-              ...p,
-              amount: 0,
-              splitAmount: { value: 0, manual: false },
-            };
-          case "percentage":
-            return {
-              ...p,
-              splitPercentage: { value: 0, manual: false },
-            };
-          case "shares":
-            return {
-              ...p,
-              splitShares: { value: 1, manual: false },
-            };
-        }
+        const resetValue = getDefaultSplitValue(action.mode);
+        // For amount mode, also reset amount to 0 so recalculation triggers
+        const amount = action.mode === "amount" ? 0 : p.amount;
+        return updateSplitValue({ ...p, amount }, action.mode, resetValue);
       });
+  }
+}
+
+/** Update a specific split value on a participant */
+function updateSplitValue(
+  p: Participant,
+  mode: SplitMode,
+  value: SplitValue,
+): Participant {
+  switch (mode) {
+    case "amount":
+      return { ...p, splitAmount: value };
+    case "percentage":
+      return { ...p, splitPercentage: value };
+    case "shares":
+      return { ...p, splitShares: value };
   }
 }
 
@@ -372,9 +389,7 @@ function recalculateAmount(state: State): State {
 }
 
 function recalculatePercentage(state: State): State {
-  // Percentages are stored as integers (e.g., 50 = 50%, 2550 = 25.50%)
-  // We use basis points (100 = 1%) for precision
-  const PERCENTAGE_SCALE = 100; // 10000 = 100%
+  const FULL_PERCENTAGE = 100 * PERCENTAGE_SCALE; // 100% in scaled units
 
   const totals = state.parties.reduce(
     (acc, p) => {
@@ -387,26 +402,24 @@ function recalculatePercentage(state: State): State {
   );
 
   // Invalid if manual percentages exceed 100%
-  if (totals.manual > 100 * PERCENTAGE_SCALE) {
+  if (totals.manual > FULL_PERCENTAGE) {
     return {
       ...state,
       invalid: true,
       parties: state.parties.map((p) => ({
         ...p,
         amount: Math.round(
-          (state.total * p.splitPercentage.value) / (100 * PERCENTAGE_SCALE),
+          (state.total * p.splitPercentage.value) / FULL_PERCENTAGE,
         ),
       })),
     };
   }
 
-  const remainingPercentage = 100 * PERCENTAGE_SCALE - totals.manual;
+  const remainingPercentage = FULL_PERCENTAGE - totals.manual;
   const autoPercentage =
     totals.autoCount > 0
       ? Math.floor(remainingPercentage / totals.autoCount)
       : 0;
-
-  // Distribute remainder for rounding
   const remainder =
     totals.autoCount > 0 ? remainingPercentage % totals.autoCount : 0;
   let remainderToDistribute = remainder;
@@ -425,10 +438,7 @@ function recalculatePercentage(state: State): State {
           remainderToDistribute--;
         }
       }
-      const amount = Math.round(
-        (state.total * percentage) / (100 * PERCENTAGE_SCALE),
-      );
-      // Update splitPercentage.value for non-manual participants so UI shows calculated value
+      const amount = Math.round((state.total * percentage) / FULL_PERCENTAGE);
       return {
         ...p,
         amount,
