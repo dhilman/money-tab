@@ -28,22 +28,32 @@ JPEG_QUALITY = 85
 
 # Model configurations (OpenRouter format)
 MODELS = {
+    # Claude models
     "claude-sonnet": "openrouter/anthropic/claude-sonnet-4",
-    "claude-haiku": "openrouter/anthropic/claude-3.5-haiku",
+    "claude-haiku-4.5": "openrouter/anthropic/claude-haiku-4.5",
+    "claude-haiku-3.5": "openrouter/anthropic/claude-3.5-haiku",
+    # OpenAI models
     "gpt-4o": "openrouter/openai/gpt-4o",
     "gpt-4o-mini": "openrouter/openai/gpt-4o-mini",
-    "gemini-flash": "openrouter/google/gemini-2.0-flash-001",
-    "gemini-pro": "openrouter/google/gemini-pro-vision",
+    # Google models
+    "gemini-3-flash": "openrouter/google/gemini-3-flash-preview",
+    "gemini-2.5-flash": "openrouter/google/gemini-2.5-flash",
+    "gemini-2.0-flash": "openrouter/google/gemini-2.0-flash-001",
+    # xAI models
+    "grok-4-fast": "openrouter/x-ai/grok-4-fast",
 }
 
 # Approximate costs per 1M tokens (from OpenRouter)
 COSTS = {
     "claude-sonnet": {"input": 3.0, "output": 15.0},
-    "claude-haiku": {"input": 0.25, "output": 1.25},
+    "claude-haiku-4.5": {"input": 1.0, "output": 5.0},
+    "claude-haiku-3.5": {"input": 0.25, "output": 1.25},
     "gpt-4o": {"input": 2.5, "output": 10.0},
     "gpt-4o-mini": {"input": 0.15, "output": 0.6},
-    "gemini-flash": {"input": 0.075, "output": 0.3},
-    "gemini-pro": {"input": 0.25, "output": 0.5},
+    "gemini-3-flash": {"input": 0.50, "output": 3.00},
+    "gemini-2.5-flash": {"input": 0.30, "output": 2.50},
+    "gemini-2.0-flash": {"input": 0.075, "output": 0.3},
+    "grok-4-fast": {"input": 0.20, "output": 0.50},
 }
 
 
@@ -216,9 +226,9 @@ def run_all_receipts(
         print("Add receipt images (jpg, png, etc.) to the receipts/ folder")
         return
 
-    # Default to testing Sonnet and Haiku
+    # Default to testing key models
     if models is None:
-        models = ["claude-sonnet", "claude-haiku"]
+        models = ["grok-4-fast", "gemini-3-flash", "claude-haiku-4.5", "gpt-4o-mini"]
 
     print(f"Found {len(receipt_files)} receipt images")
     print(f"Testing models: {models}")

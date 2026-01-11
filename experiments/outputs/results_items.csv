@@ -1,0 +1,141 @@
+Receipt,Model,Item #,Item Name,Quantity,Unit Price,Item Total
+IMG_1780.jpeg,grok-4-fast,1,Coffee,1,$11.80,$11.80
+IMG_1780.jpeg,grok-4-fast,2,Pastry,1,,$8.62
+IMG_1780.jpeg,gemini-3-flash,1,Coke Zero,2,$3.20,$6.40
+IMG_1780.jpeg,gemini-3-flash,2,Porterhouse 750,1,$75.00,$75.00
+IMG_1780.jpeg,gemini-3-flash,3,Burger,1,$13.00,$13.00
+IMG_1780.jpeg,gemini-3-flash,4,Chips,1,$4.80,$4.80
+IMG_1780.jpeg,gemini-3-flash,5,Sweet Potato,2,$4.80,$9.60
+IMG_1780.jpeg,gemini-3-flash,6,Broccoli and Walnut Salad,2,$4.80,$9.60
+IMG_1780.jpeg,gemini-3-flash,7,Chop Sauce,1,$3.00,$3.00
+IMG_1780.jpeg,gemini-3-flash,8,Chilli Hollandaise,1,$2.00,$2.00
+IMG_1780.jpeg,claude-haiku-4.5,1,Cola Zero,2,,$4.00
+IMG_1780.jpeg,claude-haiku-4.5,2,Portirus 750,1,,$7.50
+IMG_1780.jpeg,claude-haiku-4.5,3,Oats,1,,$0.30
+IMG_1780.jpeg,gpt-4o-mini,1,Poke Zaru,2,$7.50,$15.00
+IMG_1780.jpeg,gpt-4o-mini,2,Chips,1,$6.50,$6.50
+IMG_1780.jpeg,gpt-4o-mini,3,Sweet Potato and Walnut Salad,1,$8.80,$8.80
+IMG_1780.jpeg,gpt-4o-mini,4,Chili Poblano Tacos,1,$12.50,$12.50
+IMG_1963.jpeg,grok-4-fast,1,Pad Thai,1,$10.95,$10.95
+IMG_1963.jpeg,grok-4-fast,2,Green Curry,1,$11.95,$11.95
+IMG_1963.jpeg,grok-4-fast,3,Spring Rolls,2,$3.95,$7.90
+IMG_1963.jpeg,gemini-3-flash,1,Red Curry Duck & Pineapp,1,$18.00,$18.00
+IMG_1963.jpeg,gemini-3-flash,2,Jasmine Rice,2,$3.75,$7.50
+IMG_1963.jpeg,gemini-3-flash,3,Khao Mun Chicken,1,$16.00,$16.00
+IMG_1963.jpeg,gemini-3-flash,4,Bubble Tea Milky Thai,1,$5.00,$5.00
+IMG_1963.jpeg,gemini-3-flash,5,Green Curry Chicken,1,$14.50,$14.50
+IMG_1963.jpeg,claude-haiku-4.5,1,All Day Food,1,$18.00,$18.00
+IMG_1963.jpeg,claude-haiku-4.5,2,Red Curry Duck & Priscep,1,$7.50,$7.50
+IMG_1963.jpeg,claude-haiku-4.5,3,Jasmine Rice,2,$16.00,$16.00
+IMG_1963.jpeg,claude-haiku-4.5,4,Coffee,1,$5.00,$5.00
+IMG_1963.jpeg,claude-haiku-4.5,5,Bubble Tea Milky Tea,1,$14.50,$14.50
+IMG_1963.jpeg,claude-haiku-4.5,6,Green Curry Chicken,1,$6.00,$6.00
+IMG_1963.jpeg,claude-haiku-4.5,7,Pad Thai,1,$17.63,$17.63
+IMG_1963.jpeg,gpt-4o-mini,1,2x Chilli Duck & Pineapple,1,$18.00,$18.00
+IMG_1963.jpeg,gpt-4o-mini,2,2x Jasmine Rice,1,$5.00,$5.00
+IMG_1963.jpeg,gpt-4o-mini,3,3x Thai Green Chicken Curry,1,$15.00,$15.00
+IMG_1963.jpeg,gpt-4o-mini,4,1x Double Treble Micky Thai,1,$14.50,$14.50
+IMG_4943.jpeg,grok-4-fast,1,とん汁,1,$4.80,$4.80
+IMG_4943.jpeg,grok-4-fast,2,ご飯大盛,1,$3.10,$3.10
+IMG_4943.jpeg,grok-4-fast,3,お茶,1,$3.00,$3.00
+IMG_4943.jpeg,gemini-3-flash,1,ゴーヤーチャンプルー,1,$9.00,$9.00
+IMG_4943.jpeg,gemini-3-flash,2,グルクン唐揚げ,1,$10.00,$10.00
+IMG_4943.jpeg,gemini-3-flash,3,ライス,2,$2.00,$4.00
+IMG_4943.jpeg,gemini-3-flash,4,フーチャンプルー,1,$9.00,$9.00
+IMG_4943.jpeg,gemini-3-flash,5,ジーマミー豆腐,1,$5.00,$5.00
+IMG_4943.jpeg,gemini-3-flash,6,ヘチマみそ,1,$9.00,$9.00
+IMG_4943.jpeg,gemini-3-flash,7,しょうがやき 県産豚の,1,$13.00,$13.00
+IMG_4943.jpeg,gemini-3-flash,8,ソーメンチャンプルー,1,$10.00,$10.00
+IMG_4943.jpeg,gemini-3-flash,9,コーラ,1,$4.00,$4.00
+IMG_4943.jpeg,gemini-3-flash,10,シークワーサージュース,2,$4.00,$8.00
+IMG_4943.jpeg,gemini-3-flash,11,海ぶどう,1,$9.00,$9.00
+IMG_4943.jpeg,claude-haiku-4.5,1,Item 1,1,$9000.00,$9000.00
+IMG_4943.jpeg,gpt-4o-mini,1,トマト,2,$9.00,$18.00
+IMG_4943.jpeg,gpt-4o-mini,2,きのこ,1,$4.00,$4.00
+IMG_4943.jpeg,gpt-4o-mini,3,ご飯,2,$4.00,$8.00
+IMG_4943.jpeg,gpt-4o-mini,4,フライ,1,$9.00,$9.00
+IMG_4943.jpeg,gpt-4o-mini,5,ビール,2,$5.00,$10.00
+IMG_6232.jpeg,grok-4-fast,1,Nuggets,3,$3.65,$10.95
+IMG_6232.jpeg,grok-4-fast,2,Unknown item,,,$4.79
+IMG_6232.jpeg,gemini-3-flash,1,ADULT FULL BUFFET,1,$38.00,$38.00
+IMG_6232.jpeg,claude-haiku-4.5,1,1 ADULT FULL BUFFET,1,$38.00,$38.00
+IMG_6232.jpeg,gpt-4o-mini,1,1 ADULT FULL BUFFET,1,$38.00,$38.00
+IMG_6380.jpeg,grok-4-fast,1,Buffet,2,,$84.37
+IMG_6380.jpeg,gemini-3-flash,1,ADULT FULL BUFFET,2,$38.00,$76.00
+IMG_6380.jpeg,claude-haiku-4.5,1,2 ADULT FULL BUFFET,2,$23.50,$47.00
+IMG_6380.jpeg,gpt-4o-mini,1,2 ADULT FULL BUFFET,2,$38.00,$76.00
+IMG_6449.jpeg,grok-4-fast,1,Unknown item,1,$24.90,$24.90
+IMG_6449.jpeg,gemini-3-flash,1,PIZ PEPPERONI,1,$17.99,$17.99
+IMG_6449.jpeg,gemini-3-flash,2,PEPPERS GREEN,1,$2.49,$2.49
+IMG_6449.jpeg,gemini-3-flash,3,WTR SMART 700ml BTL Smartwater 700ML PET,1,$4.75,$4.75
+IMG_6449.jpeg,claude-haiku-4.5,1,TOMMY V'S PIZZA,1,,$7.99
+IMG_6449.jpeg,claude-haiku-4.5,2,SAM DICED AP,1,,$2.49
+IMG_6449.jpeg,claude-haiku-4.5,3,Meri Vala Sans,1,,$4.75
+IMG_6449.jpeg,claude-haiku-4.5,4,1 W/R GREEN,1,,$7.00
+IMG_6449.jpeg,claude-haiku-4.5,5,SMART 700m,1,,$7.00
+IMG_6449.jpeg,gpt-4o-mini,1,PIZZA PEPPERONI,1,$17.99,$17.99
+IMG_6449.jpeg,gpt-4o-mini,2,PEPPERS GREEN,1,$2.49,$2.49
+IMG_6449.jpeg,gpt-4o-mini,3,SMART WATER 700ML PET,1,$4.15,$4.15
+IMG_6656.jpeg,grok-4-fast,1,STIEGEL Sparkling,1,$2.00,$2.00
+IMG_6656.jpeg,grok-4-fast,2,Wurstler with Sauerkraut,1,$2.60,$2.60
+IMG_6656.jpeg,grok-4-fast,3,Hungarian Schnitzel,1,$2.60,$2.60
+IMG_6656.jpeg,grok-4-fast,4,Apfel Strudel,3,$4.00,$12.00
+IMG_6656.jpeg,gemini-3-flash,1,Stiegl Pint,2,$8.50,$17.00
+IMG_6656.jpeg,gemini-3-flash,2,BOTTLE Sparkling,1,$6.00,$6.00
+IMG_6656.jpeg,gemini-3-flash,3,Wurstteller,1,$26.50,$26.50
+IMG_6656.jpeg,gemini-3-flash,4,Bratwurst with Sauerkraut,2,$9.50,$19.00
+IMG_6656.jpeg,gemini-3-flash,5,Hungarian Goulash,2,$26.50,$53.00
+IMG_6656.jpeg,gemini-3-flash,6,Chicken Schnitzel,1,$26.50,$26.50
+IMG_6656.jpeg,gemini-3-flash,7,Apple Strudel,2,$8.50,$17.00
+IMG_6656.jpeg,gemini-3-flash,8,Apfelkorn (Apple),3,$4.00,$12.00
+IMG_6656.jpeg,gemini-3-flash,9,Marillen schnapps,3,$7.00,$21.00
+IMG_6656.jpeg,claude-haiku-4.5,1,Stiegl Pint,2,$8.50,$17.00
+IMG_6656.jpeg,claude-haiku-4.5,2,BOTTLE Sparkling,1,$6.00,$6.00
+IMG_6656.jpeg,claude-haiku-4.5,3,Wurstteller,1,$26.50,$26.50
+IMG_6656.jpeg,claude-haiku-4.5,4,Bratwurst w th Sauerkraut,2,$9.50,$19.00
+IMG_6656.jpeg,claude-haiku-4.5,5,Hungarian Goulash,2,$26.50,$53.00
+IMG_6656.jpeg,claude-haiku-4.5,6,Chicken Schnitzel,1,$26.50,$26.50
+IMG_6656.jpeg,claude-haiku-4.5,7,Apple Strudel,2,$8.50,$17.00
+IMG_6656.jpeg,claude-haiku-4.5,8,Apfelkorn (Apple),3,$4.00,$12.00
+IMG_6656.jpeg,claude-haiku-4.5,9,Marillen schnapps,3,$7.00,$21.00
+IMG_6656.jpeg,gpt-4o-mini,1,Stiegl Pint,2,$8.50,$17.00
+IMG_6656.jpeg,gpt-4o-mini,2,BOTTLE Sparkling,1,$6.00,$6.00
+IMG_6656.jpeg,gpt-4o-mini,3,Würsteller,1,$26.50,$26.50
+IMG_6656.jpeg,gpt-4o-mini,4,Bratwurst with Sauerkraut,1,$19.50,$19.50
+IMG_6656.jpeg,gpt-4o-mini,5,Hungarian Goulash,1,$26.50,$26.50
+IMG_6656.jpeg,gpt-4o-mini,6,Chicken Schnitzel,1,$26.50,$26.50
+IMG_6656.jpeg,gpt-4o-mini,7,Apple Strudel,2,$8.50,$17.00
+IMG_6656.jpeg,gpt-4o-mini,8,Apfelkorn (Apple),1,$4.00,$4.00
+IMG_6656.jpeg,gpt-4o-mini,9,Marillen schnapps,1,$7.00,$70.00
+IMG_8246.jpeg,grok-4-fast,1,Item 1,1,$2.03,$2.03
+IMG_8246.jpeg,grok-4-fast,2,Item 2,1,$2.17,$2.17
+IMG_8246.jpeg,grok-4-fast,3,Item 3,1,$2.11,$2.11
+IMG_8246.jpeg,grok-4-fast,4,Item 4,1,$16.54,$16.54
+IMG_8246.jpeg,gemini-3-flash,1,ポークカレー Cカツ (Pork Curry with Cutlet),1,$9.17,$9.17
+IMG_8246.jpeg,gemini-3-flash,2,ポークカレー 甘口 とんかつ 350 (Pork Curry Mild with Tonkatsu 350g),1,$11.48,$11.48
+IMG_8246.jpeg,gemini-3-flash,3,サラダセット コーン (Salad Set Corn),1,$2.20,$2.20
+IMG_8246.jpeg,claude-haiku-4.5,1,チーズ中盛,1,,$1178.00
+IMG_8246.jpeg,claude-haiku-4.5,2,キムチ中盛,1,,$1178.00
+IMG_8246.jpeg,claude-haiku-4.5,3,ウドンサラダ350,1,,$494.00
+IMG_8246.jpeg,gpt-4o-mini,1,ポークカレー,1,$9.17,$9.17
+IMG_8246.jpeg,gpt-4o-mini,2,ポークカレー,1,$11.48,$11.48
+IMG_8246.jpeg,gpt-4o-mini,3,サラダセット,1,$3.50,$3.50
+camphoto_341603450.jpg,grok-4-fast,0,(no items parsed),,,
+camphoto_341603450.jpg,gemini-3-flash,1,Special D by 1 Small Parcel (0.888 kg),1,$11.25,$11.25
+camphoto_341603450.jpg,claude-haiku-4.5,1,Special D by 1 Small Parcel,1,$11.25,$11.25
+camphoto_341603450.jpg,gpt-4o-mini,1,Small Parcel,1,$11.25,$11.25
+camphoto_959030623.jpg,grok-4-fast,1,Tofu Katsu Curry,1,$5.50,$5.50
+camphoto_959030623.jpg,grok-4-fast,2,Miso Soup,1,$2.99,$2.99
+camphoto_959030623.jpg,gemini-3-flash,1,Chicken Katsu Curry,1,$9.69,$9.69
+camphoto_959030623.jpg,gemini-3-flash,2,Tonkatsu BBQ Gyoza,1,$5.99,$5.99
+camphoto_959030623.jpg,gemini-3-flash,3,Miso Soup,1,$2.99,$2.99
+camphoto_959030623.jpg,gemini-3-flash,4,Gyoza Deal Discount,,,$-2.00
+camphoto_959030623.jpg,gemini-3-flash,5,Miso / Edamame Deal Discount,,,$-1.50
+camphoto_959030623.jpg,claude-haiku-4.5,1,Chicken Katsu Curry,1,$9.69,$9.69
+camphoto_959030623.jpg,claude-haiku-4.5,2,Tonkatsu BBQ Gyoza,1,$5.99,$5.99
+camphoto_959030623.jpg,claude-haiku-4.5,3,Miso Soup,1,$2.99,$2.99
+camphoto_959030623.jpg,claude-haiku-4.5,4,Gyoza Deal Supplement,1,$3.99,$3.99
+camphoto_959030623.jpg,claude-haiku-4.5,5,Miso / Edamame Deal Supplement,1,$1.49,$1.49
+camphoto_959030623.jpg,gpt-4o-mini,1,Chicken Katsu Curry,1,$9.69,$9.69
+camphoto_959030623.jpg,gpt-4o-mini,2,Tonkatsu BBQ Gyoza,1,$5.99,$5.99
+camphoto_959030623.jpg,gpt-4o-mini,3,Miso Soup,1,$2.99,$2.99

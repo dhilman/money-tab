@@ -158,14 +158,11 @@ Based on the results, the recommended approach for MoneyTab is:
 ### Production Strategy
 
 1. **Always compress images** before sending to API (max 1920px, JPEG quality 85)
-2. **Primary model**: Claude Sonnet
-   - Best accuracy for complex receipts
-   - Reasonable cost ($0.01/receipt)
-   - Fast (5.9s avg)
-3. **Budget option**: Gemini Flash
-   - Fastest (3.0s) and cheapest ($0.00026/receipt)
-   - Good accuracy on standard receipts
-   - Requires validation for cents conversion
+2. **Primary model**: Gemini 3 Flash (`google/gemini-3-flash-preview`)
+   - Fastest (3.1s avg)
+   - Best item detection (4.7 items avg)
+   - Good price/performance ($0.0017/receipt)
+   - Most consistent on totals across test receipts
 
 ### Validation Strategy
 
