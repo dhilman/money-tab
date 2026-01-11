@@ -4,6 +4,7 @@ import { userRouter } from "~/server/api/routers/user";
 import { adminRouter } from "~/server/api/routers/admin";
 import { subRouter } from "~/server/api/routers/sub";
 import { groupRouter } from "~/server/api/routers/group";
+import { receiptRouter } from "~/server/api/routers/receipt";
 import { healthHandler } from "~/server/api/handlers/health";
 
 /**
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   sub: subRouter,
   group: groupRouter,
   admin: adminRouter,
+  receipt: receiptRouter,
   health: healthHandler,
 });
 
