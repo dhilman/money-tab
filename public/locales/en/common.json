@@ -84,6 +84,7 @@
     "ask_someone_to_make_public": "If someone shared this link, you can ask them to make the page public",
     "attachment_too_large": "Attachment is too large",
     "attachment_upload": "Sorry, the attachment could not be uploaded",
+    "receipt_scan": "Sorry, we couldn't scan the receipt",
     "end_after_start_date": "End date should be after start date",
     "enter_positive_amount": "Please enter a positive amount",
     "enter_positive_freq": "Please specify frequency",
@@ -194,6 +195,15 @@
   "period": "Period",
   "price": "Price",
   "privacy_policy": "Privacy Policy",
+  "receipt": {
+    "scan": "Scan Receipt",
+    "scanning": "Scanning...",
+    "scanned": "Receipt Scanned",
+    "use_total": "Use Total",
+    "split_by_items": "Split by Items",
+    "items_count_one": "{{count}} item",
+    "items_count_other": "{{count}} items"
+  },
   "recent": "Recent",
   "recent_expenses": "Recent Expenses",
   "reconnect": "Reconnect",

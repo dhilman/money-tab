@@ -5,10 +5,16 @@ import { Bento, BentoContent } from "~/components/bento-box";
 import { AddDateButton, DateInputV1 } from "~/components/form/date-input-v1";
 import { FileInput, FilePreviewList } from "~/components/form/file-input";
 import { useTxEditCtx } from "~/components/pages/tx/form/tx-form-ctx";
+import {
+  ReceiptScanInput,
+  ReceiptSummaryCard,
+  useReceiptCtxOptional,
+} from "~/components/receipt";
 import { getDateYYYYMMDD } from "~/lib/dates/dates";
 
 export const TxEditOptions = () => {
   const { files, setFiles } = useTxEditCtx();
+  const receiptCtx = useReceiptCtxOptional();
 
   return (
     <div className="w-full space-y-5">
@@ -16,6 +22,7 @@ export const TxEditOptions = () => {
         <BentoContent className="overflow-hidden">
           <DateInput />
           <TimeInput />
+          <ReceiptScanInput disabled={!!receiptCtx?.receipt} />
           <FileInput
             onUploadStart={(id) =>
               setFiles((prev) => [
@@ -33,6 +40,7 @@ export const TxEditOptions = () => {
           />
         </BentoContent>
       </Bento>
+      {receiptCtx?.receipt && <ReceiptSummaryCard />}
       <FilePreviewList
         files={files}
         onRemove={(id) => setFiles((prev) => prev.filter((x) => x.id !== id))}

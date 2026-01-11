@@ -18,6 +18,7 @@ import {
   MainButton,
   usePlatform,
 } from "~/components/provider/platform/context";
+import { ReceiptProviderWrapper } from "~/components/receipt";
 import { useWebAppRouter } from "~/components/router/router";
 import { getCurrencyByCodeWithDefault } from "~/lib/amount/currencies";
 import i18n from "~/lib/i18n";
@@ -84,11 +85,13 @@ export const TxCreateProvider = ({
         state={participants}
         update={updateParticipants}
       >
-        <BackButton
-          onClick={screen === "main" ? undefined : () => setScreen("main")}
-        />
-        {children}
-        <TxMainButton />
+        <ReceiptProviderWrapper>
+          <BackButton
+            onClick={screen === "main" ? undefined : () => setScreen("main")}
+          />
+          {children}
+          <TxMainButton />
+        </ReceiptProviderWrapper>
       </ParticipantsProvider>
     </TxEditContext.Provider>
   );
