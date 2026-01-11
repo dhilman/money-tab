@@ -228,6 +228,8 @@
       "even_all": "Поровну (все)",
       "even_all_long": "Поровну среди всех участников"
     },
+    "remove_extra": "Удалить",
+    "tax_included_hint": "Удалите если уже включено в цены позиций",
     "validation": {
       "ready": "Готово к применению",
       "unassigned_items_one": "{{count}} позиция не назначена",

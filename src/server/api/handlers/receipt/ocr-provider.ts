@@ -68,7 +68,16 @@ CRITICAL RULES:
 - If you cannot determine a value, use null
 - Date should be in ISO format YYYY-MM-DD
 - Currency code should be 3 letters (USD, EUR, GBP, JPY, etc.)
-- For discounts, use positive values (the amount saved)`;
+- For discounts, use positive values (the amount saved)
+
+TAX HANDLING:
+- Many receipts show tax-INCLUSIVE prices (tax already included in item prices)
+- In such cases, item totals already include tax, so set "tax" to null to avoid double-counting
+- Only extract "tax" as a separate amount if the receipt explicitly shows:
+  - A subtotal BEFORE tax
+  - Tax added separately as a line item
+  - Items shown at pre-tax prices
+- When in doubt, prefer null for tax (users can adjust if needed)`;
 
 export interface ParseReceiptInput {
   /** Base64-encoded image data or URL */

@@ -31,7 +31,7 @@ export const ReceiptSplitDrawer = ({
   onOpenChange,
 }: ReceiptSplitDrawerProps) => {
   const { t } = useTranslation();
-  const { receipt, isValid, clearReceipt, setSplitEnabled } = useReceiptCtx();
+  const { receipt, canApply, clearReceipt, setSplitEnabled } = useReceiptCtx();
   const { applyToTransaction } = useApplyReceipt();
 
   // Enable split mode when drawer opens (useEffect because onOpenChange isn't
@@ -43,7 +43,7 @@ export const ReceiptSplitDrawer = ({
   }, [open, setSplitEnabled]);
 
   const handleApply = () => {
-    if (!isValid) return;
+    if (!canApply) return;
     applyToTransaction();
     clearReceipt();
     onOpenChange(false);
@@ -75,10 +75,10 @@ export const ReceiptSplitDrawer = ({
           <button
             type="button"
             onClick={handleApply}
-            disabled={!isValid}
+            disabled={!canApply}
             className={cn(
               "w-full rounded-lg py-3 text-sm font-medium transition-colors",
-              isValid
+              canApply
                 ? "bg-button text-button-text"
                 : "cursor-not-allowed bg-hint/10 text-hint",
             )}

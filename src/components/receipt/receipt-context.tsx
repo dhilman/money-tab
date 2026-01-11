@@ -45,6 +45,10 @@ interface ReceiptContextValue extends ReceiptState {
 
   /** Update an extra charge's allocation method */
   setExtraMethod: (extraId: string, method: ExtraCharge["method"]) => void;
+  /** Update an extra charge's amount (allows editing or removing) */
+  setExtraAmount: (extraId: string, amount: number) => void;
+  /** Remove an extra charge entirely */
+  removeExtra: (extraId: string) => void;
 
   /** Enable/disable itemized split mode */
   setSplitEnabled: (enabled: boolean) => void;
@@ -56,8 +60,10 @@ interface ReceiptContextValue extends ReceiptState {
   unassignedItems: ReceiptItem[];
   /** Difference between person totals sum and receipt total (0 = exact match) */
   totalsDifference: number;
-  /** Whether all items are assigned and totals match */
+  /** Whether all items are assigned and totals match (informational only) */
   isValid: boolean;
+  /** Whether there's at least one assignment (minimum requirement to apply) */
+  canApply: boolean;
 }
 
 // ============================================================================
@@ -216,6 +222,19 @@ export function ReceiptProvider({
     []
   );
 
+  const setExtraAmount = useCallback(
+    (extraId: string, amount: number) => {
+      setExtras((prev) =>
+        prev.map((e) => (e.id === extraId ? { ...e, amount } : e))
+      );
+    },
+    []
+  );
+
+  const removeExtra = useCallback((extraId: string) => {
+    setExtras((prev) => prev.filter((e) => e.id !== extraId));
+  }, []);
+
   // Computed values
   const items = receipt?.items ?? [];
 
@@ -241,6 +260,12 @@ export function ReceiptProvider({
     return unassignedItems.length === 0 && totalsDifference === 0;
   }, [splitEnabled, unassignedItems, totalsDifference]);
 
+  // Can apply if at least one item has been assigned to someone
+  const canApply = useMemo(() => {
+    if (!splitEnabled) return false;
+    return personTotals.length > 0;
+  }, [splitEnabled, personTotals]);
+
   const value = useMemo<ReceiptContextValue>(
     () => ({
       receipt,
@@ -253,11 +278,14 @@ export function ReceiptProvider({
       toggleItemAssignment,
       setItemShare,
       setExtraMethod,
+      setExtraAmount,
+      removeExtra,
       setSplitEnabled,
       personTotals,
       unassignedItems,
       totalsDifference,
       isValid,
+      canApply,
     }),
     [
       receipt,
@@ -270,10 +298,13 @@ export function ReceiptProvider({
       toggleItemAssignment,
       setItemShare,
       setExtraMethod,
+      setExtraAmount,
+      removeExtra,
       personTotals,
       unassignedItems,
       totalsDifference,
       isValid,
+      canApply,
     ]
   );
 

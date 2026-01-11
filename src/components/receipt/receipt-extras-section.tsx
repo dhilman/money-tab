@@ -1,6 +1,6 @@
 "use client";
 
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { MinusIcon, PlusIcon, XIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { formatAmountCurrency } from "~/lib/amount/format-amount";
 import type { ExtraCharge, ExtrasAllocationMethod } from "~/lib/receipt";
@@ -11,10 +11,11 @@ type AllocationMethodType = ExtrasAllocationMethod["type"];
 
 /**
  * Section showing extra charges (tax, tip, service, discount) with allocation method dropdowns.
+ * Users can remove extras if they're already included in item prices (common with tax).
  */
 export const ReceiptExtrasSection = () => {
   const { t } = useTranslation();
-  const { receipt, extras, setExtraMethod } = useReceiptCtx();
+  const { receipt, extras, setExtraMethod, removeExtra } = useReceiptCtx();
 
   if (!extras.length) {
     return null;
@@ -79,6 +80,7 @@ export const ReceiptExtrasSection = () => {
             currencyCode={currencyCode}
             options={allocationOptions}
             onMethodChange={(method) => handleMethodChange(extra.id, method)}
+            onRemove={() => removeExtra(extra.id)}
           />
         ))}
       </div>
@@ -91,6 +93,7 @@ interface ExtraChargeRowProps {
   currencyCode: string;
   options: { label: string; value: AllocationMethodType; labelLong: string }[];
   onMethodChange: (method: AllocationMethodType) => void;
+  onRemove: () => void;
 }
 
 const extraLabels = {
@@ -105,6 +108,7 @@ const ExtraChargeRow = ({
   currencyCode,
   options,
   onMethodChange,
+  onRemove,
 }: ExtraChargeRowProps) => {
   const { t } = useTranslation();
   const isDiscount = extra.amount < 0;
@@ -112,7 +116,7 @@ const ExtraChargeRow = ({
   const label = t(extraLabels[extra.id]);
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-hint/10 bg-background p-3">
+    <div className="flex items-center justify-between gap-2 rounded-lg border border-hint/10 bg-background p-3">
       <div className="flex items-center gap-2">
         {isDiscount ? (
           <MinusIcon className="h-4 w-4 text-green-500" />
@@ -121,7 +125,7 @@ const ExtraChargeRow = ({
         )}
         <span className="text-sm font-medium">{label}</span>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         <SelectSimple
           value={extra.method.type}
           onChange={onMethodChange}
@@ -130,6 +134,14 @@ const ExtraChargeRow = ({
         <span className="text-sm font-medium text-primary">
           {formatAmountCurrency(Math.abs(extra.amount), currencyCode)}
         </span>
+        <button
+          type="button"
+          onClick={onRemove}
+          className="ml-1 rounded-full p-1 text-hint hover:bg-hint/10 hover:text-secondary"
+          aria-label={t("receipt.remove_extra")}
+        >
+          <XIcon className="h-4 w-4" />
+        </button>
       </div>
     </div>
   );

@@ -220,6 +220,8 @@
       "even_all": "Even (all)",
       "even_all_long": "Split evenly among all participants"
     },
+    "remove_extra": "Remove",
+    "tax_included_hint": "Remove if already included in item prices",
     "validation": {
       "ready": "Ready to apply",
       "unassigned_items_one": "{{count}} item not assigned",
