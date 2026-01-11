@@ -17,11 +17,9 @@ export function ReceiptProviderWrapper({
 }: ReceiptProviderWrapperProps) {
   const participants = useParticipantsCtx();
 
-  // Extract user IDs from participants (filter out null for non-user participants)
+  // Extract IDs from all participants (includes both "user" and "new" types)
   const participantIds = useMemo(() => {
-    return participants.parties
-      .filter((p) => p.type === "user")
-      .map((p) => p.id);
+    return participants.parties.map((p) => p.id);
   }, [participants.parties]);
 
   return (

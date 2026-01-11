@@ -32,9 +32,7 @@ export const ReceiptScanInput = ({ disabled }: ReceiptScanInputProps) => {
     onSuccess: (data) => {
       receiptCtx?.setReceipt(data);
     },
-    onError: () => {
-      toast.error(t("error.receipt_scan"));
-    },
+    // Error handling is done in the catch block below to avoid double toast
   });
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,6 +41,12 @@ export const ReceiptScanInput = ({ disabled }: ReceiptScanInputProps) => {
 
     // Reset input so same file can be selected again
     e.target.value = "";
+
+    // Validate file type (browser accept attribute can be bypassed)
+    if (!file.type.startsWith("image/")) {
+      toast.error(t("error.receipt_scan"));
+      return;
+    }
 
     setIsLoading(true);
 
@@ -76,6 +80,7 @@ export const ReceiptScanInput = ({ disabled }: ReceiptScanInputProps) => {
         type="file"
         accept="image/*"
         capture="environment"
+        aria-label={t("receipt.scan")}
         className="absolute inset-0 z-10 cursor-default opacity-0"
         onChange={onFileChange}
         disabled={isDisabled}

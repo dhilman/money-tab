@@ -29,6 +29,7 @@ export const ReceiptSummaryCard = ({
 
   const currencyCode = receipt.currencyCode ?? "USD";
   const hasItems = receipt.items.length > 0;
+  const hasTotal = typeof receipt.total === "number" && receipt.total > 0;
 
   const handleUseTotal = () => {
     applyToTransaction();
@@ -44,7 +45,9 @@ export const ReceiptSummaryCard = ({
       <BentoContent className="relative p-4">
         {/* Close button */}
         <button
+          type="button"
           onClick={clearReceipt}
+          aria-label={t("dismiss")}
           className="absolute top-2 right-2 rounded-full p-1.5 text-hint hover:bg-hint/10"
         >
           <XIcon className="h-4 w-4" />
@@ -57,9 +60,9 @@ export const ReceiptSummaryCard = ({
           </div>
           <div className="flex-1 pt-0.5">
             <p className="text-sm text-hint">{t("receipt.scanned")}</p>
-            {receipt.total && (
+            {hasTotal && (
               <p className="text-xl font-semibold text-primary">
-                {formatAmountCurrency(receipt.total, currencyCode)}
+                {formatAmountCurrency(receipt.total!, currencyCode)}
               </p>
             )}
           </div>
@@ -89,16 +92,21 @@ export const ReceiptSummaryCard = ({
         {/* Action buttons */}
         <div className="mt-4 flex gap-2">
           <button
+            type="button"
             onClick={handleUseTotal}
+            disabled={!hasTotal}
             className={cn(
               "flex-1 rounded-lg py-2.5 text-sm font-medium",
-              "bg-button text-button-text",
+              hasTotal
+                ? "bg-button text-button-text"
+                : "cursor-not-allowed bg-hint/10 text-hint",
             )}
           >
             {t("receipt.use_total")}
           </button>
-          {hasItems && (
+          {hasItems && onSplitByItems && (
             <button
+              type="button"
               onClick={handleSplitByItems}
               className={cn(
                 "flex-1 rounded-lg py-2.5 text-sm font-medium",
@@ -114,8 +122,24 @@ export const ReceiptSummaryCard = ({
   );
 };
 
+/**
+ * Format ISO date string for display.
+ * Handles date-only strings (YYYY-MM-DD) without timezone shift.
+ */
 function formatDate(isoDate: string): string {
   try {
+    // Handle date-only strings to avoid timezone shift
+    if (/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) {
+      const parts = isoDate.split("-").map(Number);
+      const year = parts[0] ?? 0;
+      const month = parts[1] ?? 1;
+      const day = parts[2] ?? 1;
+      return new Date(year, month - 1, day).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    }
     return new Date(isoDate).toLocaleDateString(undefined, {
       year: "numeric",
       month: "short",
