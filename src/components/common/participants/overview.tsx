@@ -1,9 +1,19 @@
-import { PencilIcon, PlusIcon, RefreshCwIcon } from "lucide-react";
+import {
+  ChartPieIcon,
+  DollarSignIcon,
+  PencilIcon,
+  PercentIcon,
+  PlusIcon,
+  RefreshCwIcon,
+} from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Bento } from "~/components/bento-box";
 import { useParticipantsCtx } from "~/components/common/participants/provider";
-import type { Participant } from "~/components/common/participants/reducer";
+import type {
+  Participant,
+  SplitMode,
+} from "~/components/common/participants/reducer";
 import { PartyUserName } from "~/components/common/participants/username";
 import { useCurrencyAmountParser } from "~/components/form/amount-utils";
 import { UserAvatarOrPlaceholder } from "~/components/pages/user/user-avatar";
@@ -16,6 +26,8 @@ import {
   ListItemIcon,
   ListItemLeft,
 } from "~/components/ui/list-item";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { formatAmountCurrency } from "~/lib/amount/format-amount";
 import { cn } from "~/lib/utils";
 
 interface Props {
@@ -51,8 +63,33 @@ export const ParticipantsOverview = ({ onEdit, onEditPayer }: Props) => {
       <List>
         <UserPaidBy userId={payerId} onEditPayer={onEditPayer} />
       </List>
+      <SplitModeTabs />
       <UsersPaidFor />
     </Bento>
+  );
+};
+
+const SplitModeTabs = () => {
+  const { splitMode, setSplitMode } = useParticipantsCtx();
+
+  return (
+    <Tabs
+      value={splitMode}
+      onValueChange={(v) => setSplitMode(v as SplitMode)}
+      className="w-full"
+    >
+      <TabsList className="w-full">
+        <TabsTrigger value="amount" className="flex-1">
+          <DollarSignIcon className="h-4 w-4" />
+        </TabsTrigger>
+        <TabsTrigger value="percentage" className="flex-1">
+          <PercentIcon className="h-4 w-4" />
+        </TabsTrigger>
+        <TabsTrigger value="shares" className="flex-1">
+          <ChartPieIcon className="h-4 w-4" />
+        </TabsTrigger>
+      </TabsList>
+    </Tabs>
   );
 };
 
@@ -125,30 +162,95 @@ interface UserListItemProps {
   participant: Participant;
 }
 
+const PERCENTAGE_SCALE = 100;
+
+function getSplitValue(participant: Participant, mode: SplitMode) {
+  switch (mode) {
+    case "amount":
+      return participant.splitAmount;
+    case "percentage":
+      return participant.splitPercentage;
+    case "shares":
+      return participant.splitShares;
+  }
+}
+
 const UserListItem = ({
   setRef,
   onKeyDown,
   participant,
 }: UserListItemProps) => {
+  const { t } = useTranslation();
   const user = useUser(participant.id);
-  const { currency, setAmount, resetAmount, invalid } = useParticipantsCtx();
+  const {
+    currency,
+    splitMode,
+    setSplitValue,
+    resetSplitValue,
+    invalid,
+    payerId,
+  } = useParticipantsCtx();
   const { decimals, parser } = useCurrencyAmountParser(currency);
-  const original = useMemo(
-    () => (participant.amount / 10 ** decimals).toFixed(decimals),
-    [participant.amount, decimals],
-  );
   const [value, setValue] = useState("");
 
-  const onAmountChange = (v: string) => {
+  // Reset input value when split mode changes
+  useEffect(() => {
+    setValue("");
+  }, [splitMode]);
+
+  const splitVal = getSplitValue(participant, splitMode);
+  const isManual = splitVal.manual;
+
+  const placeholder = useMemo(() => {
+    switch (splitMode) {
+      case "amount":
+        return (participant.amount / 10 ** decimals).toFixed(decimals);
+      case "percentage":
+        return (splitVal.value / PERCENTAGE_SCALE).toFixed(2);
+      case "shares":
+        return splitVal.value.toString();
+    }
+  }, [splitMode, participant.amount, splitVal.value, decimals]);
+
+  const amountOwed = formatAmountCurrency(participant.amount, currency);
+  const isPayer = participant.id === payerId;
+
+  const onInputChange = (v: string) => {
     if (v === "") {
       setValue("");
-      setAmount(participant.id, 0);
+      setSplitValue(participant.id, 0);
       return;
     }
-    const int = parser(v);
-    if (int === null) return;
-    setAmount(participant.id, int);
-    setValue(v);
+
+    switch (splitMode) {
+      case "amount": {
+        const int = parser(v);
+        if (int === null) return;
+        setSplitValue(participant.id, int);
+        setValue(v);
+        break;
+      }
+      case "percentage": {
+        // Allow decimals up to 2 places for percentage
+        if (!/^\d*\.?\d{0,2}$/.test(v)) return;
+        const num = parseFloat(v);
+        if (isNaN(num)) return;
+        // Store as scaled integer (e.g., 25.50% -> 2550)
+        const scaled = Math.round(num * PERCENTAGE_SCALE);
+        setSplitValue(participant.id, scaled);
+        setValue(v);
+        break;
+      }
+      case "shares": {
+        // Only allow integers for shares
+        if (!/^\d+$/.test(v)) return;
+        const int = parseInt(v, 10);
+        if (isNaN(int)) return;
+        setSplitValue(participant.id, int);
+        setValue(v);
+        break;
+      }
+    }
   };
 
   return (
@@ -162,14 +264,21 @@ const UserListItem = ({
       </ListItemLeft>
 
       <ListItemBody>
-        <PartyUserName user={user} />
+        <div className="w-full truncate">
+          <PartyUserName user={user} />
+          <div className="text-sm text-hint">
+            {isPayer
+              ? t("your_share", { amount: amountOwed })
+              : t("owes", { amount: amountOwed })}
+          </div>
+        </div>
         <div className="ml-auto flex items-center gap-2">
-          {participant.manual && (
+          {isManual && (
             <button
               className="flex h-8 w-8 items-center justify-center rounded-[8.91px] bg-tertiary"
               onClick={() => {
                 setValue("");
-                resetAmount(participant.id);
+                resetSplitValue(participant.id);
               }}
             >
               <RefreshCwIcon className="h-4 w-4 text-foreground" />
@@ -179,15 +288,15 @@ const UserListItem = ({
             ref={setRef}
             className={cn(
               "w-20 rounded-[8.91px] bg-tertiary px-3 py-[5px] text-right text-base",
-              participant.manual && invalid && "bg-red-500/20",
+              isManual && invalid && "bg-red-500/20",
             )}
             type="number"
             enterKeyHint="next"
-            placeholder={original}
+            placeholder={placeholder}
             autoComplete="off"
             autoCorrect="off"
             value={value}
-            onChange={(e) => onAmountChange(e.target.value)}
+            onChange={(e) => onInputChange(e.target.value)}
             onKeyDown={onKeyDown}
           />
         </div>

@@ -3,12 +3,21 @@ import { useEffect, useReducer, useRef } from "react";
 import { useGroups } from "~/components/provider/users-provider";
 import { splitAmount } from "~/lib/amount/split-amount";
 
+export type SplitMode = "amount" | "percentage" | "shares";
+
+export interface SplitValue {
+  value: number;
+  manual: boolean;
+}
+
 export interface Participant {
   type: "user" | "new";
   id: string;
   groupId?: string;
   amount: number;
-  manual?: boolean;
+  splitAmount: SplitValue;
+  splitPercentage: SplitValue;
+  splitShares: SplitValue;
 }
 
 interface State {
@@ -18,6 +27,7 @@ interface State {
   total: number;
   groupId: string;
   groupLocked?: boolean;
+  splitMode: SplitMode;
   invalid: boolean;
 }
 export type ParticipantsState = State;
@@ -29,13 +39,14 @@ type PartiesAction =
   | { type: "add_group"; groupId: string; userIds: string[] }
   | { type: "remove_group"; groupId: string }
   | { type: "remove"; id: string }
-  | { type: "set_amount"; id: string; amount: number }
-  | { type: "reset_amount"; id: string };
+  | { type: "set_split_value"; id: string; value: number; mode: SplitMode }
+  | { type: "reset_split_value"; id: string; mode: SplitMode };
 
 type Action =
   | PartiesAction
   | { type: "recalculate"; total: number }
-  | { type: "set_payer"; id: string };
+  | { type: "set_payer"; id: string }
+  | { type: "set_split_mode"; mode: SplitMode };
 export type ParticipantsDispatch = (action: Action) => void;
 
 interface Params {
@@ -55,6 +66,7 @@ export function useParticipantsReducer(params: Params) {
       parties: [],
       payerId: params.meId,
       groupId: "",
+      splitMode: "amount" as SplitMode,
       invalid: false,
     },
     (state) => {
@@ -109,11 +121,14 @@ export function useParticipantsEditReducer(params: EditParams) {
       type: c.userId ? ("user" as const) : ("new" as const),
       id: c.userId || c.id,
       amount: c.amountOwed,
-      manual: c.manualAmountOwed,
+      splitAmount: { value: c.amountOwed, manual: c.manualAmountOwed },
+      splitPercentage: { value: 0, manual: false },
+      splitShares: { value: 1, manual: false },
     })),
     payerId: payer?.userId || payer?.id || params.meId,
     groupId: params.groupId || "",
     groupLocked: !!params.groupId,
+    splitMode: "amount" as SplitMode,
     invalid: false,
   });
 
@@ -140,7 +155,7 @@ export function isParticipantsEdited(
     const userId = p.type === "user" ? p.id : null;
     if (userId !== orig.userId) return true;
     if (p.amount !== orig.amountOwed) return true;
-    if (p.manual !== orig.manualAmountOwed) return true;
+    if (p.splitAmount.manual !== orig.manualAmountOwed) return true;
   });
 }
 
@@ -153,6 +168,9 @@ function reducer(state: State, action: Action): State {
       break;
     case "set_payer":
       newState = { ...state, payerId: action.id };
+      break;
+    case "set_split_mode":
+      newState = { ...state, splitMode: action.mode };
       break;
     case "add_group": {
       if (state.groupId === action.groupId) {
@@ -167,7 +185,7 @@ function reducer(state: State, action: Action): State {
       newState = {
         ...state,
         groupId: action.groupId,
-        parties: partiesReducer(parties, action),
+        parties: partiesReducer(parties, action, state.splitMode),
       };
       break;
     }
@@ -175,13 +193,13 @@ function reducer(state: State, action: Action): State {
       newState = {
         ...state,
         groupId: "",
-        parties: partiesReducer(state.parties, action),
+        parties: partiesReducer(state.parties, action, state.splitMode),
       };
       break;
     default:
       newState = {
         ...state,
-        parties: partiesReducer(state.parties, action),
+        parties: partiesReducer(state.parties, action, state.splitMode),
       };
   }
 
@@ -195,6 +213,7 @@ function reducer(state: State, action: Action): State {
 function partiesReducer(
   arr: Participant[],
   action: PartiesAction,
+  _splitMode: SplitMode,
 ): Participant[] {
   switch (action.type) {
     case "add":
@@ -203,12 +222,7 @@ function partiesReducer(
       return arr.concat(
         action.userIds
           .filter((id) => !arr.some((p) => p.id === id))
-          .map((id) => ({
-            type: "user",
-            id,
-            amount: 0,
-            groupId: action.groupId,
-          })),
+          .map((id) => newParticipant(id, "user", action.groupId)),
       );
     case "add_new":
       return [...arr, newParticipant(createId(), "new")];
@@ -223,14 +237,50 @@ function partiesReducer(
       return arr.filter((p) => p.id !== action.id);
     case "remove_group":
       return arr.filter((p) => p.groupId !== action.groupId);
-    case "set_amount":
-      return arr.map((p) =>
-        p.id === action.id ? { ...p, manual: true, amount: action.amount } : p,
-      );
-    case "reset_amount":
-      return arr.map((p) =>
-        p.id === action.id ? { ...p, manual: false, amount: 0 } : p,
-      );
+    case "set_split_value":
+      return arr.map((p) => {
+        if (p.id !== action.id) return p;
+        switch (action.mode) {
+          case "amount":
+            return {
+              ...p,
+              splitAmount: { value: action.value, manual: true },
+            };
+          case "percentage":
+            return {
+              ...p,
+              splitPercentage: { value: action.value, manual: true },
+            };
+          case "shares":
+            return {
+              ...p,
+              splitShares: { value: action.value, manual: true },
+            };
+        }
+      });
+    case "reset_split_value":
+      return arr.map((p) => {
+        if (p.id !== action.id) return p;
+        switch (action.mode) {
+          case "amount":
+            // Set amount: 0 so recalculation detects this participant needs a fresh value
+            return {
+              ...p,
+              amount: 0,
+              splitAmount: { value: 0, manual: false },
+            };
+          case "percentage":
+            return {
+              ...p,
+              splitPercentage: { value: 0, manual: false },
+            };
+          case "shares":
+            return {
+              ...p,
+              splitShares: { value: 1, manual: false },
+            };
+        }
+      });
   }
 }
 
@@ -239,13 +289,33 @@ function newParticipant(
   type: "user" | "new" = "user",
   groupId?: string,
 ): Participant {
-  return { type, id, amount: 0, groupId };
+  return {
+    type,
+    id,
+    amount: 0,
+    groupId,
+    splitAmount: { value: 0, manual: false },
+    splitPercentage: { value: 0, manual: false },
+    splitShares: { value: 1, manual: false },
+  };
 }
 
 function recalculate(state: State): State {
+  switch (state.splitMode) {
+    case "amount":
+      return recalculateAmount(state);
+    case "percentage":
+      return recalculatePercentage(state);
+    case "shares":
+      return recalculateShares(state);
+  }
+}
+
+function recalculateAmount(state: State): State {
   const amounts = state.parties.reduce(
     (acc, p) => {
-      if (p.manual) return { ...acc, manual: acc.manual + p.amount };
+      if (p.splitAmount.manual)
+        return { ...acc, manual: acc.manual + p.splitAmount.value };
       if (p.amount === 0) return { ...acc, zero: acc.zero + 1 };
       return { ...acc, auto: acc.auto + p.amount };
     },
@@ -256,6 +326,10 @@ function recalculate(state: State): State {
     return {
       ...state,
       invalid: true,
+      parties: state.parties.map((p) => ({
+        ...p,
+        amount: p.splitAmount.manual ? p.splitAmount.value : p.amount,
+      })),
     };
   }
 
@@ -263,17 +337,146 @@ function recalculate(state: State): State {
   // 1. any non manual has amount 0
   // 2. total manual !== remaining
   if (amounts.zero === 0 && amounts.manual + amounts.auto === state.total) {
-    return state;
+    return {
+      ...state,
+      invalid: false,
+      parties: state.parties.map((p) => ({
+        ...p,
+        amount: p.splitAmount.manual ? p.splitAmount.value : p.amount,
+        // Update splitAmount.value for non-manual participants so UI shows calculated value
+        splitAmount: p.splitAmount.manual
+          ? p.splitAmount
+          : { value: p.amount, manual: false },
+      })),
+    };
   }
 
   const remaining = state.total - amounts.manual;
-  const numDefault = state.parties.filter((p) => !p.manual).length;
+  const numDefault = state.parties.filter((p) => !p.splitAmount.manual).length;
   const splits = splitAmount(remaining, numDefault);
   return {
     ...state,
     invalid: false,
-    parties: state.parties.map((p) =>
-      p.manual ? p : { ...p, amount: splits.pop() ?? 0 },
-    ),
+    parties: state.parties.map((p) => {
+      if (p.splitAmount.manual) {
+        return { ...p, amount: p.splitAmount.value };
+      }
+      const newAmount = splits.pop() ?? 0;
+      return {
+        ...p,
+        amount: newAmount,
+        splitAmount: { value: newAmount, manual: false },
+      };
+    }),
+  };
+}
+
+function recalculatePercentage(state: State): State {
+  // Percentages are stored as integers (e.g., 50 = 50%, 2550 = 25.50%)
+  // We use basis points (100 = 1%) for precision
+  const PERCENTAGE_SCALE = 100; // 10000 = 100%
+
+  const totals = state.parties.reduce(
+    (acc, p) => {
+      if (p.splitPercentage.manual) {
+        return { ...acc, manual: acc.manual + p.splitPercentage.value };
+      }
+      return { ...acc, autoCount: acc.autoCount + 1 };
+    },
+    { manual: 0, autoCount: 0 },
+  );
+
+  // Invalid if manual percentages exceed 100%
+  if (totals.manual > 100 * PERCENTAGE_SCALE) {
+    return {
+      ...state,
+      invalid: true,
+      parties: state.parties.map((p) => ({
+        ...p,
+        amount: Math.round(
+          (state.total * p.splitPercentage.value) / (100 * PERCENTAGE_SCALE),
+        ),
+      })),
+    };
+  }
+
+  const remainingPercentage = 100 * PERCENTAGE_SCALE - totals.manual;
+  const autoPercentage =
+    totals.autoCount > 0
+      ? Math.floor(remainingPercentage / totals.autoCount)
+      : 0;
+
+  // Distribute remainder for rounding
+  const remainder =
+    totals.autoCount > 0 ? remainingPercentage % totals.autoCount : 0;
+  let remainderToDistribute = remainder;
+
+  return {
+    ...state,
+    invalid: false,
+    parties: state.parties.map((p) => {
+      let percentage: number;
+      if (p.splitPercentage.manual) {
+        percentage = p.splitPercentage.value;
+      } else {
+        percentage = autoPercentage;
+        if (remainderToDistribute > 0) {
+          percentage += 1;
+          remainderToDistribute--;
+        }
+      }
+      const amount = Math.round(
+        (state.total * percentage) / (100 * PERCENTAGE_SCALE),
+      );
+      // Update splitPercentage.value for non-manual participants so UI shows calculated value
+      return {
+        ...p,
+        amount,
+        splitPercentage: p.splitPercentage.manual
+          ? p.splitPercentage
+          : { value: percentage, manual: false },
+      };
+    }),
+  };
+}
+
+function recalculateShares(state: State): State {
+  const totalShares = state.parties.reduce(
+    (sum, p) => sum + p.splitShares.value,
+    0,
+  );
+
+  if (totalShares === 0) {
+    return {
+      ...state,
+      invalid: false,
+      parties: state.parties.map((p) => ({ ...p, amount: 0 })),
+    };
+  }
+
+  // Calculate amounts based on share ratios
+  const amounts = state.parties.map((p) =>
+    Math.floor((state.total * p.splitShares.value) / totalShares),
+  );
+
+  // Distribute remainder
+  const distributed = amounts.reduce((sum, a) => sum + a, 0);
+  let remainder = state.total - distributed;
+
+  // Give remainder to participants with highest share values first
+  const indices = state.parties
+    .map((p, i) => ({ i, shares: p.splitShares.value }))
+    .sort((a, b) => b.shares - a.shares);
+
+  for (const { i } of indices) {
+    if (remainder <= 0) break;
+    amounts[i] = (amounts[i] ?? 0) + 1;
+    remainder--;
+  }
+
+  return {
+    ...state,
+    invalid: false,
+    parties: state.parties.map((p, i) => ({ ...p, amount: amounts[i] ?? 0 })),
   };
 }
