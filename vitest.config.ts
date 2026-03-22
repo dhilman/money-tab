@@ -3,12 +3,14 @@ import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
+    fileParallelism: false,
+    setupFiles: ["./test/setup.ts"],
     exclude: [...configDefaults.exclude, "**/e2e/**"],
     env: {
       NODE_ENV: "test",
       NEXT_PUBLIC_ENV: "local",
       NEXT_PUBLIC_NODE_ENV: "test",
-      NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: "local",
+      NEXT_PUBLIC_DEPLOY_ID: "local",
       NEXT_PUBLIC_BASE_URL: "http://localhost:3000",
 
       AUTH_SECRET: "123",
