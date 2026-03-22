@@ -1,13 +1,10 @@
 FROM node:22-slim AS base
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
 
 # --- Dependencies ---
 FROM base AS deps
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
 # --- Builder ---
 FROM base AS builder
@@ -16,14 +13,18 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ENV NODE_ENV=production
-RUN pnpm build
+
+RUN corepack enable pnpm && pnpm run build
 
 # --- Runner ---
 FROM base AS runner
 WORKDIR /app
+
 ENV NODE_ENV=production
 ENV HOSTNAME="0.0.0.0"
 ENV PORT=3000
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 
 # Don't run as root
 RUN addgroup --system --gid 1001 nodejs && \
