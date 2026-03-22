@@ -130,5 +130,3 @@ export const env = createEnv({
     NOTIFY_DISABLED: process.env.NOTIFY_DISABLED,
   },
 });
-
-console.log(`[env] DEPLOY_ID: ${env.NEXT_PUBLIC_DEPLOY_ID}`);
