@@ -8,6 +8,7 @@ if (!process.env.SKIP_ENV_VALIDATION) {
 
 /** @type {import("next").NextConfig} */
 const config = {
+  output: "standalone",
   reactStrictMode: true,
 
   /**

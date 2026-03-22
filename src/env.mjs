@@ -78,7 +78,7 @@ export const env = createEnv({
     // Env (Public)
     NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
     NEXT_PUBLIC_NODE_ENV: process.env.NODE_ENV,
-    NEXT_PUBLIC_DEPLOY_ID: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
+    NEXT_PUBLIC_DEPLOY_ID: process.env.NEXT_PUBLIC_DEPLOY_ID,
 
     // Auth
     AUTH_SECRET: process.env.AUTH_SECRET,
@@ -130,3 +130,5 @@ export const env = createEnv({
     NOTIFY_DISABLED: process.env.NOTIFY_DISABLED,
   },
 });
+
+console.log(`[env] DEPLOY_ID: ${env.NEXT_PUBLIC_DEPLOY_ID}`);
