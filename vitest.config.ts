@@ -16,12 +16,7 @@ export default defineConfig({
       AUTH_SECRET: "123",
       CRON_SECRET: "123",
 
-      // DATABASE_URL: ":memory:",
-      DATABASE_URL: "file:data/db/test/main.db",
-      DATABASE_TOKEN: "123",
-
-      MONITOR_DATABASE_URL: "file:data/db/test/monitor.db",
-      MONITOR_DATABASE_TOKEN: "123",
+      DATABASE_URL: "postgres://postgres:postgres@localhost:5432/money_tab_test",
 
       BOT_TOKEN: "123",
       WEBHOOK_SECRET: "123",

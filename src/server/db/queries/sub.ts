@@ -102,7 +102,7 @@ export async function remindCandidates() {
     .where(
       and(
         isNotNull(schema.subContrib.reminder),
-        lte(schema.subContrib.reminderDate, sql`DATE()`),
+        lte(schema.subContrib.reminderDate, sql`CURRENT_DATE`),
         eq(schema.user.isRegistered, true),
         isNotNull(schema.user.telegramId),
       ),

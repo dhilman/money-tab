@@ -141,15 +141,15 @@ class TxContribsResolver extends ContribsResolver<Contrib> {
 
 interface SubContrib extends Contrib {
   reminder: ReminderLeadTime | null;
-  reminderDate: string | null;
+  reminderDate: Date | null;
 }
 
 interface SubContribResolveParams extends ResolveParams<SubContrib> {
-  getReminderDate: (c: SubContrib) => string | null;
+  getReminderDate: (c: SubContrib) => Date | null;
 }
 
 class SubContribsResolver extends ContribsResolver<SubContrib> {
-  getReminderDate: (c: SubContrib) => string | null;
+  getReminderDate: (c: SubContrib) => Date | null;
 
   constructor(params: SubContribResolveParams) {
     super(params);

@@ -51,7 +51,7 @@ export const TxEditProvider = ({ tx, children }: Props) => {
     getCurrencyByCodeWithDefault(tx.currencyCode),
   );
   const [description, setDescription] = useState(tx.description || "");
-  const [dateTime, setDateTime] = useState(parseDateOrDateTime(tx.date));
+  const [dateTime, setDateTime] = useState(parseDateOrDateTime(tx.txDate, tx.txTime));
   const [files, setFiles] = useState<Attachment[]>(
     tx.files.map((v) => ({
       id: v.id,
@@ -103,10 +103,11 @@ export const TxEditProvider = ({ tx, children }: Props) => {
   );
 };
 
-function parseDateOrDateTime(date: string | null) {
-  if (!date) return { date: "", time: "" };
-  if (date.length === 10) return { date, time: "" };
-  return getDateAndTimeLocalFromUTC(date);
+function parseDateOrDateTime(txDate: Date | null, txTime: string | null) {
+  if (!txDate) return { date: "", time: "" };
+  const dateStr = txDate.toISOString().slice(0, 10);
+  if (!txTime) return { date: dateStr, time: "" };
+  return getDateAndTimeLocalFromUTC(dateStr + " " + txTime);
 }
 
 function TxMainButton({ tx }: { tx: Tx }) {
@@ -132,7 +133,7 @@ function TxMainButton({ tx }: { tx: Tx }) {
 function useIsEdited(tx: Tx) {
   const state = useTxEditCtx();
   const parties = useParticipantsCtx();
-  const txDateTime = useRef(parseDateOrDateTime(tx.date));
+  const txDateTime = useRef(parseDateOrDateTime(tx.txDate, tx.txTime));
 
   return useMemo(() => {
     if (state.amount !== tx.amount) return true;

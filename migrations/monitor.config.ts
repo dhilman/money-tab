@@ -4,12 +4,12 @@ import { env } from "~/env.mjs";
 
 export default defineConfig({
   schema: "./src/server/monitor/mdb/schema.ts",
-  dialect: "turso",
-  out: "migrations/monitor",
+  dialect: "postgresql",
+  out: "migrations/pg/monitor",
   dbCredentials: {
-    url: env.MONITOR_DATABASE_URL,
-    authToken: env.MONITOR_DATABASE_TOKEN,
+    url: env.DATABASE_URL,
   },
+  schemaFilter: ["monitor"],
   verbose: true,
   strict: true,
 });

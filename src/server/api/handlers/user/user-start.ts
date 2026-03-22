@@ -11,7 +11,7 @@ import { arrCombine } from "~/utils/array";
 
 export const userStartHandler = privateProcedure.query(async ({ ctx }) => {
   const [txBalances, connectionsFrom, transactions, subs, groups] =
-    await ctx.db.batch([
+    await Promise.all([
       queries.tx.balance(ctx, { userId: ctx.userId, fromDate: null }),
       queries.user.connections(ctx, ctx.userId),
       queries.tx.list(

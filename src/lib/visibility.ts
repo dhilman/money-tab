@@ -10,7 +10,7 @@ const VISIBILITY_DAYS = 8;
  * Public - can join
  */
 export const calcIsPublic = (params: {
-  createdAt: string;
+  createdAt: string | Date;
   visibility: Visibility;
 }) => {
   if (params.visibility === "PRIVATE") return false;
@@ -22,7 +22,7 @@ export const calcIsPublic = (params: {
   return now.diff(created, "day") < VISIBILITY_DAYS;
 };
 
-export const calcPublicDays = (createdAt: string) => {
+export const calcPublicDays = (createdAt: string | Date) => {
   const created = dayjs(createdAt, { utc: true });
   const now = dayjs();
 

@@ -100,7 +100,7 @@ export const TxProvider = ({ shortId, shortContribId, children }: Props) => {
           isCreator: isCreator,
           isParticipant: isParticipant,
           isVisible: calcIsPublic({
-            createdAt: tx.createdAt,
+            createdAt: tx.createdAt.toISOString(),
             visibility: tx.visibility,
           }),
           amount: tx.amount,

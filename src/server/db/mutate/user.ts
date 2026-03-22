@@ -120,16 +120,16 @@ export async function unregister(ctx: DbCtx, params: UserOrTelegarmId) {
     userId = user.id;
   }
 
-  await ctx.db.batch([
-    ctx.db
+  await ctx.db.transaction(async (tx) => {
+    await tx
       .update(schema.user)
       .set({ isRegistered: false, updatedAt: sql`CURRENT_TIMESTAMP` })
-      .where(eq(schema.user.id, userId)),
-    ctx.db.insert(schema.event).values({
+      .where(eq(schema.user.id, userId));
+    await tx.insert(schema.event).values({
       name: "user_unregistered",
       createdById: userId,
-    }),
-  ]);
+    });
+  });
 }
 
 export async function upsertFromTg(ctx: DbCtx, params: UserCreateParams) {
@@ -154,21 +154,19 @@ export async function upsertFromTg(ctx: DbCtx, params: UserCreateParams) {
     });
   }
 
-  await ctx.db.batch([
-    ctx.db
+  await ctx.db.transaction(async (tx) => {
+    await tx
       .update(schema.user)
       .set({
         ...params,
         languageCode: existing.languageCode ?? params.languageCode,
         updatedAt: sql`CURRENT_TIMESTAMP`,
       })
-      .where(eq(schema.user.id, existing.id)),
-    ...event.map((e) =>
-      ctx.db.insert(schema.event).values({
-        ...e,
-      }),
-    ),
-  ]);
+      .where(eq(schema.user.id, existing.id));
+    for (const e of event) {
+      await tx.insert(schema.event).values({ ...e });
+    }
+  });
 
   return {
     user: {

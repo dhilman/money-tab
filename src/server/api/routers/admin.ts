@@ -3,20 +3,20 @@ import { z } from "zod";
 import { EVENT_NAMES } from "~/lib/consts/constants";
 import { adminProcedure, createTRPCRouter } from "~/server/api/trpc";
 import { bot } from "~/server/bot/bot";
-import { db, db_utils, mutate, queries, schema } from "~/server/db";
+import { db, mutate, queries, schema } from "~/server/db";
 import { mdb, mqueries, mschema } from "~/server/monitor/mdb";
 import { sign_user_id } from "~/server/signing";
 import { validator } from "~/server/validator";
 import { createCookie } from "~/utils/cookies";
 
-function isoDateToSqlDateTime(date: string) {
-  return db_utils.dateToSqlDateTime(new Date(date));
+function toDate(isoDate: string) {
+  return new Date(isoDate);
 }
 
-function sqlDateRange(params: { startDate: string; endDate: string }) {
+function dateRange(params: { startDate: string; endDate: string }) {
   return {
-    startDate: isoDateToSqlDateTime(params.startDate),
-    endDate: isoDateToSqlDateTime(params.endDate),
+    startDate: toDate(params.startDate),
+    endDate: toDate(params.endDate),
   };
 }
 
@@ -66,7 +66,7 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input }) => {
-      const [users, total] = await db.batch([
+      const [users, total] = await Promise.all([
         queries.admin.users(input),
         db.select({ count: count() }).from(schema.user),
       ]);
@@ -113,7 +113,7 @@ export const adminRouter = createTRPCRouter({
       return user;
     }),
   totals: adminProcedure.query(async () => {
-    const [users, txs, subs, connections, groups] = await db.batch([
+    const [users, txs, subs, connections, groups] = await Promise.all([
       db.select({ count: count() }).from(schema.user),
       db.select({ count: count() }).from(schema.transaction),
       db.select({ count: count() }).from(schema.subscription),
@@ -137,9 +137,9 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input }) => {
-      const range = sqlDateRange(input);
+      const range = dateRange(input);
 
-      const [newUsers, txs, subs, connections, groups] = await db.batch([
+      const [newUsers, txs, subs, connections, groups] = await Promise.all([
         queries.admin.usersSince(range),
         queries.admin.txsSince(range),
         queries.admin.subsSince(range),
@@ -147,7 +147,7 @@ export const adminRouter = createTRPCRouter({
         queries.admin.groupsSince(range),
       ]);
 
-      const [sessions, events, issues] = await mdb.batch([
+      const [sessions, events, issues] = await Promise.all([
         mqueries.sessionsSince(range),
         mqueries.eventsSince(range),
         mqueries.openIssuesSince(range),
@@ -173,9 +173,9 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input }) => {
-      const range = sqlDateRange(input);
+      const range = dateRange(input);
 
-      const [uPerDay, countries, oss] = await mdb.batch([
+      const [uPerDay, countries, oss] = await Promise.all([
         mqueries.uniqueVisitorsPerDay(range),
         mqueries.countryCountsSince(range),
         mqueries.osCountsSince(range),
@@ -220,9 +220,9 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input }) => {
-      const range = sqlDateRange(input);
+      const range = dateRange(input);
 
-      const [perDay, loadTimes] = await mdb.batch([
+      const [perDay, loadTimes] = await Promise.all([
         mqueries.pageViewsPerDay(range),
         mdb.query.event.findMany({
           columns: { loadTime: true, interactiveTime: true },
@@ -248,7 +248,7 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input }) => {
-      const [issue, instances] = await mdb.batch([
+      const [issue, instances] = await Promise.all([
         mdb.query.issue.findFirst({
           where: (v, { eq }) => eq(v.hash, input.hash),
           extras: {
@@ -285,9 +285,9 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input }) => {
-      const range = sqlDateRange(input);
+      const range = dateRange(input);
 
-      const [perDay, perUser] = await db.batch([
+      const [perDay, perUser] = await Promise.all([
         queries.admin.eventsPerDay({
           event: input.event,
           range,
@@ -315,13 +315,11 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input }) => {
-      const [perUser] = await db.batch([
-        queries.admin.eventsPerUserWithUserCreation({
-          events: input.events,
-          eventRange: sqlDateRange(input.eventRange),
-          userRange: sqlDateRange(input.userRange),
-        }),
-      ]);
+      const perUser = await queries.admin.eventsPerUserWithUserCreation({
+        events: input.events,
+        eventRange: dateRange(input.eventRange),
+        userRange: dateRange(input.userRange),
+      });
 
       return { perUser };
     }),
@@ -333,7 +331,7 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input }) => {
-      const range = sqlDateRange(input);
+      const range = dateRange(input);
 
       const counts = await mqueries.notifsPerDay(range);
 

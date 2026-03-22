@@ -1,29 +1,38 @@
 import { describe, expect, test } from "vitest";
-import { DateOrDateTimeStrAsSql } from "~/server/api/handlers/zod_schema";
+import { DateOrDateTimeStr } from "~/server/api/handlers/zod_schema";
 
 describe("parse date or date time", () => {
-  const testCases: {
-    input: string;
-    expected: string;
-    error?: string;
-  }[] = [
-    { input: "2021-01-01", expected: "2021-01-01" },
-    { input: "2021-01-20", expected: "2021-01-20" },
-    { input: "2021-01-20T12:00:00", expected: "2021-01-20 12:00:00" },
-    { input: "2021-01-20T12:00:00Z", expected: "2021-01-20 12:00:00" },
-    { input: "2021-01-20T12:00:00+03:00", expected: "2021-01-20 09:00:00" },
-    { input: "hello", expected: "", error: "Invalid input" },
-  ];
+  test("date-only string returns date with null time", () => {
+    const result = DateOrDateTimeStr.parse("2021-01-01");
+    expect(result.date).toEqual(new Date("2021-01-01"));
+    expect(result.time).toBeNull();
+  });
 
-  testCases.forEach((tc) => {
-    test(tc.input, () => {
-      if (tc.error) {
-        expect(() => DateOrDateTimeStrAsSql.parse(tc.input)).toThrowError(
-          tc.error,
-        );
-      } else {
-        expect(DateOrDateTimeStrAsSql.parse(tc.input)).toBe(tc.expected);
-      }
-    });
+  test("date-only string (20th)", () => {
+    const result = DateOrDateTimeStr.parse("2021-01-20");
+    expect(result.date).toEqual(new Date("2021-01-20"));
+    expect(result.time).toBeNull();
+  });
+
+  test("datetime string returns date with time", () => {
+    const result = DateOrDateTimeStr.parse("2021-01-20T12:00:00");
+    expect(result.date).toBeInstanceOf(Date);
+    expect(result.time).toBe("12:00:00");
+  });
+
+  test("datetime string with Z", () => {
+    const result = DateOrDateTimeStr.parse("2021-01-20T12:00:00Z");
+    expect(result.date).toBeInstanceOf(Date);
+    expect(result.time).toBe("12:00:00");
+  });
+
+  test("datetime string with timezone offset", () => {
+    const result = DateOrDateTimeStr.parse("2021-01-20T12:00:00+03:00");
+    expect(result.date).toBeInstanceOf(Date);
+    expect(result.time).toBe("09:00:00");
+  });
+
+  test("invalid string throws", () => {
+    expect(() => DateOrDateTimeStr.parse("hello")).toThrowError();
   });
 });

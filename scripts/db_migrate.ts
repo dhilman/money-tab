@@ -1,10 +1,12 @@
 import { select } from "@inquirer/prompts";
-import { migrate } from "drizzle-orm/libsql/migrator";
-import { confirmOrExit, createDbClient, selectEnv } from "scripts/cli_utils";
+import { drizzle } from "drizzle-orm/postgres-js";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
+import postgres from "postgres";
+import { confirmOrExit, selectEnv } from "scripts/cli_utils";
 
 const MIGRATE_DIR = {
-  main: "migrations/main",
-  monitor: "migrations/monitor",
+  main: "migrations/pg/main",
+  monitor: "migrations/pg/monitor",
 } as const;
 
 const { env } = await selectEnv();
@@ -17,10 +19,13 @@ const dbName = await select({
   ],
 });
 
-const { db, config } = createDbClient(dbName, env);
+const client = postgres(env.DATABASE_URL);
+const db = drizzle(client);
 
-await confirmOrExit(`Migrate ${dbName} database at ${config.url}?`);
+await confirmOrExit(`Migrate ${dbName} schema at ${env.DATABASE_URL}?`);
 
 console.log("Migrating database...");
 await migrate(db, { migrationsFolder: MIGRATE_DIR[dbName] });
 console.log("Database migrated");
+
+await client.end();

@@ -1,12 +1,19 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  bigint,
+  boolean,
+  date,
   index,
   integer,
+  pgSchema,
   primaryKey,
-  sqliteTableCreator,
+  serial,
   text,
+  time,
+  timestamp,
   uniqueIndex,
-} from "drizzle-orm/sqlite-core";
+  varchar,
+} from "drizzle-orm/pg-core";
 import {
   CYCLE_UNITS,
   EVENT_NAMES,
@@ -14,20 +21,17 @@ import {
   VISIBILITY_VALUES,
 } from "~/lib/consts/constants";
 
-export const createTable = sqliteTableCreator((name) => name);
-
-const boolean = (name: string) => integer(name, { mode: "boolean" });
-const timestamp = (name: string) => text(name, { length: 16 });
-const date = (name: string) => text(name, { length: 10 });
+const mainSchema = pgSchema("main");
+export const createTable = mainSchema.table;
 
 const columns = {
-  cuid: (name: string) => text(name, { length: 24 }),
-  createdAt: timestamp("created_at")
+  cuid: (name: string) => varchar(name, { length: 24 }),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: timestamp("updated_at")
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" })
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+    .defaultNow(),
 };
 
 function randomInt(max: number) {
@@ -40,19 +44,19 @@ export const user = createTable(
     id: columns.cuid("id").primaryKey(),
     createdAt: columns.createdAt,
     updatedAt: columns.updatedAt,
-    telegramId: integer("telegram_id", { mode: "number" }).unique(
+    telegramId: bigint("telegram_id", { mode: "number" }).unique(
       "telegram_idx",
     ),
-    username: text("username", { length: 256 }),
-    firstName: text("first_name", { length: 256 }),
-    lastName: text("last_name", { length: 256 }),
-    languageCode: text("language_code", { length: 2 }),
-    photoUrl: text("photo_url", { length: 256 }),
+    username: text("username"),
+    firstName: text("first_name"),
+    lastName: text("last_name"),
+    languageCode: varchar("language_code", { length: 10 }),
+    photoUrl: text("photo_url"),
     isRegistered: boolean("is_registered").notNull().default(false),
     accentColorId: integer("accent_color_id").$defaultFn(() => randomInt(7)),
     tgIsPremium: boolean("tg_is_premium").notNull().default(false),
-    timezone: text("timezone", { length: 64 }).default("UTC").notNull(),
-    timezoneManual: text("timezone_manual", { length: 64 }),
+    timezone: varchar("timezone", { length: 64 }).default("UTC").notNull(),
+    timezoneManual: varchar("timezone_manual", { length: 64 }),
     role: text("role", { enum: ["USER", "ADMIN", "SUPER"] })
       .notNull()
       .default("USER"),
@@ -61,9 +65,9 @@ export const user = createTable(
 
     hideBalance: boolean("hide_balance").notNull().default(false),
     meInPaidFor: boolean("me_in_paid_for").notNull().default(false),
-    currencyCode: text("currency_code", { length: 3 }),
+    currencyCode: varchar("currency_code", { length: 3 }),
   },
-  (v) => [index("user_created_at_idx").on(sql`${v.createdAt} DESC`)],
+  (v) => [index("user_created_at_idx").on(v.createdAt)],
 );
 
 export const connection = createTable(
@@ -79,7 +83,7 @@ export const connection = createTable(
       columns: [v.ownerId, v.userId],
     }),
     index("to_user_idx").on(v.userId),
-    index("connection_created_at_idx").on(sql`${v.createdAt} DESC`),
+    index("connection_created_at_idx").on(v.createdAt),
   ],
 );
 
@@ -103,10 +107,10 @@ export const group = createTable(
   {
     id: columns.cuid("id").primaryKey(),
     createdAt: columns.createdAt,
-    archivedAt: timestamp("archived_at"),
+    archivedAt: timestamp("archived_at", { withTimezone: true, mode: "date" }),
     createdById: columns.cuid("created_by_id").notNull(),
-    name: text("name", { length: 256 }).notNull(),
-    telegramId: integer("telegram_id", { mode: "number" }).unique(
+    name: text("name").notNull(),
+    telegramId: bigint("telegram_id", { mode: "number" }).unique(
       "group_telegram_idx",
     ),
     accentColorId: integer("accent_color_id").$defaultFn(() => randomInt(7)),
@@ -115,7 +119,7 @@ export const group = createTable(
     tgLinked: boolean("tg_linked").notNull().default(false),
   },
   (v) => [
-    index("group_created_at_idx").on(sql`${v.createdAt} DESC`),
+    index("group_created_at_idx").on(v.createdAt),
     index("group_user_idx").on(v.createdById),
   ],
 );
@@ -145,7 +149,7 @@ export const membership = createTable(
   (v) => [
     uniqueIndex("membership_group_user_idx").on(v.groupId, v.userId),
     index("membership_user_idx").on(v.userId),
-    index("membership_created_at_idx").on(sql`${v.createdAt} DESC`),
+    index("membership_created_at_idx").on(v.createdAt),
   ],
 );
 
@@ -180,17 +184,19 @@ export const subscription = createTable(
     id: columns.cuid("id").primaryKey(),
     createdAt: columns.createdAt,
     createdById: columns.cuid("created_by_id").notNull(),
-    archivedAt: timestamp("archived_at"),
+    archivedAt: timestamp("archived_at", { withTimezone: true, mode: "date" }),
     archivedById: columns.cuid("archived_by_id"),
     groupId: columns.cuid("group_id"),
-    name: text("name", { length: 256 }).notNull(),
-    amount: integer("amount").notNull(),
-    currencyCode: text("currency_code", { length: 3 }).default("XXX").notNull(),
-    startDate: date("start_date").notNull(),
-    endDate: date("end_date"),
-    cycleUnit: text("cycle_unit", { enum: CYCLE_UNITS, length: 5 }).notNull(),
+    name: text("name").notNull(),
+    amount: bigint("amount", { mode: "number" }).notNull(),
+    currencyCode: varchar("currency_code", { length: 3 })
+      .default("XXX")
+      .notNull(),
+    startDate: date("start_date", { mode: "date" }).notNull(),
+    endDate: date("end_date", { mode: "date" }),
+    cycleUnit: text("cycle_unit", { enum: CYCLE_UNITS }).notNull(),
     cycleValue: integer("cycle_value").notNull(),
-    trialUnit: text("trial_unit", { enum: CYCLE_UNITS, length: 5 }),
+    trialUnit: text("trial_unit", { enum: CYCLE_UNITS }),
     trialValue: integer("trial_value"),
     visibility: text("visibility", {
       enum: VISIBILITY_VALUES,
@@ -200,7 +206,7 @@ export const subscription = createTable(
   },
   (v) => [
     index("subs_user_idx").on(v.createdById),
-    index("subs_created_at_idx").on(sql`${v.createdAt} DESC`),
+    index("subs_created_at_idx").on(v.createdAt),
   ],
 );
 
@@ -233,18 +239,18 @@ export const subContrib = createTable(
     subscriptionId: columns.cuid("subscription_id").notNull(),
     userId: columns.cuid("user_id"),
     // IMPORTANT: there must be exactly one contrib with a positive amountPaid.
-    amountPaid: integer("amount_paid").notNull(),
-    amountOwed: integer("amount_owed").notNull(),
+    amountPaid: bigint("amount_paid", { mode: "number" }).notNull(),
+    amountOwed: bigint("amount_owed", { mode: "number" }).notNull(),
     manualAmountOwed: boolean("manual_amount_owed").notNull().default(false),
 
-    joinDate: date("join_date").notNull(),
-    leaveDate: date("leave_date"),
+    joinDate: date("join_date", { mode: "date" }).notNull(),
+    leaveDate: date("leave_date", { mode: "date" }),
     status: text("status", {
       enum: ["NOT_DELIVERED", "CONFIRMED"],
     }).notNull(),
 
-    reminder: text("reminder", { enum: REMINDER_VALUES, length: 3 }),
-    reminderDate: date("reminder_date"),
+    reminder: text("reminder", { enum: REMINDER_VALUES }),
+    reminderDate: date("reminder_date", { mode: "date" }),
   },
   (v) => [
     uniqueIndex("sub_id_user_id_idx").on(v.subscriptionId, v.userId),
@@ -272,12 +278,15 @@ export const transaction = createTable(
     createdAt: columns.createdAt,
     createdById: columns.cuid("created_by_id").notNull(),
     archivedById: columns.cuid("archived_by_id"),
-    archivedAt: timestamp("archived_at"),
+    archivedAt: timestamp("archived_at", { withTimezone: true, mode: "date" }),
     groupId: columns.cuid("group_id"),
-    amount: integer("amount", { mode: "number" }).notNull(),
-    currencyCode: text("currency_code", { length: 3 }).default("XXX").notNull(),
-    description: text("description", { length: 1024 }),
-    date: text("date"),
+    amount: bigint("amount", { mode: "number" }).notNull(),
+    currencyCode: varchar("currency_code", { length: 3 })
+      .default("XXX")
+      .notNull(),
+    description: varchar("description", { length: 1024 }),
+    txDate: date("tx_date", { mode: "date" }),
+    txTime: time("tx_time"),
     type: text("type", { enum: ["PAYMENT", "SETTLE"] }).notNull(),
     visibility: text("visibility", {
       enum: VISIBILITY_VALUES,
@@ -286,7 +295,7 @@ export const transaction = createTable(
       .default("RESTRICTED"),
   },
   (v) => [
-    index("tx_created_at_idx").on(sql`${v.createdAt} DESC`),
+    index("tx_created_at_idx").on(v.createdAt),
     index("tx_created_by_idx").on(v.createdById),
     index("tx_group_id_idx").on(v.groupId),
   ],
@@ -327,8 +336,8 @@ export const contribution = createTable(
     userId: columns.cuid("user_id"),
     createdAt: columns.createdAt,
     // IMPORTANT: there must be exactly one contrib with a positive amountPaid.
-    amountPaid: integer("amount_paid").notNull(),
-    amountOwed: integer("amount_owed").notNull(),
+    amountPaid: bigint("amount_paid", { mode: "number" }).notNull(),
+    amountOwed: bigint("amount_owed", { mode: "number" }).notNull(),
     // If true, the user manually entered the amount owed.
     manualAmountOwed: boolean("manual_amount_owed").notNull().default(false),
     status: text("status", {
@@ -365,7 +374,7 @@ export const file = createTable(
     size: integer("size"),
   },
   (v) => [
-    index("file_created_at_idx").on(sql`${v.createdAt} DESC`),
+    index("file_created_at_idx").on(v.createdAt),
     index("file_created_by_idx").on(v.createdBy),
     index("file_tx_id_idx").on(v.transactionId),
   ],
@@ -381,10 +390,9 @@ export const fileRelations = relations(file, ({ one }) => ({
 export const event = createTable(
   "events",
   {
-    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    id: serial("id").primaryKey(),
     createdAt: columns.createdAt,
     name: text("name", {
-      length: 64,
       enum: EVENT_NAMES,
     }).notNull(),
     createdById: columns.cuid("created_by_id"),
@@ -394,7 +402,7 @@ export const event = createTable(
     groupId: columns.cuid("group_id"),
   },
   (v) => [
-    index("event_name_created_at_idx").on(v.name, sql`${v.createdAt} DESC`),
+    index("event_name_created_at_idx").on(v.name, v.createdAt),
     index("event_created_by_idx").on(v.createdById),
     index("event_target_user_idx").on(v.targetUserId),
     index("event_transaction_idx").on(v.transactionId),

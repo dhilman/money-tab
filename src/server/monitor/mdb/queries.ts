@@ -13,8 +13,8 @@ import {
 import { mdb, mschema } from "~/server/monitor/mdb";
 
 interface CountParams {
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
 }
 
 export const sessionsSince = (params: CountParams) => {
@@ -89,7 +89,7 @@ export const pageViewsPerDay = (params: CountParams) => {
   return mdb
     .select({
       key: sql<Date>`DATE(${mschema.event.timestamp})`,
-      count: sql<number>`cast(COUNT(*) as UNSIGNED)`,
+      count: sql<number>`cast(COUNT(*) as INTEGER)`,
     })
     .from(mschema.event)
     .where(
@@ -109,7 +109,7 @@ export const notifsPerDay = (params: CountParams) => {
     .select({
       key: sql<Date>`DATE(${mschema.event.timestamp})`,
       name: mschema.event.name,
-      count: sql<number>`cast(COUNT(*) as UNSIGNED)`,
+      count: sql<number>`cast(COUNT(*) as INTEGER)`,
     })
     .from(mschema.event)
     .where(

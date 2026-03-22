@@ -13,8 +13,8 @@ import type { EventName } from "~/lib/consts/constants";
 import { db, schema } from "~/server/db";
 
 interface DateRangeParams {
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
 }
 
 interface UsersListParams {

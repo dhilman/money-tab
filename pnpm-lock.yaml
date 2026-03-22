@@ -103,7 +103,7 @@ importers:
         version: 1.11.19
       drizzle-orm:
         specifier: ^0.45.1
-        version: 0.45.1(@libsql/client@0.17.0)(bun-types@1.1.21)(mysql2@3.16.0)
+        version: 0.45.1(@libsql/client@0.17.0)(bun-types@1.1.21)(mysql2@3.16.0)(postgres@3.4.8)
       fuse.js:
         specifier: ^7.1.0
         version: 7.1.0
@@ -134,6 +134,9 @@ importers:
       pino:
         specifier: ^10.1.1
         version: 10.1.1
+      postgres:
+        specifier: ^3.4.8
+        version: 3.4.8
       react:
         specifier: 19.2.3
         version: 19.2.3
@@ -4756,6 +4759,10 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
+  postgres@3.4.8:
+    resolution: {integrity: sha512-d+JFcLM17njZaOLkv6SCev7uoLaBtfK86vMUXhW1Z4glPWh4jozno9APvW/XKFJ3CCxVoC7OL38BqRydtu5nGg==}
+    engines: {node: '>=12'}
+
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -9041,11 +9048,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.45.1(@libsql/client@0.17.0)(bun-types@1.1.21)(mysql2@3.16.0):
+  drizzle-orm@0.45.1(@libsql/client@0.17.0)(bun-types@1.1.21)(mysql2@3.16.0)(postgres@3.4.8):
     optionalDependencies:
       '@libsql/client': 0.17.0
       bun-types: 1.1.21
       mysql2: 3.16.0
+      postgres: 3.4.8
 
   dunder-proto@1.0.1:
     dependencies:
@@ -10733,6 +10741,8 @@ snapshots:
       nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  postgres@3.4.8: {}
 
   prelude-ls@1.2.1: {}
 

@@ -235,7 +235,7 @@ export async function contactsOrInGroup(
 export async function joinable(
   ctx: MyContext,
   params: {
-    createdAt: string;
+    createdAt: string | Date;
     visibility: Visibility;
     groupId: string | null;
   },
