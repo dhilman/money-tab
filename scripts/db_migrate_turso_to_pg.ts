@@ -13,8 +13,8 @@
  *   - Ensure .env.prod has the Turso credentials
  */
 
-import { createClient } from "@libsql/client";
 import { confirm } from "@inquirer/prompts";
+import { createClient } from "@libsql/client";
 import { drizzle as drizzleSqlite } from "drizzle-orm/libsql";
 import { drizzle as drizzlePg } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
@@ -29,7 +29,7 @@ import * as newMonitorSchema from "~/server/monitor/mdb/schema";
 
 // --------------- Setup ---------------
 
-const POSTGRES_URL = "postgres://postgres:postgres@localhost:5432/money_tab_prod";
+const POSTGRES_URL = process.env.DATABASE_URL!;
 
 const tursoMain = createClient({
   url: "file:./data/money-prod-main.db",

@@ -4,9 +4,15 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
 import { confirmOrExit, selectEnv } from "scripts/cli_utils";
 
-const MIGRATE_DIR = {
-  main: "migrations/pg/main",
-  monitor: "migrations/pg/monitor",
+const MIGRATE_CONFIG = {
+  main: {
+    migrationsFolder: "migrations/pg/main",
+    migrationsTable: "__drizzle_migrations_main",
+  },
+  monitor: {
+    migrationsFolder: "migrations/pg/monitor",
+    migrationsTable: "__drizzle_migrations_monitor",
+  },
 } as const;
 
 const { env } = await selectEnv();
@@ -25,7 +31,7 @@ const db = drizzle(client);
 await confirmOrExit(`Migrate ${dbName} schema at ${env.DATABASE_URL}?`);
 
 console.log("Migrating database...");
-await migrate(db, { migrationsFolder: MIGRATE_DIR[dbName] });
+await migrate(db, MIGRATE_CONFIG[dbName]);
 console.log("Database migrated");
 
 await client.end();
