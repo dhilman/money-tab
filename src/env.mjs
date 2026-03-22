@@ -10,11 +10,6 @@ export const env = createEnv({
 
     // Database
     DATABASE_URL: z.string(),
-    DATABASE_TOKEN: z.string(),
-
-    // Database (monitoring)
-    MONITOR_DATABASE_URL: z.string(),
-    MONITOR_DATABASE_TOKEN: z.string(),
 
     CRON_SECRET: z.string(),
 
@@ -88,11 +83,6 @@ export const env = createEnv({
 
     // Database
     DATABASE_URL: process.env.DATABASE_URL,
-    DATABASE_TOKEN: process.env.DATABASE_TOKEN,
-
-    // Database (monitoring)
-    MONITOR_DATABASE_URL: process.env.MONITOR_DATABASE_URL,
-    MONITOR_DATABASE_TOKEN: process.env.MONITOR_DATABASE_TOKEN,
 
     // Telegram
     BOT_TOKEN: process.env.BOT_TOKEN,

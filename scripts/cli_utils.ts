@@ -1,7 +1,7 @@
 import { confirm, select } from "@inquirer/prompts";
-import { createClient } from "@libsql/client";
 import { config } from "dotenv";
-import { drizzle } from "drizzle-orm/libsql";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import type { env } from "~/env.mjs";
 import { schema } from "~/server/db";
 
@@ -11,22 +11,10 @@ const ENV_FILES = {
   prod: "./.envs/.env.prod",
 } as const;
 
-export function createDbClient(name: "main" | "monitor", vars: typeof env) {
-  function getConfig() {
-    switch (name) {
-      case "main":
-        return { url: vars.DATABASE_URL, authToken: vars.DATABASE_TOKEN };
-      case "monitor":
-        return {
-          url: vars.MONITOR_DATABASE_URL,
-          authToken: vars.MONITOR_DATABASE_TOKEN,
-        };
-    }
-  }
-
-  const config = getConfig();
-  const db = drizzle(createClient(config), { schema: schema });
-  return { db, config };
+export function createDbClient(_name: "main" | "monitor", vars: typeof env) {
+  const client = postgres(vars.DATABASE_URL);
+  const db = drizzle(client, { schema: schema });
+  return { db, config: { url: vars.DATABASE_URL } };
 }
 
 export async function selectEnv() {

@@ -83,7 +83,7 @@ const CancelDropdownItem = () => {
         return {
           ...prev,
           renewalDate: undefined,
-          endDate: getDateYYYYMMDD(new Date()),
+          endDate: new Date(),
         };
       });
       toast.success("Subscription cancelled");

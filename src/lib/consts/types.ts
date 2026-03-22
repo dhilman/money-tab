@@ -19,7 +19,7 @@ export interface BaseGroup {
 
 export interface MainEvent {
   id: number;
-  createdAt: string;
+  createdAt: Date;
   name: (typeof EVENT_NAMES)[number];
   createdById: string | null;
   targetUserId: string | null;

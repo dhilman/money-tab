@@ -3,23 +3,20 @@ import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
+    fileParallelism: false,
+    setupFiles: ["./test/setup.ts"],
     exclude: [...configDefaults.exclude, "**/e2e/**"],
     env: {
       NODE_ENV: "test",
       NEXT_PUBLIC_ENV: "local",
       NEXT_PUBLIC_NODE_ENV: "test",
-      NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: "local",
+      NEXT_PUBLIC_DEPLOY_ID: "local",
       NEXT_PUBLIC_BASE_URL: "http://localhost:3000",
 
       AUTH_SECRET: "123",
       CRON_SECRET: "123",
 
-      // DATABASE_URL: ":memory:",
-      DATABASE_URL: "file:data/db/test/main.db",
-      DATABASE_TOKEN: "123",
-
-      MONITOR_DATABASE_URL: "file:data/db/test/monitor.db",
-      MONITOR_DATABASE_TOKEN: "123",
+      DATABASE_URL: "postgres://postgres:postgres@localhost:5432/money_tab_test",
 
       BOT_TOKEN: "123",
       WEBHOOK_SECRET: "123",

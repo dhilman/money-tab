@@ -128,7 +128,7 @@ export const SubProvider = ({
           isCreator: isCreator,
           isParticipant: isParticipant,
           isVisible: calcIsPublic({
-            createdAt: sub.createdAt,
+            createdAt: sub.createdAt.toISOString(),
             visibility: sub.visibility,
           }),
           amount: sub.amount,

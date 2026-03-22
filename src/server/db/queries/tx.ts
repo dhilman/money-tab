@@ -12,7 +12,7 @@ import {
   or,
   sql,
 } from "drizzle-orm";
-import { alias } from "drizzle-orm/sqlite-core";
+import { alias } from "drizzle-orm/pg-core";
 import { db, schema, type DbCtx } from "~/server/db";
 import { prefix } from "~/server/db/utils";
 
@@ -84,7 +84,7 @@ export function list<T extends WithInputMany>(
 
 interface BalanceParams {
   userId: string;
-  fromDate: string | null;
+  fromDate: Date | null;
 }
 
 export function balance(ctx: DbCtx, params: BalanceParams) {

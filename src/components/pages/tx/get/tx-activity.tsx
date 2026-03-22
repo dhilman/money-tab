@@ -17,7 +17,7 @@ import { formatListItems } from "~/lib/format/format";
 
 type ActivityItemBase<T> = T & {
   userId: string;
-  createdAt: string;
+  createdAt: Date;
 };
 
 type ActivityItemSingle = ActivityItemBase<{

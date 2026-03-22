@@ -6,13 +6,14 @@ export const DateTimeStrAsDate = z
   .string()
   .transform((v) => z.coerce.date().parse(v));
 
-export const DateOrDateTimeStrAsSql = z.string().transform((v) => {
-  const date = z.coerce.date().parse(v);
-  const iso = date.toISOString();
+export const DateOrDateTimeStr = z.string().transform((v) => {
+  const d = z.coerce.date().parse(v);
   if (v.length === 10) {
-    return iso.slice(0, 10);
+    return { date: d, time: null as string | null };
   }
-  return iso.slice(0, 19).replace("T", " ");
+  // Extract time from the UTC-normalized Date to handle timezone offsets
+  const timePart = d.toISOString().slice(11, 19);
+  return { date: d, time: timePart };
 });
 
 export const DateStrAsDayJs = z.string().transform((v) => dayjsUTC(v));

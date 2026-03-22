@@ -3,9 +3,8 @@ import * as queries from "./queries";
 import * as schema from "./schema";
 import * as db_utils from "./utils";
 
-import { createClient } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
-import { env } from "~/env.mjs";
+import { drizzle } from "drizzle-orm/postgres-js";
+import { pgClient } from "./pg-client";
 
 export interface DbCtx {
   db: Db;
@@ -21,12 +20,7 @@ export interface DbTxUserCtx {
   userId: string;
 }
 
-const dbClient = createClient({
-  url: env.DATABASE_URL,
-  authToken: env.DATABASE_TOKEN,
-});
-
-const db = drizzle(dbClient, { schema });
+const db = drizzle(pgClient, { schema });
 
 export type Db = typeof db;
 export type DbTx = Parameters<Parameters<(typeof db)["transaction"]>[0]>[0];

@@ -117,8 +117,8 @@ const calcRemaining = (params: {
   subs: {
     amount: number;
     currencyCode: string;
-    startDate: string;
-    endDate: string | null;
+    startDate: Date;
+    endDate: Date | null;
     cycleUnit: CycleUnit;
     cycleValue: number;
   }[];

@@ -10,7 +10,7 @@ import { type MyContext, privateProcedure } from "~/server/api/trpc";
 import { mutate, queries } from "~/server/db";
 import type { UpdateSubParams } from "~/server/db/mutate/sub";
 import { type SelectSubComplete } from "~/server/db/types";
-import { dayjsToSqlDate, dayjsToSqlDateNullable } from "~/server/db/utils";
+import { dayjsToDate, dayjsToDateNullable } from "~/server/db/utils";
 import { notifier } from "~/server/notifier";
 import { type NotifyEventById } from "~/server/notifier/notifier";
 import { type NotifyDataSingle } from "~/server/notifier/schema";
@@ -70,7 +70,7 @@ function transform(
   input: Input,
   sub: SelectSubComplete,
 ): UpdateSubParams {
-  const startDate = dayjsToSqlDate(
+  const startDate = dayjsToDate(
     input.trial ? addCycles(input.startDate, input.trial, 1) : input.startDate,
   );
 
@@ -80,8 +80,8 @@ function transform(
       input.currencyCode !== sub.currencyCode ||
       input.name !== sub.name ||
       input.groupId !== sub.groupId ||
-      startDate !== sub.startDate ||
-      input.endDate !== sub.endDate ||
+      startDate.getTime() !== sub.startDate.getTime() ||
+      input.endDate?.toDate()?.getTime() !== sub.endDate?.getTime() ||
       input.cycle.unit !== sub.cycleUnit ||
       input.cycle.value !== sub.cycleValue ||
       input.trial?.unit !== sub.trialUnit ||
@@ -96,7 +96,7 @@ function transform(
     // the cycle will exceed their reminder (lead time).
     // this is currently not validated
     getReminderDate: (c) => {
-      return dayjsToSqlDateNullable(
+      return dayjsToDateNullable(
         calcReminderDate(
           { startDate: startDate, cycle: input.cycle, endDate: input.endDate },
           c.reminder,
@@ -113,7 +113,7 @@ function transform(
       amount: input.amount,
       currencyCode: input.currencyCode,
       startDate,
-      endDate: dayjsToSqlDateNullable(input.endDate),
+      endDate: dayjsToDateNullable(input.endDate),
       cycleUnit: input.cycle.unit,
       cycleValue: input.cycle.value,
       trialUnit: input.trial?.unit,

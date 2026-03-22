@@ -22,11 +22,13 @@ export type CreateTxParams = {
 };
 
 export async function createV1(ctx: DbCtx, params: CreateTxParams) {
-  await ctx.db.batch([
-    ctx.db.insert(schema.transaction).values(params.tx),
-    ctx.db.insert(schema.contribution).values(params.contribs),
-    ...params.files.map((f) => ctx.db.insert(schema.file).values(f)),
-    ctx.db.insert(schema.event).values([
+  await ctx.db.transaction(async (tx) => {
+    await tx.insert(schema.transaction).values(params.tx);
+    await tx.insert(schema.contribution).values(params.contribs);
+    for (const f of params.files) {
+      await tx.insert(schema.file).values(f);
+    }
+    await tx.insert(schema.event).values([
       {
         name: "tx_created",
         createdById: params.tx.createdById,
@@ -37,8 +39,8 @@ export async function createV1(ctx: DbCtx, params: CreateTxParams) {
         txId: params.tx.id,
         contribs: params.contribs,
       }),
-    ]),
-  ]);
+    ]);
+  });
 }
 
 function contribEvents(params: {
@@ -114,20 +116,20 @@ export async function update(
 }
 
 export async function archive(ctx: DbUserCtx, id: string) {
-  await ctx.db.batch([
-    ctx.db
+  await ctx.db.transaction(async (tx) => {
+    await tx
       .update(schema.transaction)
       .set({
         archivedAt: sql`CURRENT_TIMESTAMP`,
         archivedById: ctx.userId,
       })
-      .where(eq(schema.transaction.id, id)),
-    ctx.db.insert(schema.event).values({
+      .where(eq(schema.transaction.id, id));
+    await tx.insert(schema.event).values({
       name: "tx_archived",
       createdById: ctx.userId,
       transactionId: id,
-    }),
-  ]);
+    });
+  });
 }
 
 export async function contribsChangeset(

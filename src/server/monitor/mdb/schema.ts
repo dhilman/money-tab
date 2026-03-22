@@ -1,21 +1,28 @@
 import { relations } from "drizzle-orm";
 import {
+  boolean,
   index,
   integer,
-  sqliteTableCreator,
+  jsonb,
+  pgSchema,
+  serial,
   text,
+  timestamp,
   uniqueIndex,
-} from "drizzle-orm/sqlite-core";
+  varchar,
+} from "drizzle-orm/pg-core";
 
-const createTable = sqliteTableCreator((name) => name);
-
-const boolean = (name: string) => integer(name, { mode: "boolean" });
+const monitorSchema = pgSchema("monitor");
+const createTable = monitorSchema.table;
 
 export const event = createTable(
   "events",
   {
-    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    timestamp: text("timestamp").notNull(),
+    id: serial("id").primaryKey(),
+    timestamp: timestamp("timestamp", {
+      withTimezone: true,
+      mode: "date",
+    }).notNull(),
     userId: text("user_id"),
     type: text("type").notNull(),
     sessionId: text("session_id"),
@@ -56,9 +63,15 @@ export const session = createTable(
     id: text("id").primaryKey(),
     userId: text("user_id").notNull(),
     isAnonymous: boolean("is_anonymous").default(false),
-    startAt: text("start_at").notNull(),
-    lastActiveAt: text("last_active_at").notNull(),
-    endAt: text("end_at"),
+    startAt: timestamp("start_at", {
+      withTimezone: true,
+      mode: "date",
+    }).notNull(),
+    lastActiveAt: timestamp("last_active_at", {
+      withTimezone: true,
+      mode: "date",
+    }).notNull(),
+    endAt: timestamp("end_at", { withTimezone: true, mode: "date" }),
 
     host: text("host").notNull(),
     path: text("path"),
@@ -98,8 +111,11 @@ export const sessionRelations = relations(session, ({ many }) => ({
 export const issue = createTable(
   "issues",
   {
-    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    timestamp: text("timestamp").notNull(),
+    id: serial("id").primaryKey(),
+    timestamp: timestamp("timestamp", {
+      withTimezone: true,
+      mode: "date",
+    }).notNull(),
     appVersion: text("app_version"),
 
     // hash of (path, procedure, type, message, stack)
@@ -115,8 +131,8 @@ export const issue = createTable(
     userId: text("user_id"),
     sessionId: text("session_id"),
 
-    resolvedAt: text("resolved_at"),
-    properties: text("properties", { mode: "json" }),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true, mode: "date" }),
+    properties: jsonb("properties"),
   },
   (table) => [
     index("issues_resolved_at_hash_idx").on(table.resolvedAt, table.hash),
