@@ -1,4 +1,4 @@
-import { count, inArray, lt, sql } from "drizzle-orm";
+import { count, eq, inArray, lt, sql } from "drizzle-orm";
 import { z } from "zod";
 import { EVENT_NAMES } from "~/lib/consts/constants";
 import { adminProcedure, createTRPCRouter } from "~/server/api/trpc";
@@ -248,13 +248,14 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input }) => {
-      const [issue, instances] = await Promise.all([
+      const [issue, issueCount, instances] = await Promise.all([
         mdb.query.issue.findFirst({
           where: (v, { eq }) => eq(v.hash, input.hash),
-          extras: {
-            count: count().as("count"),
-          },
         }),
+        mdb
+          .select({ count: count() })
+          .from(mschema.issue)
+          .where(eq(mschema.issue.hash, input.hash)),
         mdb.query.issue.findMany({
           where: (v, { eq }) => eq(v.hash, input.hash),
           limit: input.limit,
@@ -263,7 +264,10 @@ export const adminRouter = createTRPCRouter({
       ]);
       validator.exists(issue, "Issue not found");
 
-      return { issue, instances };
+      return {
+        issue: { ...issue, count: issueCount[0]?.count ?? 0 },
+        instances,
+      };
     }),
   resolve: adminProcedure
     .input(z.object({ hashes: z.array(z.string()) }))
