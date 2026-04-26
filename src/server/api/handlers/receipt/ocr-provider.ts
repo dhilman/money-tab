@@ -116,9 +116,6 @@ export async function parseReceipt(
     : "";
 
   try {
-    console.log("[receipt.ocr] Calling OpenRouter with Gemini 3 Flash...");
-    console.log("[receipt.ocr] Image size:", imageContent.length, "chars");
-
     // Add timeout via AbortController (60 seconds)
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 60000);
@@ -151,8 +148,6 @@ export async function parseReceipt(
     } finally {
       clearTimeout(timeout);
     }
-
-    console.log("[receipt.ocr] Parsed successfully, output:", result.output);
 
     return {
       receipt: result.output!,

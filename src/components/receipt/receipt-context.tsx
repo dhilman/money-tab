@@ -235,8 +235,7 @@ export function ReceiptProvider({
     setExtras((prev) => prev.filter((e) => e.id !== extraId));
   }, []);
 
-  // Computed values
-  const items = receipt?.items ?? [];
+  const items = useMemo(() => receipt?.items ?? [], [receipt?.items]);
 
   const personTotals = useMemo(() => {
     if (!splitEnabled || items.length === 0) {
