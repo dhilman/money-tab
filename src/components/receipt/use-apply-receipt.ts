@@ -45,11 +45,18 @@ export function useApplyReceipt() {
       });
     }
 
-    // If itemized split is enabled, set per-person amounts
+    // Itemized split: write per-person amounts directly into the "amount" bucket.
+    // Pass mode explicitly — setSplitMode's state update isn't visible to subsequent
+    // setSplitValue calls in the same tick, so relying on closured state.splitMode
+    // would route values into the wrong bucket if the user was in shares/percentage mode.
     if (splitEnabled && personTotals.length > 0) {
       participants.setSplitMode("amount");
       for (const personTotal of personTotals) {
-        participants.setSplitValue(personTotal.userId, personTotal.total);
+        participants.setSplitValue(
+          personTotal.userId,
+          personTotal.total,
+          "amount",
+        );
       }
     }
   }, [receipt, receiptFile, splitEnabled, personTotals, txEdit, participants]);

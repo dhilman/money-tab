@@ -22,18 +22,27 @@ const input = z.object({
 export const receiptParseHandler = privateProcedure
   .input(input)
   .mutation(async ({ input }): Promise<ReceiptParse> => {
-    console.log("[receipt.parse] Starting parse for:", input.fileUrl);
-
-    // Validate URL is from our S3 bucket (prevent SSRF)
-    if (!input.fileUrl.startsWith(env.S3_URL)) {
-      console.log(
-        "[receipt.parse] URL validation failed. Expected prefix:",
-        env.S3_URL,
-      );
+    // Fail fast if OCR isn't configured for this deployment (Coolify/etc.
+    // may run without OPENROUTER_API_KEY set). Avoids fetching from S3 only
+    // to error inside the OCR call.
+    if (!env.OPENROUTER_API_KEY) {
       throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Invalid file URL",
+        code: "PRECONDITION_FAILED",
+        message: "Receipt OCR is not configured",
       });
+    }
+
+    // Validate URL origin matches our S3 bucket (prevent SSRF).
+    // startsWith() would let "https://s3.amazonaws.com.evil.com/..." pass when
+    // S3_URL is "https://s3.amazonaws.com" — origin compare blocks that.
+    let parsed: URL;
+    try {
+      parsed = new URL(input.fileUrl);
+    } catch {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid file URL" });
+    }
+    if (parsed.origin !== new URL(env.S3_URL).origin) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid file URL" });
     }
 
     // Fetch the image from S3 with timeout
@@ -43,7 +52,7 @@ export const receiptParseHandler = privateProcedure
     let imageResponse: Response;
     try {
       imageResponse = await fetch(input.fileUrl, { signal: controller.signal });
-    } catch (err) {
+    } catch {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to fetch image",
@@ -61,11 +70,6 @@ export const receiptParseHandler = privateProcedure
 
     const imageBuffer = await imageResponse.arrayBuffer();
     const imageData = Buffer.from(imageBuffer).toString("base64");
-    console.log(
-      "[receipt.parse] Image fetched, size:",
-      imageBuffer.byteLength,
-      "bytes",
-    );
 
     // Determine media type from content-type header or URL
     let mediaType = imageResponse.headers.get("content-type") ?? "image/jpeg";
@@ -96,16 +100,15 @@ export const receiptParseHandler = privateProcedure
       });
     }
 
-    // Transform to our ReceiptParse type with IDs
-    // Filter out items without totals (they're not useful for splitting)
+    // Items without a total are useless for splitting — drop them.
     const items: ReceiptItem[] = (result.receipt.items ?? [])
-      .filter((item) => item.total != null)
+      .filter((item): item is typeof item & { total: number } => item.total != null)
       .map((item) => ({
         id: createId(),
         name: item.name,
         quantity: item.quantity ?? undefined,
         unitPrice: item.unit_price ?? undefined,
-        total: item.total!,
+        total: item.total,
       }));
 
     return {

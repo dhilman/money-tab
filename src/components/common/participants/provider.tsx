@@ -21,7 +21,9 @@ interface Context extends ParticipantsState {
   toggleParticipant: (id: string, groupId?: string) => void;
   toggleGroup: (groupId: string) => void;
   setSplitMode: (mode: SplitMode) => void;
-  setSplitValue: (id: string, value: number) => void;
+  /** Defaults to current state.splitMode; pass `mode` to write to a specific bucket without
+   * relying on a state update that hasn't happened yet (e.g. after setSplitMode in the same tick). */
+  setSplitValue: (id: string, value: number, mode?: SplitMode) => void;
   resetSplitValue: (id: string) => void;
   getContribs: () => UserContrib[];
   getGroupId: () => string | null;
@@ -84,8 +86,13 @@ export const ParticipantsProvider = ({
           });
         },
         setSplitMode: (mode) => update({ type: "set_split_mode", mode }),
-        setSplitValue: (id, value) =>
-          update({ type: "set_split_value", id, value, mode: state.splitMode }),
+        setSplitValue: (id, value, mode) =>
+          update({
+            type: "set_split_value",
+            id,
+            value,
+            mode: mode ?? state.splitMode,
+          }),
         resetSplitValue: (id) =>
           update({ type: "reset_split_value", id, mode: state.splitMode }),
         getContribs,
