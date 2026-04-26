@@ -19,12 +19,13 @@ export const txRouter = createTRPCRouter({
         archived: z.boolean().optional(),
       }),
     )
-    .query(async ({ ctx }) => {
+    .query(async ({ ctx, input }) => {
       const txs = await queries.tx.list(
         ctx,
         {
           userId: ctx.userId,
           limit: 250,
+          archived: input.archived,
         },
         { contribs: true },
       );

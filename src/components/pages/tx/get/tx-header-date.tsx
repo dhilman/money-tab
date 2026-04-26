@@ -34,7 +34,7 @@ import { cn } from "~/lib/utils";
 export const TxMeta = () => {
   const { tx } = useTx();
 
-  if (!tx.date && !tx.groupId) return null;
+  if (!tx.txDate && !tx.groupId) return null;
 
   return (
     <Bento>
@@ -79,9 +79,12 @@ const TxDate = () => {
   const { t } = useTranslation();
   const { tx } = useTx();
 
-  if (!tx.date) return null;
+  if (!tx.txDate) return null;
 
-  const isDateTime = tx.date?.length > 10;
+  const isDateTime = tx.txTime !== null;
+  const dateStr = isDateTime
+    ? dayjs(tx.txDate).format("YYYY-MM-DD") + " " + tx.txTime
+    : dayjs(tx.txDate).format("YYYY-MM-DD");
 
   return (
     <ListItem>
@@ -98,7 +101,7 @@ const TxDate = () => {
         <div>
           <div className="text-sm text-hint">{t("date")}</div>
           <div className="text-foreground">
-            {isDateTime ? formatEventDate(tx.date) : formatDate(tx.date)}
+            {isDateTime ? formatEventDate(dateStr) : formatDate(dateStr)}
           </div>
         </div>
         {isDateTime && (
@@ -126,15 +129,18 @@ const TxDateDropdown = ({ children }: EventDropdownProps) => {
   const { t } = useTranslation();
   const { tx } = useTx();
   const event = useMemo(() => {
-    if (!tx.date) return null;
+    if (!tx.txDate) return null;
+    const dateStr = tx.txTime
+      ? dayjs(tx.txDate).format("YYYY-MM-DD") + " " + tx.txTime
+      : dayjs(tx.txDate).format("YYYY-MM-DD");
     return {
       title: tx.description || t("no_desc"),
-      start: tx.date,
-      end: dayjs(tx.date, { utc: true }).add(1, "hour").toISOString(),
+      start: dateStr,
+      end: dayjs(dateStr, { utc: true }).add(1, "hour").toISOString(),
     };
-  }, [t, tx.date, tx.description]);
+  }, [t, tx.txDate, tx.txTime, tx.description]);
 
-  if (!tx.date) return null;
+  if (!tx.txDate) return null;
 
   return (
     <DropdownMenu>

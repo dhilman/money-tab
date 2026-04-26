@@ -34,8 +34,10 @@ export async function create(
   }
 
   const id = createId();
-  const [group] = await ctx.db.batch([
-    ctx.db
+  let createdGroup: typeof schema.group.$inferSelect | undefined;
+
+  await ctx.db.transaction(async (tx) => {
+    const [group] = await tx
       .insert(schema.group)
       .values({
         id: id,
@@ -43,15 +45,16 @@ export async function create(
         name: params.name,
         accentColorId: params.accentColorId,
       })
-      .returning(),
-    ctx.db.insert(schema.membership).values(
+      .returning();
+    createdGroup = group;
+    await tx.insert(schema.membership).values(
       params.members.map((m) => ({
         ...m,
         id: createId(),
         groupId: id,
       })),
-    ),
-    ctx.db.insert(schema.event).values([
+    );
+    await tx.insert(schema.event).values([
       {
         name: "group_created" as const,
         createdById: ctx.userId,
@@ -63,10 +66,10 @@ export async function create(
         groupId: id,
         targetUserId: m.userId,
       })),
-    ]),
-  ]);
+    ]);
+  });
 
-  return group[0]!;
+  return createdGroup!;
 }
 
 async function createByTgId(
@@ -171,32 +174,32 @@ export async function linkByTgId(ctx: DbCtx, telegramId: number) {
   if (!group) return;
   if (group.tgLinked) return;
 
-  await ctx.db.batch([
-    ctx.db
+  await ctx.db.transaction(async (tx) => {
+    await tx
       .update(schema.group)
       .set({ tgLinked: true })
-      .where(eq(schema.group.id, group.id)),
-    ctx.db.insert(schema.event).values({
+      .where(eq(schema.group.id, group.id));
+    await tx.insert(schema.event).values({
       name: "group_linked" as const,
       groupId: group.id,
-    }),
-  ]);
+    });
+  });
 }
 
 export async function unlinkByTgId(ctx: DbCtx, telegramId: number) {
   const group = await queries.group.getByTgId(ctx, telegramId);
   if (!group) return;
 
-  await ctx.db.batch([
-    ctx.db
+  await ctx.db.transaction(async (tx) => {
+    await tx
       .update(schema.group)
       .set({ tgLinked: false })
-      .where(eq(schema.group.id, group.id)),
-    ctx.db.insert(schema.event).values({
+      .where(eq(schema.group.id, group.id));
+    await tx.insert(schema.event).values({
       name: "group_unlinked" as const,
       groupId: group.id,
-    }),
-  ]);
+    });
+  });
 }
 
 export async function upsertMembers(
@@ -220,35 +223,35 @@ export async function upsertMembers(
 
   if (missing.length === 0) return;
 
-  await ctx.db.batch([
-    ctx.db.insert(schema.membership).values(
+  await ctx.db.transaction(async (tx) => {
+    await tx.insert(schema.membership).values(
       missing.map((userId) => ({
         id: createId(),
         groupId: params.groupId,
         userId,
       })),
-    ),
-    ctx.db.insert(schema.event).values(
+    );
+    await tx.insert(schema.event).values(
       missing.map((userId) => ({
         name: "group_joined" as const,
         createdById: params.createdById,
         groupId: params.groupId,
         targetUserId: userId,
       })),
-    ),
-  ]);
+    );
+  });
 }
 
 export async function archive(ctx: DbUserCtx, groupId: string) {
-  await ctx.db.batch([
-    ctx.db
+  await ctx.db.transaction(async (tx) => {
+    await tx
       .update(schema.group)
       .set({ archivedAt: sql`CURRENT_TIMESTAMP` })
-      .where(eq(schema.group.id, groupId)),
-    ctx.db.insert(schema.event).values({
+      .where(eq(schema.group.id, groupId));
+    await tx.insert(schema.event).values({
       name: "group_archived" as const,
       createdById: ctx.userId,
       groupId,
-    }),
-  ]);
+    });
+  });
 }

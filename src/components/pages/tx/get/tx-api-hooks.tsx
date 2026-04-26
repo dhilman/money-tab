@@ -55,7 +55,7 @@ export function useTxApi(params: Params) {
       invalidate((v) => ({
         ...v,
         archivedById: me.id,
-        archivedAt: new Date().toISOString(),
+        archivedAt: new Date(),
       }));
 
       toast.success(t("archived"));
@@ -121,8 +121,9 @@ const PLACEHODLER: TxApi = {
   isParticipant: false,
   status: "NOT_DELIVERED",
   net: 0,
-  date: null,
-  createdAt: "",
+  txDate: null,
+  txTime: null,
+  createdAt: new Date(0),
   currencyCode: "",
   description: null,
   createdById: "",

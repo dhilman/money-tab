@@ -2,7 +2,7 @@ import { z } from "zod";
 import { DateStrAsDayJs } from "~/server/api/handlers/zod_schema";
 import { privateProcedure } from "~/server/api/trpc";
 import { db, mutate } from "~/server/db";
-import { dayjsToSqlDate } from "~/server/db/utils";
+import { dayjsToDate } from "~/server/db/utils";
 import { validator } from "~/server/validator";
 
 export const subCancelHandler = privateProcedure
@@ -23,7 +23,7 @@ export const subCancelHandler = privateProcedure
 
     await mutate.sub.cancel(ctx, {
       id: input.id,
-      endDate: dayjsToSqlDate(input.endDate),
+      endDate: dayjsToDate(input.endDate),
     });
   });
 

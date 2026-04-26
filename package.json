@@ -15,10 +15,7 @@
     "test:e2e": "vitest test/",
     "bot:setup": "bun ./scripts/bot_setup.ts",
     "tunnel": "cloudflared tunnel run local",
-    "db:run:main": "turso dev --port 5440 --db-file ./data/db/local/1/main.db",
-    "db:run:monitor": "turso dev --port 5441 --db-file ./data/db/local/1/main.db",
-    "db:run": "concurrently \"pnpm run db:run:main\" \"pnpm run db:run:monitor\"",
-    "db:check": "dotenv drizzle-kit check:sqlite",
+    "db:check": "dotenv drizzle-kit check",
     "db:studio:main": "drizzle-kit studio --config ./migrations/main.config.ts",
     "db:studio:monitor": "drizzle-kit studio --config ./migrations/monitor.config.ts",
     "db:gen:main": "bun drizzle-kit generate --config=./migrations/main.config.ts",
@@ -36,6 +33,7 @@
     "@grammyjs/parse-mode": "^1.11.1",
     "@libsql/client": "^0.17.0",
     "@lottiefiles/lottie-player": "^2.0.4",
+    "@openrouter/ai-sdk-provider": "^2.8.1",
     "@paralleldrive/cuid2": "^3.0.6",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-checkbox": "^1.3.3",
@@ -74,6 +72,7 @@
     "next": "^16.1.1",
     "next-themes": "^0.4.6",
     "pino": "^10.1.1",
+    "postgres": "^3.4.8",
     "react": "19.2.3",
     "react-day-picker": "^9.13.0",
     "react-dom": "19.2.3",
@@ -82,6 +81,7 @@
     "recharts": "^3.6.0",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
+    "sharp": "^0.34.5",
     "superjson": "^2.2.6",
     "tailwind-merge": "^3.4.0",
     "tw-animate-css": "^1.4.0",
@@ -122,6 +122,7 @@
     "tailwindcss": "4.1.18",
     "ts-node": "^10.9.2",
     "typescript": "5.9.3",
+    "typescript-eslint": "^8.57.1",
     "vitest": "^4.0.16"
   }
 }

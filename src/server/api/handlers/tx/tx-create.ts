@@ -2,7 +2,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { z } from "zod";
 import {
   Contribs,
-  DateOrDateTimeStrAsSql,
+  DateOrDateTimeStr,
   Files,
 } from "~/server/api/handlers/zod_schema";
 import { privateProcedure, type MyContext } from "~/server/api/trpc";
@@ -15,7 +15,7 @@ const input = z.object({
   value: z.number().int().positive(),
   currencyCode: z.string().length(3),
   description: z.string(),
-  date: DateOrDateTimeStrAsSql.nullable(),
+  date: DateOrDateTimeStr.nullable(),
   files: Files,
   contributions: Contribs,
   groupId: z.string().nullable(),
@@ -71,7 +71,8 @@ const transform = (ctx: MyContext, input: Input): CreateTxParams => {
       amount: input.value,
       currencyCode: input.currencyCode,
       description: input.description,
-      date: input.date,
+      txDate: input.date?.date ?? null,
+      txTime: input.date?.time ?? null,
       groupId: input.groupId,
       type: "PAYMENT",
       visibility: "RESTRICTED",

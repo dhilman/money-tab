@@ -13,7 +13,7 @@ import { type NotifyDataSingle } from "~/server/notifier/schema";
 import { resolveArrayChanges } from "~/server/resolver/array-resolver";
 import { resolveTxChanges, type TxChangeset } from "~/server/resolver/contribs";
 import { validator } from "~/server/validator";
-import { Contribs, DateOrDateTimeStrAsSql, Files } from "../zod_schema";
+import { Contribs, DateOrDateTimeStr, Files } from "../zod_schema";
 
 const Input = z.object({
   id: z.string(),
@@ -21,7 +21,7 @@ const Input = z.object({
   currencyCode: z.string().length(3),
   description: z.string(),
   groupId: z.string().nullable(),
-  date: DateOrDateTimeStrAsSql.nullable(),
+  date: DateOrDateTimeStr.nullable(),
   contribs: Contribs,
   files: Files,
 });
@@ -64,13 +64,17 @@ function transform(
   tx: TxSelected,
 ): UpdateTxParams {
   function isChanged() {
-    return (
-      input.amount !== tx.amount ||
-      input.currencyCode !== tx.currencyCode ||
-      input.description !== tx.description ||
-      input.date !== tx.date ||
-      input.groupId !== tx.groupId
-    );
+    if (input.amount !== tx.amount) return true;
+    if (input.currencyCode !== tx.currencyCode) return true;
+    if (input.description !== tx.description) return true;
+    if (input.groupId !== tx.groupId) return true;
+    // Compare date parts
+    const inputDate = input.date?.date?.getTime() ?? null;
+    const txDate = tx.txDate?.getTime() ?? null;
+    if (inputDate !== txDate) return true;
+    const inputTime = input.date?.time ?? null;
+    if (inputTime !== tx.txTime) return true;
+    return false;
   }
 
   const inputFiles: InsertFile[] = input.files.map((f) => ({
@@ -87,7 +91,8 @@ function transform(
       amount: input.amount,
       currencyCode: input.currencyCode,
       description: input.description,
-      date: input.date,
+      txDate: input.date?.date ?? null,
+      txTime: input.date?.time ?? null,
       groupId: input.groupId,
     },
     contribs: resolveTxChanges({ old: tx.contribs, new: input.contribs }),

@@ -56,7 +56,7 @@ export const TxLoading = () => {
 
 interface BaseTransaction {
   id: string;
-  createdAt: string;
+  createdAt: Date;
   description: string | null;
   currencyCode: string;
   net: number;

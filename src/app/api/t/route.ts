@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { userAgent, type NextRequest } from "next/server";
 import { z } from "zod";
 import logger from "~/server/logger";
@@ -77,18 +77,6 @@ async function handler(req: NextRequest) {
   const sessionId = cookies.sessionId || createId();
   addCookie(header, "sessionId", sessionId);
 
-  const eventInserts = [];
-  if (data.events.length > 0) {
-    eventInserts.push(
-      insertEvents({
-        userId,
-        sessionId,
-        isAnonymous,
-        events: data.events,
-      }),
-    );
-  }
-
   log.debug(
     {
       userId,
@@ -98,17 +86,24 @@ async function handler(req: NextRequest) {
     "inserting events",
   );
 
-  await mdb.batch([
-    insertOrUpdateSession({
+  await mdb.transaction(async (tx) => {
+    await insertOrUpdateSession(tx, {
       session: data.session,
       req,
       agent,
       userId,
       sessionId,
       isAnonymous,
-    }),
-    ...eventInserts,
-  ]);
+    });
+    if (data.events.length > 0) {
+      await insertEvents(tx, {
+        userId,
+        sessionId,
+        isAnonymous,
+        events: data.events,
+      });
+    }
+  });
 
   return new Response(GIF, {
     status: 200,
@@ -150,23 +145,28 @@ async function parseRequestBody(req: NextRequest) {
   };
 }
 
-function sqlFormatTime(time: string) {
-  return sql<string>`strftime('%Y-%m-%d %H:%M:%f', ${time})`;
+function parseTimestamp(time: string): Date {
+  return new Date(time);
 }
 
-function insertEvents(params: {
-  userId: string;
-  sessionId: string;
-  isAnonymous: boolean;
-  events: AnalyticsEvent[];
-}) {
-  return mdb
+type Tx = Parameters<Parameters<(typeof mdb)["transaction"]>[0]>[0];
+
+async function insertEvents(
+  tx: Tx,
+  params: {
+    userId: string;
+    sessionId: string;
+    isAnonymous: boolean;
+    events: AnalyticsEvent[];
+  },
+) {
+  await tx
     .insert(mschema.event)
     .values(
       params.events.map((e) => {
         const url = new URL(e.url);
         return {
-          timestamp: sqlFormatTime(e.t) as unknown as string,
+          timestamp: parseTimestamp(e.t),
           type: e.n,
           userId: params.userId,
           sessionId: params.sessionId,
@@ -184,30 +184,33 @@ function insertEvents(params: {
     .onConflictDoNothing();
 }
 
-function insertOrUpdateSession(params: {
-  session: SessionData;
-  req: NextRequest;
-  agent: ReturnType<typeof userAgent>;
-  userId: string;
-  sessionId: string;
-  isAnonymous: boolean;
-}) {
+async function insertOrUpdateSession(
+  tx: Tx,
+  params: {
+    session: SessionData;
+    req: NextRequest;
+    agent: ReturnType<typeof userAgent>;
+    userId: string;
+    sessionId: string;
+    isAnonymous: boolean;
+  },
+) {
   const { start: sessionStart, end: sessionEnd, lastTime } = params.session;
   const headers = params.req.headers;
 
   if (sessionStart) {
     const url = new URL(sessionStart.url);
     const ref = sessionStart.r ? new URL(sessionStart.r) : null;
-    return mdb
+    await tx
       .insert(mschema.session)
       .values({
         id: params.sessionId,
         userId: params.userId,
         isAnonymous: params.isAnonymous,
 
-        startAt: sqlFormatTime(sessionStart.t),
-        lastActiveAt: sqlFormatTime(lastTime),
-        endAt: sessionEnd ? sqlFormatTime(sessionEnd.t) : null,
+        startAt: parseTimestamp(sessionStart.t),
+        lastActiveAt: parseTimestamp(lastTime),
+        endAt: sessionEnd ? parseTimestamp(sessionEnd.t) : null,
 
         host: url.hostname,
         path: url.pathname,
@@ -235,25 +238,27 @@ function insertOrUpdateSession(params: {
       .onConflictDoUpdate({
         target: mschema.session.id,
         set: {
-          lastActiveAt: sqlFormatTime(lastTime),
-          endAt: sessionEnd ? sqlFormatTime(sessionEnd.t) : null,
+          lastActiveAt: parseTimestamp(lastTime),
+          endAt: sessionEnd ? parseTimestamp(sessionEnd.t) : null,
         },
       });
+    return;
   }
   if (sessionEnd) {
-    return mdb
+    await tx
       .update(mschema.session)
       .set({
-        lastActiveAt: sqlFormatTime(sessionEnd.t),
-        endAt: sqlFormatTime(sessionEnd.t),
+        lastActiveAt: parseTimestamp(sessionEnd.t),
+        endAt: parseTimestamp(sessionEnd.t),
       })
       .where(eq(mschema.session.id, params.sessionId));
+    return;
   }
 
-  return mdb
+  await tx
     .update(mschema.session)
     .set({
-      lastActiveAt: sqlFormatTime(lastTime),
+      lastActiveAt: parseTimestamp(lastTime),
     })
     .where(eq(mschema.session.id, params.sessionId));
 }

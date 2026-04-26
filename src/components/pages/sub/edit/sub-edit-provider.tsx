@@ -27,6 +27,7 @@ import {
   type Currency,
 } from "~/lib/amount/currencies";
 import { type Cycle } from "~/lib/consts/types";
+import { getDateYYYYMMDD } from "~/lib/dates/dates";
 import i18n from "~/lib/i18n";
 import {
   validAmount,
@@ -86,8 +87,8 @@ export const SubEditProvider = ({ sub, children }: Props) => {
   const [currency, setCurrency] = useState(
     getCurrencyByCodeWithDefault(sub.currencyCode),
   );
-  const [startDate, setStartDate] = useState(sub.startDate);
-  const [endDate, setEndDate] = useState(sub.endDate ?? "");
+  const [startDate, setStartDate] = useState(getDateYYYYMMDD(sub.startDate));
+  const [endDate, setEndDate] = useState(sub.endDate ? getDateYYYYMMDD(sub.endDate) : "");
   const [cycle, setCycle] = useState<Cycle>({
     unit: sub.cycleUnit,
     value: sub.cycleValue,
@@ -178,8 +179,8 @@ function useIsEdited() {
     if (state.name !== sub.name) return true;
     if (state.amount !== sub.amount) return true;
     if (state.currency.code !== sub.currencyCode) return true;
-    if (state.startDate !== sub.startDate) return true;
-    if (state.endDate !== (sub.endDate ?? "")) return true;
+    if (state.startDate !== getDateYYYYMMDD(sub.startDate)) return true;
+    if (state.endDate !== (sub.endDate ? getDateYYYYMMDD(sub.endDate) : "")) return true;
     if (state.cycle.unit !== sub.cycleUnit) return true;
     if (state.cycle.value !== sub.cycleValue) return true;
     if ((state.trial?.unit ?? null) !== sub.trialUnit) return true;

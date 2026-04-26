@@ -11,7 +11,7 @@ import {
 import { privateProcedure, type MyContext } from "~/server/api/trpc";
 import { mutate } from "~/server/db";
 import { type CreateSubParams } from "~/server/db/mutate/sub";
-import { dayjsToSqlDate, dayjsToSqlDateNullable } from "~/server/db/utils";
+import { dayjsToDate, dayjsToDateNullable } from "~/server/db/utils";
 import { notifier } from "~/server/notifier";
 import { validator } from "~/server/validator";
 
@@ -61,11 +61,11 @@ const validate = async (ctx: MyContext, input: Input) => {
 const transform = (ctx: MyContext, input: Input): CreateSubParams => {
   const subId = createId();
 
-  const startDate = dayjsToSqlDate(
+  const startDate = dayjsToDate(
     input.trial ? addCycles(input.startDate, input.trial, 1) : input.startDate,
   );
 
-  const reminderDate = dayjsToSqlDateNullable(
+  const reminderDate = dayjsToDateNullable(
     calcReminderDate(
       {
         startDate,
@@ -103,7 +103,7 @@ const transform = (ctx: MyContext, input: Input): CreateSubParams => {
       currencyCode: input.currencyCode,
       name: input.name,
       startDate: startDate,
-      endDate: dayjsToSqlDateNullable(input.endDate),
+      endDate: dayjsToDateNullable(input.endDate),
       cycleUnit: input.cycle.unit,
       cycleValue: input.cycle.value,
       trialUnit: input.trial?.unit,

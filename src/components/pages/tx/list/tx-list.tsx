@@ -37,7 +37,7 @@ export function TxListStatefull({
 }: TxListStatefullProps) {
   const grouped = useMemo(() => {
     const byDay = toMapGrouped(txs, (tx) => {
-      const date = tx.date ?? tx.createdAt;
+      const date = tx.txDate ?? tx.createdAt;
       return dayjs(date, { utc: true }).format("YYYY-MM-DD");
     });
     return [...byDay.entries()].map(([date, txs]) => ({

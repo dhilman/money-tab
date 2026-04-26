@@ -3,7 +3,7 @@ import { REMINDER_VALUES } from "~/lib/consts/constants";
 import { calcReminderDate } from "~/lib/dates/subscription";
 import { privateProcedure } from "~/server/api/trpc";
 import { mutate, queries } from "~/server/db";
-import { dayjsToSqlDateNullable } from "~/server/db/utils";
+import { dayjsToDateNullable } from "~/server/db/utils";
 import { validator } from "~/server/validator";
 
 const input = z.object({
@@ -24,7 +24,7 @@ export const subUpdateReminderHandler = privateProcedure
     });
     const contrib = validator.isParticipant(ctx, sub.contribs);
 
-    const reminderDate = dayjsToSqlDateNullable(
+    const reminderDate = dayjsToDateNullable(
       calcReminderDate(
         {
           startDate: sub.startDate,

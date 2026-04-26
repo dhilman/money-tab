@@ -4,12 +4,12 @@ import { env } from "~/env.mjs";
 
 export default defineConfig({
   schema: "./src/server/db/schema.ts",
-  dialect: "turso",
-  out: "migrations/main",
+  dialect: "postgresql",
+  out: "migrations/pg/main",
   dbCredentials: {
     url: env.DATABASE_URL,
-    authToken: env.DATABASE_TOKEN || "123",
   },
+  schemaFilter: ["main"],
   verbose: true,
   strict: true,
 });

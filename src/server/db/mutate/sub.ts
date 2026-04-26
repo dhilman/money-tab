@@ -23,10 +23,10 @@ export type CreateSubParams = {
 };
 
 export async function create(ctx: DbCtx, params: CreateSubParams) {
-  await ctx.db.batch([
-    ctx.db.insert(schema.subscription).values(params.sub),
-    ctx.db.insert(schema.subContrib).values(params.contribs),
-    ctx.db.insert(schema.event).values([
+  await ctx.db.transaction(async (tx) => {
+    await tx.insert(schema.subscription).values(params.sub);
+    await tx.insert(schema.subContrib).values(params.contribs);
+    await tx.insert(schema.event).values([
       {
         name: "sub_created",
         createdById: params.sub.createdById,
@@ -37,13 +37,13 @@ export async function create(ctx: DbCtx, params: CreateSubParams) {
         subId: params.sub.id,
         contribs: params.contribs,
       }),
-    ]),
-  ]);
+    ]);
+  });
 }
 
 export type UpdateSubParams = {
   sub: Partial<InsertSub> & {
-    startDate: string;
+    startDate: Date;
   };
   contribs: SubChangeset;
   isChanged: boolean;
@@ -93,51 +93,51 @@ function contribEvents(params: {
 
 interface CancelParams {
   id: string;
-  endDate: string;
+  endDate: Date;
 }
 
 export async function cancel(ctx: DbUserCtx, params: CancelParams) {
-  await db.batch([
-    db
+  await db.transaction(async (tx) => {
+    await tx
       .update(schema.subscription)
       .set({ endDate: params.endDate })
-      .where(eq(schema.subscription.id, params.id)),
-    db
+      .where(eq(schema.subscription.id, params.id));
+    await tx
       .update(schema.subContrib)
       .set({ reminderDate: null })
-      .where(eq(schema.subContrib.subscriptionId, params.id)),
-    db.insert(schema.event).values({
+      .where(eq(schema.subContrib.subscriptionId, params.id));
+    await tx.insert(schema.event).values({
       name: "sub_cancelled",
       createdById: ctx.userId,
       subscriptionId: params.id,
-    }),
-  ]);
+    });
+  });
 }
 
 export async function archive(params: { id: string; callerUserId: string }) {
-  await db.batch([
-    db
+  await db.transaction(async (tx) => {
+    await tx
       .update(schema.subscription)
       .set({
         archivedAt: sql`CURRENT_TIMESTAMP`,
         archivedById: params.callerUserId,
       })
-      .where(eq(schema.subscription.id, params.id)),
-    db
+      .where(eq(schema.subscription.id, params.id));
+    await tx
       .update(schema.subContrib)
       .set({ reminderDate: null })
-      .where(eq(schema.subContrib.subscriptionId, params.id)),
-    db.insert(schema.event).values({
+      .where(eq(schema.subContrib.subscriptionId, params.id));
+    await tx.insert(schema.event).values({
       name: "sub_archived",
       createdById: params.callerUserId,
       subscriptionId: params.id,
-    }),
-  ]);
+    });
+  });
 }
 
 export function updateReminder(params: {
   contribId: string;
-  reminderDate: string | null;
+  reminderDate: Date | null;
   reminder?: ReminderValue | null;
 }) {
   return db
@@ -186,7 +186,7 @@ export async function contribsChangeset(
   ctx: MyContext,
   params: {
     subId: string;
-    subStartDate: string;
+    subStartDate: Date;
     changes: SubChangeset;
   },
 ) {
@@ -203,7 +203,7 @@ async function applyChangeset(
   ctx: DbTxUserCtx,
   sub: {
     id: string;
-    startDate: string;
+    startDate: Date;
   },
   changes: SubChangeset,
 ) {

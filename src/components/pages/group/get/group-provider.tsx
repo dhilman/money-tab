@@ -57,7 +57,7 @@ const PLACEHODLER: Group = {
   archivedAt: null,
   isMember: false,
   isAdmin: false,
-  createdAt: "",
+  createdAt: new Date(0),
   telegramId: null,
   photoUrl: null,
   createdById: "",

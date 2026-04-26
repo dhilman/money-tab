@@ -1,5 +1,4 @@
 import { env } from "~/env.mjs";
-import { db_utils } from "~/server/db";
 import logger from "~/server/logger";
 import { mdb, mschema } from "~/server/monitor/mdb";
 import { parseMtCookieString } from "~/utils/cookies";
@@ -130,7 +129,7 @@ class MonitoringService {
 
     await mdb.insert(mschema.event).values(
       this.events.map((e) => ({
-        timestamp: db_utils.dateToSqlDateTime(e.timestamp),
+        timestamp: e.timestamp,
         type: e.type,
         isAnonymous: false,
         userId: e.userId,
@@ -147,7 +146,7 @@ class MonitoringService {
 
     await mdb.insert(mschema.issue).values(
       this.errors.map((e) => ({
-        timestamp: db_utils.dateToSqlDateTime(e.timestamp),
+        timestamp: e.timestamp,
         appVersion: env.NEXT_PUBLIC_DEPLOY_ID,
 
         hash: e.hash,

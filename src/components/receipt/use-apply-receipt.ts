@@ -47,8 +47,9 @@ export function useApplyReceipt() {
 
     // If itemized split is enabled, set per-person amounts
     if (splitEnabled && personTotals.length > 0) {
+      participants.setSplitMode("amount");
       for (const personTotal of personTotals) {
-        participants.setAmount(personTotal.userId, personTotal.total);
+        participants.setSplitValue(personTotal.userId, personTotal.total);
       }
     }
   }, [receipt, receiptFile, splitEnabled, personTotals, txEdit, participants]);

@@ -10,7 +10,7 @@ export const userGetHandler = privateProcedure
   .query(async ({ ctx, input }) => {
     validator.id(input);
 
-    const [user, connection] = await ctx.db.batch([
+    const [user, connection] = await Promise.all([
       ctx.db.query.user.findFirst({
         columns: SelectUserColumns.columns,
         where: (v) => prefix(v.id, input),

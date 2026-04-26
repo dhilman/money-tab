@@ -1,12 +1,13 @@
 import dayjs from "dayjs";
+import { eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import type { AwaitedReturnType } from "~/@types/utils";
 import { env } from "~/env.mjs";
 import { addLeadTime } from "~/lib/dates/conversions";
 import { isReminderDue } from "~/lib/dates/reminder";
 import { calcNextReminderDate } from "~/lib/dates/subscription";
-import { db, mutate, queries } from "~/server/db";
-import { dayjsToSqlDateNullable } from "~/server/db/utils";
+import { db, queries, schema } from "~/server/db";
+import { dayjsToDateNullable } from "~/server/db/utils";
 import logger from "~/server/logger";
 import { queueClient } from "~/server/queue/client";
 import { monitoredEdgeHandler } from "~/utils/handler_wrapper";
@@ -85,22 +86,19 @@ async function notifyUser(subs: SubData[], delay: number) {
     },
   );
 
-  await db.batch([
-    mutate.sub.updateReminder({
-      contribId: first.contribId,
-      reminderDate: calcNewReminderDate(first),
-    }),
-    ...rest.map((sub) =>
-      mutate.sub.updateReminder({
-        contribId: sub.contribId,
-        reminderDate: calcNewReminderDate(sub),
-      }),
-    ),
-  ]);
+  const allSubs = [first, ...rest];
+  await db.transaction(async (tx) => {
+    for (const sub of allSubs) {
+      await tx
+        .update(schema.subContrib)
+        .set({ reminderDate: calcNewReminderDate(sub) })
+        .where(eq(schema.subContrib.id, sub.contribId));
+    }
+  });
 }
 
 function calcNewReminderDate(sub: SubData) {
-  return dayjsToSqlDateNullable(
+  return dayjsToDateNullable(
     calcNextReminderDate({
       reminderDate: sub.reminderDate,
       cycle: { unit: sub.cycleUnit, value: sub.cycleValue },

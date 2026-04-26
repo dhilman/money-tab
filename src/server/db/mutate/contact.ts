@@ -10,17 +10,17 @@ export async function upsert(ctx: DbUserCtx, otherUserId: string) {
   );
   if (existing) return;
 
-  await ctx.db.batch([
-    ctx.db.insert(schema.connection).values([
+  await ctx.db.transaction(async (tx) => {
+    await tx.insert(schema.connection).values([
       { ownerId: ctx.userId, userId: otherUserId },
       { ownerId: otherUserId, userId: ctx.userId },
-    ]),
-    ctx.db.insert(schema.event).values({
+    ]);
+    await tx.insert(schema.event).values({
       name: "user_connected",
       createdById: ctx.userId,
       targetUserId: otherUserId,
-    }),
-  ]);
+    });
+  });
 }
 
 export async function remove(
@@ -28,29 +28,29 @@ export async function remove(
   userId: string,
   otherUserId: string,
 ) {
-  await ctx.db.batch([
-    ctx.db
+  await ctx.db.transaction(async (tx) => {
+    await tx
       .delete(schema.connection)
       .where(
         and(
           eq(schema.connection.ownerId, userId),
           eq(schema.connection.userId, otherUserId),
         ),
-      ),
-    ctx.db
+      );
+    await tx
       .delete(schema.connection)
       .where(
         and(
           eq(schema.connection.ownerId, otherUserId),
           eq(schema.connection.userId, userId),
         ),
-      ),
-    ctx.db.insert(schema.event).values({
+      );
+    await tx.insert(schema.event).values({
       name: "user_disconnected",
       createdById: userId,
       targetUserId: otherUserId,
-    }),
-  ]);
+    });
+  });
 }
 
 export async function updateNickname(params: {

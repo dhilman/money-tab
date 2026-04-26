@@ -14,6 +14,7 @@ import {
   ListItemLeft,
   ListItemLoading,
 } from "~/components/ui/list-item";
+import { getDateYYYYMMDD } from "~/lib/dates/dates";
 import { formatDateRelative } from "~/lib/dates/format-date-relative";
 import { formatDate } from "~/lib/dates/format-dates";
 
@@ -42,7 +43,7 @@ const SubDateAndReminder = () => {
   const date = useMemo(() => {
     if (sub.archivedAt) return null;
     if (sub.renewalDate) {
-      const isStart = sub.renewalDate === sub.startDate;
+      const isStart = sub.renewalDate === getDateYYYYMMDD(sub.startDate);
       return {
         type: "renewal",
         label: isStart ? t("starts") : t("next_payment"),
