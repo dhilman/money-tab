@@ -21,6 +21,10 @@ import {
   MainButton,
   usePlatform,
 } from "~/components/provider/platform/context";
+import {
+  ReceiptProviderWrapper,
+  useReceiptCtxOptional,
+} from "~/components/receipt";
 import { useWebAppRouter } from "~/components/router/router";
 import {
   getCurrencyByCodeWithDefault,
@@ -28,6 +32,7 @@ import {
 } from "~/lib/amount/currencies";
 import { getDateAndTimeLocalFromUTC } from "~/lib/dates/format-dates";
 import i18n from "~/lib/i18n";
+import type { ReceiptData } from "~/lib/receipt";
 import {
   validAmount,
   validFiles,
@@ -61,11 +66,13 @@ export const TxEditProvider = ({ tx, children }: Props) => {
       type: v.type ?? "",
     })),
   );
+  const initialReceiptData = (tx.receiptData ?? null) as ReceiptData | null;
   const [participants, updateParticipants] = useParticipantsEditReducer({
     meId: me.id,
     amount,
     contribs: tx.contribs,
     groupId: tx.groupId,
+    startSplitMode: initialReceiptData ? "itemized" : "amount",
   });
 
   return (
@@ -93,11 +100,13 @@ export const TxEditProvider = ({ tx, children }: Props) => {
         state={participants}
         update={updateParticipants}
       >
-        <BackButton
-          onClick={screen === "main" ? undefined : () => setScreen("main")}
-        />
-        {children}
-        <TxMainButton tx={tx} />
+        <ReceiptProviderWrapper initialData={initialReceiptData}>
+          <BackButton
+            onClick={screen === "main" ? undefined : () => setScreen("main")}
+          />
+          {children}
+          <TxMainButton tx={tx} />
+        </ReceiptProviderWrapper>
       </ParticipantsProvider>
     </TxEditContext.Provider>
   );
@@ -112,6 +121,8 @@ function parseDateOrDateTime(txDate: Date | null, txTime: string | null) {
 
 function TxMainButton({ tx }: { tx: Tx }) {
   const { screen, setScreen } = useTxEditCtx();
+  const { splitMode } = useParticipantsCtx();
+  const receiptCtx = useReceiptCtxOptional();
   const { mutate, isPending: isLoading } = useUpdateMutation(tx.id);
   const isEdited = useIsEdited(tx);
 
@@ -120,11 +131,18 @@ function TxMainButton({ tx }: { tx: Tx }) {
     else setScreen("main");
   }, [screen, setScreen, mutate]);
 
+  // Itemized mode is gated by the receipt-level validation. The bridge in
+  // ItemizedSection keeps the form amount in sync with the per-party split.
+  const isItemizedAndInvalid =
+    splitMode === "itemized" && !(receiptCtx?.isValid ?? false);
+
   return (
     <MainButton
       onClick={onClickMain}
       label={screen === "main" ? i18n.t("save") : i18n.t("done")}
-      disabled={screen === "main" && !isEdited}
+      disabled={
+        screen === "main" && (!isEdited || isItemizedAndInvalid)
+      }
       isLoading={isLoading}
     />
   );
@@ -176,9 +194,11 @@ function useUpdateMutation(id: string) {
 
   const state = useTxEditCtx();
   const participants = useParticipantsCtx();
+  const receiptCtx = useReceiptCtxOptional();
 
   const { mutate, isPending: isLoading } = useMutation({
     mutationFn: async () => {
+      const isItemized = participants.splitMode === "itemized";
       const data: UpdateReq = {
         id: id,
         amount: state.amount,
@@ -188,6 +208,14 @@ function useUpdateMutation(id: string) {
         groupId: participants.getGroupId(),
         contribs: participants.getContribs(),
         files: state.files,
+        receiptData:
+          isItemized && receiptCtx?.receipt
+            ? {
+                receipt: receiptCtx.receipt,
+                assignments: receiptCtx.assignments,
+                extras: receiptCtx.extras,
+              }
+            : null,
       };
 
       console.log("create transaction", data);

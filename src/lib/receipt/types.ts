@@ -48,6 +48,16 @@ export interface ReceiptSplitState {
   extras: ExtraCharge[];
 }
 
+/**
+ * Persisted itemized receipt data for a transaction.
+ * Stored in transactions.receipt_data jsonb column. Presence => itemized split mode.
+ */
+export interface ReceiptData {
+  receipt: ReceiptParse;
+  assignments: ItemAssignment[];
+  extras: ExtraCharge[];
+}
+
 export interface PersonTotal {
   userId: string;
   itemsSubtotal: number;

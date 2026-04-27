@@ -18,7 +18,10 @@ import {
   MainButton,
   usePlatform,
 } from "~/components/provider/platform/context";
-import { ReceiptProviderWrapper } from "~/components/receipt";
+import {
+  ReceiptProviderWrapper,
+  useReceiptCtxOptional,
+} from "~/components/receipt";
 import { useWebAppRouter } from "~/components/router/router";
 import { getCurrencyByCodeWithDefault } from "~/lib/amount/currencies";
 import i18n from "~/lib/i18n";
@@ -99,6 +102,8 @@ export const TxCreateProvider = ({
 
 function TxMainButton() {
   const { amount, screen, setScreen } = useTxEditCtx();
+  const { splitMode } = useParticipantsCtx();
+  const receiptCtx = useReceiptCtxOptional();
   const { create, isLoading } = useCreateMutation();
 
   const onClickMain = useCallback(() => {
@@ -106,11 +111,19 @@ function TxMainButton() {
     else setScreen("main");
   }, [create, screen, setScreen]);
 
+  // Itemized mode is gated by the receipt-level validation (all items
+  // assigned + sums match receipt total). The bridge in ItemizedSection keeps
+  // the form amount aligned, so participants-level invalid is redundant.
+  const isItemizedAndInvalid =
+    splitMode === "itemized" && !(receiptCtx?.isValid ?? false);
+
   return (
     <MainButton
       onClick={onClickMain}
       label={screen === "main" ? i18n.t("save") : i18n.t("done")}
-      disabled={screen === "main" && amount <= 0}
+      disabled={
+        screen === "main" && (amount <= 0 || isItemizedAndInvalid)
+      }
       isLoading={isLoading}
     />
   );
@@ -126,9 +139,11 @@ function useCreateMutation() {
 
   const state = useTxEditCtx();
   const participants = useParticipantsCtx();
+  const receiptCtx = useReceiptCtxOptional();
 
   const { mutate, isPending: isLoading } = useMutation({
     mutationFn: async () => {
+      const isItemized = participants.splitMode === "itemized";
       const data: TxCreateReq = {
         value: state.amount,
         currencyCode: state.currency.code,
@@ -137,6 +152,14 @@ function useCreateMutation() {
         files: state.files,
         contributions: participants.getContribs(),
         groupId: participants.getGroupId(),
+        receiptData:
+          isItemized && receiptCtx?.receipt
+            ? {
+                receipt: receiptCtx.receipt,
+                assignments: receiptCtx.assignments,
+                extras: receiptCtx.extras,
+              }
+            : null,
       };
 
       console.log("create transaction", data);

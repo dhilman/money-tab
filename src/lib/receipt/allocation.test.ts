@@ -130,7 +130,7 @@ describe("getUnassignedItems", () => {
       { itemId: "1", shares: { a: 1 } },
       { itemId: "3", shares: { b: 1 } },
     ];
-    const result = getUnassignedItems(items, assignments);
+    const result = getUnassignedItems(items, assignments, ["a", "b"]);
     expect(result).toEqual([{ id: "2", name: "Item 2", total: 200 }]);
   });
 
@@ -139,7 +139,7 @@ describe("getUnassignedItems", () => {
     const assignments: ItemAssignment[] = [
       { itemId: "1", shares: { a: 0, b: 0 } },
     ];
-    const result = getUnassignedItems(items, assignments);
+    const result = getUnassignedItems(items, assignments, ["a", "b"]);
     expect(result).toEqual([{ id: "1", name: "Item 1", total: 100 }]);
   });
 
@@ -148,8 +148,17 @@ describe("getUnassignedItems", () => {
       { id: "1", name: "Item 1", total: 100 },
       { id: "2", name: "Item 2", total: 200 },
     ];
-    const result = getUnassignedItems(items, []);
+    const result = getUnassignedItems(items, [], ["a"]);
     expect(result).toEqual(items);
+  });
+
+  test("ignores shares that point to non-current participants", () => {
+    const items: ReceiptItem[] = [{ id: "1", name: "Item 1", total: 100 }];
+    const assignments: ItemAssignment[] = [
+      { itemId: "1", shares: { stale_user: 1 } },
+    ];
+    // Stale assignment shouldn't count — item is effectively unassigned.
+    expect(getUnassignedItems(items, assignments, ["a"])).toEqual(items);
   });
 });
 

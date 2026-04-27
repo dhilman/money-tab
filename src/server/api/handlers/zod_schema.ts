@@ -40,3 +40,55 @@ export const File = z.object({
 });
 
 export const Files = z.array(File);
+
+const ReceiptItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  quantity: z.number().optional(),
+  unitPrice: z.number().int().optional(),
+  total: z.number().int(),
+});
+
+const ReceiptParseSchema = z.object({
+  sourceUrl: z.string(),
+  merchant: z.string().optional(),
+  date: z.string().optional(),
+  currencyCode: z.string().optional(),
+  total: z.number().int().optional(),
+  subtotal: z.number().int().optional(),
+  tax: z.number().int().optional(),
+  service: z.number().int().optional(),
+  tip: z.number().int().optional(),
+  discount: z.number().int().optional(),
+  items: z.array(ReceiptItemSchema),
+  rawText: z.string().optional(),
+  confidence: z.number().optional(),
+});
+
+const ItemAssignmentSchema = z.object({
+  itemId: z.string(),
+  shares: z.record(z.string(), z.number()),
+});
+
+const ExtrasAllocationMethodSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("proportional_to_subtotal") }),
+  z.object({ type: z.literal("even_among_involved") }),
+  z.object({ type: z.literal("even_among_all") }),
+  z.object({
+    type: z.literal("custom"),
+    shares: z.record(z.string(), z.number()),
+  }),
+]);
+
+const ExtraChargeSchema = z.object({
+  id: z.enum(["tax", "service", "tip", "discount"]),
+  label: z.string(),
+  amount: z.number().int(),
+  method: ExtrasAllocationMethodSchema,
+});
+
+export const ReceiptDataSchema = z.object({
+  receipt: ReceiptParseSchema,
+  assignments: z.array(ItemAssignmentSchema),
+  extras: z.array(ExtraChargeSchema),
+});

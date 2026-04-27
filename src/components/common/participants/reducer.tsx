@@ -3,7 +3,7 @@ import { useEffect, useReducer, useRef } from "react";
 import { useGroups } from "~/components/provider/users-provider";
 import { splitAmount } from "~/lib/amount/split-amount";
 
-export type SplitMode = "amount" | "percentage" | "shares";
+export type SplitMode = "amount" | "percentage" | "shares" | "itemized";
 
 /** Scale factor for percentage values (100 = 1%, 10000 = 100%) */
 export const PERCENTAGE_SCALE = 100;
@@ -25,6 +25,8 @@ export function getSplitValue(
       return participant.splitPercentage;
     case "shares":
       return participant.splitShares;
+    case "itemized":
+      return participant.splitItemized;
   }
 }
 
@@ -37,6 +39,8 @@ function getDefaultSplitValue(mode: SplitMode): SplitValue {
       return { value: 0, manual: false };
     case "shares":
       return { value: 1, manual: false };
+    case "itemized":
+      return { value: 0, manual: true };
   }
 }
 
@@ -48,6 +52,7 @@ export interface Participant {
   splitAmount: SplitValue;
   splitPercentage: SplitValue;
   splitShares: SplitValue;
+  splitItemized: SplitValue;
 }
 
 interface State {
@@ -84,6 +89,7 @@ interface Params {
   meId: string;
   startUserId: string | null;
   startGroupId: string | null;
+  startSplitMode?: SplitMode;
 }
 
 export function useParticipantsReducer(params: Params) {
@@ -96,7 +102,7 @@ export function useParticipantsReducer(params: Params) {
       parties: [],
       payerId: params.meId,
       groupId: "",
-      splitMode: "amount" as SplitMode,
+      splitMode: (params.startSplitMode ?? "amount") as SplitMode,
       invalid: false,
     },
     (state) => {
@@ -140,10 +146,12 @@ interface EditParams {
   }[];
   groupId: string | null;
   meId: string;
+  startSplitMode?: SplitMode;
 }
 
 export function useParticipantsEditReducer(params: EditParams) {
   const payer = params.contribs.find((c) => c.amountPaid > 0);
+  const isItemized = params.startSplitMode === "itemized";
   const [state, dispatch] = useReducer(reducer, {
     total: params.amount,
     meId: params.meId,
@@ -154,11 +162,12 @@ export function useParticipantsEditReducer(params: EditParams) {
       splitAmount: { value: c.amountOwed, manual: c.manualAmountOwed },
       splitPercentage: { value: 0, manual: false },
       splitShares: { value: 1, manual: false },
+      splitItemized: { value: isItemized ? c.amountOwed : 0, manual: true },
     })),
     payerId: payer?.userId || payer?.id || params.meId,
     groupId: params.groupId || "",
     groupLocked: !!params.groupId,
-    splitMode: "amount" as SplitMode,
+    splitMode: (params.startSplitMode ?? "amount") as SplitMode,
     invalid: false,
   });
 
@@ -201,6 +210,17 @@ function reducer(state: State, action: Action): State {
       break;
     case "set_split_mode":
       newState = { ...state, splitMode: action.mode };
+      // When entering itemized mode, seed splitItemized from current per-party amounts
+      // so the user keeps any prior values until the live receipt bridge overwrites them.
+      if (action.mode === "itemized" && state.splitMode !== "itemized") {
+        newState = {
+          ...newState,
+          parties: newState.parties.map((p) => ({
+            ...p,
+            splitItemized: { value: p.amount, manual: true },
+          })),
+        };
+      }
       break;
     case "add_group": {
       if (state.groupId === action.groupId) {
@@ -298,6 +318,8 @@ function updateSplitValue(
       return { ...p, splitPercentage: value };
     case "shares":
       return { ...p, splitShares: value };
+    case "itemized":
+      return { ...p, splitItemized: value };
   }
 }
 
@@ -314,6 +336,7 @@ function newParticipant(
     splitAmount: { value: 0, manual: false },
     splitPercentage: { value: 0, manual: false },
     splitShares: { value: 1, manual: false },
+    splitItemized: { value: 0, manual: true },
   };
 }
 
@@ -325,7 +348,26 @@ function recalculate(state: State): State {
       return recalculatePercentage(state);
     case "shares":
       return recalculateShares(state);
+    case "itemized":
+      return recalculateItemized(state);
   }
+}
+
+/**
+ * Itemized mode: every per-party amount is driven by splitItemized.value (which
+ * is computed externally from the receipt bridge). No remainder redistribution.
+ * Marks state.invalid when the parties' totals don't match state.total.
+ */
+function recalculateItemized(state: State): State {
+  const sum = state.parties.reduce((acc, p) => acc + p.splitItemized.value, 0);
+  return {
+    ...state,
+    invalid: sum !== state.total,
+    parties: state.parties.map((p) => ({
+      ...p,
+      amount: p.splitItemized.value,
+    })),
+  };
 }
 
 function recalculateAmount(state: State): State {

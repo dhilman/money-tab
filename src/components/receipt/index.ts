@@ -4,8 +4,7 @@ export {
   useReceiptCtxOptional,
 } from "./receipt-context";
 export { ReceiptProviderWrapper } from "./receipt-provider-wrapper";
-export { useApplyReceipt } from "./use-apply-receipt";
+export { useApplyReceiptScan } from "./use-apply-receipt";
 export { ReceiptScanInput } from "./receipt-scan-input";
-export { ReceiptSummaryCard } from "./receipt-summary-card";
-export { ReceiptSplitDrawer } from "./receipt-split-drawer";
+export { ItemizedSection, useItemizedCaption } from "./itemized-section";
 export { ParticipantChip, ParticipantChipGroup } from "./participant-chip";

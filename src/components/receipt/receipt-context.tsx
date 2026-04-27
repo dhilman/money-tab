@@ -1,5 +1,6 @@
 "use client";
 
+import { createId } from "@paralleldrive/cuid2";
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import {
   computePersonTotals,
@@ -10,6 +11,7 @@ import type {
   ExtraCharge,
   ItemAssignment,
   PersonTotal,
+  ReceiptData,
   ReceiptItem,
   ReceiptParse,
 } from "~/lib/receipt";
@@ -42,6 +44,13 @@ interface ReceiptContextValue extends ReceiptState {
   toggleItemAssignment: (itemId: string, userId: string) => void;
   /** Set custom share count for a participant on an item */
   setItemShare: (itemId: string, userId: string, shares: number) => void;
+
+  /** Patch a receipt item (name, quantity, unit price, total). */
+  updateItem: (itemId: string, patch: Partial<Omit<ReceiptItem, "id">>) => void;
+  /** Append a blank item to the receipt. Returns the new item id. */
+  addItem: () => string;
+  /** Remove an item and any assignments referencing it. */
+  removeItem: (itemId: string) => void;
 
   /** Update an extra charge's allocation method */
   setExtraMethod: (extraId: string, method: ExtraCharge["method"]) => void;
@@ -92,18 +101,27 @@ export function useReceiptCtxOptional() {
 interface ReceiptProviderProps {
   /** All participant user IDs in the transaction */
   participantIds: string[];
+  /** Pre-existing receipt data (for the edit flow). Hydrates state on first render. */
+  initialData?: ReceiptData | null;
   children: React.ReactNode;
 }
 
 export function ReceiptProvider({
   participantIds,
+  initialData,
   children,
 }: ReceiptProviderProps) {
-  const [receipt, setReceiptState] = useState<ReceiptParse | null>(null);
+  const [receipt, setReceiptState] = useState<ReceiptParse | null>(
+    initialData?.receipt ?? null,
+  );
   const [receiptFile, setReceiptFile] = useState<Attachment | null>(null);
-  const [assignments, setAssignments] = useState<ItemAssignment[]>([]);
-  const [extras, setExtras] = useState<ExtraCharge[]>([]);
-  const [splitEnabled, setSplitEnabled] = useState(false);
+  const [assignments, setAssignments] = useState<ItemAssignment[]>(
+    initialData?.assignments ?? [],
+  );
+  const [extras, setExtras] = useState<ExtraCharge[]>(
+    initialData?.extras ?? [],
+  );
+  const [splitEnabled, setSplitEnabled] = useState(!!initialData);
 
   // Initialize extras from receipt
   const setReceipt = useCallback(
@@ -213,6 +231,44 @@ export function ReceiptProvider({
     []
   );
 
+  const updateItem = useCallback(
+    (itemId: string, patch: Partial<Omit<ReceiptItem, "id">>) => {
+      setReceiptState((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          items: prev.items.map((item) =>
+            item.id === itemId ? { ...item, ...patch } : item,
+          ),
+        };
+      });
+    },
+    [],
+  );
+
+  const addItem = useCallback(() => {
+    const id = createId();
+    setReceiptState((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        items: [...prev.items, { id, name: "", total: 0 }],
+      };
+    });
+    return id;
+  }, []);
+
+  const removeItem = useCallback((itemId: string) => {
+    setReceiptState((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        items: prev.items.filter((item) => item.id !== itemId),
+      };
+    });
+    setAssignments((prev) => prev.filter((a) => a.itemId !== itemId));
+  }, []);
+
   const setExtraMethod = useCallback(
     (extraId: string, method: ExtraCharge["method"]) => {
       setExtras((prev) =>
@@ -246,8 +302,8 @@ export function ReceiptProvider({
 
   const unassignedItems = useMemo(() => {
     if (!splitEnabled) return [];
-    return getUnassignedItems(items, assignments);
-  }, [items, assignments, splitEnabled]);
+    return getUnassignedItems(items, assignments, participantIds);
+  }, [items, assignments, participantIds, splitEnabled]);
 
   const totalsDifference = useMemo(() => {
     if (!splitEnabled || !receipt?.total) return 0;
@@ -276,6 +332,9 @@ export function ReceiptProvider({
       clearReceipt,
       toggleItemAssignment,
       setItemShare,
+      updateItem,
+      addItem,
+      removeItem,
       setExtraMethod,
       setExtraAmount,
       removeExtra,
@@ -296,6 +355,9 @@ export function ReceiptProvider({
       clearReceipt,
       toggleItemAssignment,
       setItemShare,
+      updateItem,
+      addItem,
+      removeItem,
       setExtraMethod,
       setExtraAmount,
       removeExtra,

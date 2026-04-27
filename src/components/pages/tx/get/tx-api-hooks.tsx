@@ -133,6 +133,7 @@ const PLACEHODLER: TxApi = {
   amount: 0,
   type: "PAYMENT",
   visibility: "PUBLIC",
+  receiptData: null,
   contribs: [],
   files: [],
   events: [],

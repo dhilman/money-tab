@@ -2,9 +2,11 @@
 
 import { useMemo } from "react";
 import { useParticipantsCtx } from "~/components/common/participants/provider";
+import type { ReceiptData } from "~/lib/receipt";
 import { ReceiptProvider } from "./receipt-context";
 
 interface ReceiptProviderWrapperProps {
+  initialData?: ReceiptData | null;
   children: React.ReactNode;
 }
 
@@ -13,6 +15,7 @@ interface ReceiptProviderWrapperProps {
  * Must be used inside ParticipantsProvider.
  */
 export function ReceiptProviderWrapper({
+  initialData,
   children,
 }: ReceiptProviderWrapperProps) {
   const participants = useParticipantsCtx();
@@ -23,7 +26,7 @@ export function ReceiptProviderWrapper({
   }, [participants.parties]);
 
   return (
-    <ReceiptProvider participantIds={participantIds}>
+    <ReceiptProvider participantIds={participantIds} initialData={initialData}>
       {children}
     </ReceiptProvider>
   );

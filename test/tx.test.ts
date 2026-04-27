@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+import type { ReceiptData } from "~/lib/receipt";
 import { createCallerUser, createContrib, createTxData } from "./utils";
 
 describe("transactions", () => {
@@ -107,6 +108,105 @@ describe("transactions", () => {
     const { txs } = await caller1.tx.listWithUser({ userId: user2.id });
     expect(txs).toHaveLength(1);
     expect(txs[0]?.id).toBe(sharedTxId);
+  });
+
+  test("create tx persists receiptData and fetch round-trips it", async () => {
+    const { user, caller } = await createCallerUser();
+    const receiptData: ReceiptData = {
+      receipt: {
+        sourceUrl: "https://s3.amazonaws.com/bucket/r.jpg",
+        merchant: "Joe's",
+        currencyCode: "USD",
+        total: 1500,
+        items: [
+          { id: "i1", name: "Burger", total: 1000 },
+          { id: "i2", name: "Fries", total: 500 },
+        ],
+      },
+      assignments: [{ itemId: "i1", shares: { [user.id]: 1 } }],
+      extras: [
+        {
+          id: "tax",
+          label: "Tax",
+          amount: 100,
+          method: { type: "proportional_to_subtotal" },
+        },
+      ],
+    };
+
+    const txId = await caller.tx.create(
+      createTxData({
+        value: 1500,
+        contributions: [createContrib(user.id, { paid: 1500, owed: 0 })],
+        receiptData,
+      }),
+    );
+
+    const tx = await caller.tx.get({ id: txId });
+    expect(tx.receiptData).toEqual(receiptData);
+  });
+
+  test("update tx can modify receiptData", async () => {
+    const { user, caller } = await createCallerUser();
+    const receiptData: ReceiptData = {
+      receipt: {
+        sourceUrl: "https://s3.amazonaws.com/bucket/r.jpg",
+        currencyCode: "USD",
+        total: 500,
+        items: [{ id: "x", name: "Soda", total: 500 }],
+      },
+      assignments: [],
+      extras: [],
+    };
+
+    const txId = await caller.tx.create(
+      createTxData({
+        value: 500,
+        contributions: [createContrib(user.id, { paid: 500, owed: 0 })],
+        receiptData,
+      }),
+    );
+
+    const updatedReceipt: ReceiptData = {
+      ...receiptData,
+      assignments: [{ itemId: "x", shares: { [user.id]: 1 } }],
+    };
+
+    await caller.tx.update({
+      id: txId,
+      amount: 500,
+      currencyCode: "USD",
+      description: "test",
+      groupId: null,
+      date: null,
+      contribs: [
+        {
+          userId: user.id,
+          amountPaid: 500,
+          amountOwed: 500,
+          manualAmountOwed: true,
+        },
+      ],
+      files: [],
+      receiptData: updatedReceipt,
+    });
+
+    const reloaded = await caller.tx.get({ id: txId });
+    expect(reloaded.receiptData?.assignments).toEqual(
+      updatedReceipt.assignments,
+    );
+  });
+
+  test("create tx without receiptData leaves it null", async () => {
+    const { user, caller } = await createCallerUser();
+    const txId = await caller.tx.create(
+      createTxData({
+        value: 10,
+        contributions: [createContrib(user.id, { paid: 10, owed: 0 })],
+      }),
+    );
+    const tx = await caller.tx.get({ id: txId });
+    expect(tx.receiptData).toBeNull();
   });
 
   test("balance with multiple currencies", async () => {

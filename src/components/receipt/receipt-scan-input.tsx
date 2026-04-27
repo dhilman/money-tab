@@ -14,6 +14,7 @@ import { uploadFile } from "~/lib/file-upload";
 import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
 import { useReceiptCtxOptional } from "./receipt-context";
+import { useApplyReceiptScan } from "./use-apply-receipt";
 
 interface ReceiptScanInputProps {
   disabled?: boolean;
@@ -21,16 +22,17 @@ interface ReceiptScanInputProps {
 
 /**
  * ListItem row for scanning receipts via camera.
- * Uploads image to S3, then calls receipt.parse mutation.
+ * Uploads image to S3, calls receipt.parse mutation, then applies the result
+ * to the form via useApplyReceiptScan (auto-fills tx fields and switches
+ * participants to itemized mode).
  */
 export const ReceiptScanInput = ({ disabled }: ReceiptScanInputProps) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const receiptCtx = useReceiptCtxOptional();
+  const applyScan = useApplyReceiptScan();
 
-  const parseMutation = api.receipt.parse.useMutation({
-    // Success is handled in onFileChange to include file metadata
-  });
+  const parseMutation = api.receipt.parse.useMutation();
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -58,8 +60,7 @@ export const ReceiptScanInput = ({ disabled }: ReceiptScanInputProps) => {
         fileUrl: meta.url,
       });
 
-      // Set receipt with file metadata for auto-attachment
-      receiptCtx?.setReceipt(result, {
+      applyScan(result, {
         id: meta.id,
         url: meta.url,
         key: meta.key,

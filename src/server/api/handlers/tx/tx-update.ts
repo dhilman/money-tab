@@ -13,7 +13,7 @@ import { type NotifyDataSingle } from "~/server/notifier/schema";
 import { resolveArrayChanges } from "~/server/resolver/array-resolver";
 import { resolveTxChanges, type TxChangeset } from "~/server/resolver/contribs";
 import { validator } from "~/server/validator";
-import { Contribs, DateOrDateTimeStr, Files } from "../zod_schema";
+import { Contribs, DateOrDateTimeStr, Files, ReceiptDataSchema } from "../zod_schema";
 
 const Input = z.object({
   id: z.string(),
@@ -24,6 +24,7 @@ const Input = z.object({
   date: DateOrDateTimeStr.nullable(),
   contribs: Contribs,
   files: Files,
+  receiptData: ReceiptDataSchema.nullable().optional(),
 });
 type Input = z.infer<typeof Input>;
 
@@ -74,6 +75,9 @@ function transform(
     if (inputDate !== txDate) return true;
     const inputTime = input.date?.time ?? null;
     if (inputTime !== tx.txTime) return true;
+    const inputReceipt = JSON.stringify(input.receiptData ?? null);
+    const dbReceipt = JSON.stringify(tx.receiptData ?? null);
+    if (inputReceipt !== dbReceipt) return true;
     return false;
   }
 
@@ -94,6 +98,7 @@ function transform(
       txDate: input.date?.date ?? null,
       txTime: input.date?.time ?? null,
       groupId: input.groupId,
+      receiptData: input.receiptData ?? null,
     },
     contribs: resolveTxChanges({ old: tx.contribs, new: input.contribs }),
     files: resolveArrayChanges({ old: tx.files, new: inputFiles }),

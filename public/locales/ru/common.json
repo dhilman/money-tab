@@ -239,7 +239,19 @@
       "unassigned_items_other": "{{count}} позиций не назначено",
       "over_total": "{{amount}} больше суммы чека",
       "under_total": "{{amount}} меньше суммы чека"
-    }
+    },
+    "section_title": "Позиции чека {{assigned}}/{{total}} · {{amount}}",
+    "not_assigned": "не назначено",
+    "item_count_with_extras_one": "{{count}} позиция {{extras}}",
+    "item_count_with_extras_few": "{{count}} позиции {{extras}}",
+    "item_count_with_extras_many": "{{count}} позиций {{extras}}",
+    "item_count_with_extras_other": "{{count}} позиций {{extras}}",
+    "plus_extras": "· часть дополнительного",
+    "add_item": "Добавить позицию",
+    "remove_item": "Удалить позицию",
+    "item_name": "Название позиции",
+    "qty": "Кол-во",
+    "each": "за шт."
   },
   "recent": "Недавние",
   "recent_expenses": "Недавние Расходы",

@@ -113,16 +113,23 @@ export function getInvolvedUsers(assignments: ItemAssignment[]): string[] {
 }
 
 /**
- * Find items that have no participants assigned.
+ * Find items that have no current participant assigned.
+ * Stale shares pointing to removed participants don't count as "assigned".
  */
 export function getUnassignedItems(
   items: ReceiptItem[],
-  assignments: ItemAssignment[]
+  assignments: ItemAssignment[],
+  participantIds: string[],
 ): ReceiptItem[] {
+  const validParticipants = new Set(participantIds);
   const assignedItemIds = new Set(
     assignments
-      .filter((a) => Object.values(a.shares).some((s) => s > 0))
-      .map((a) => a.itemId)
+      .filter((a) =>
+        Object.entries(a.shares).some(
+          ([uid, s]) => s > 0 && validParticipants.has(uid),
+        ),
+      )
+      .map((a) => a.itemId),
   );
 
   return items.filter((item) => !assignedItemIds.has(item.id));

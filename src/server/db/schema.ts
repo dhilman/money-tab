@@ -5,6 +5,7 @@ import {
   date,
   index,
   integer,
+  jsonb,
   pgSchema,
   primaryKey,
   serial,
@@ -20,6 +21,7 @@ import {
   REMINDER_VALUES,
   VISIBILITY_VALUES,
 } from "~/lib/consts/constants";
+import type { ReceiptData } from "~/lib/receipt";
 
 const mainSchema = pgSchema("main");
 export const createTable = mainSchema.table;
@@ -293,6 +295,7 @@ export const transaction = createTable(
     })
       .notNull()
       .default("RESTRICTED"),
+    receiptData: jsonb("receipt_data").$type<ReceiptData>(),
   },
   (v) => [
     index("tx_created_at_idx").on(v.createdAt),

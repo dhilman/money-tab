@@ -1,6 +1,7 @@
 import {
   ChartPieIcon,
   DollarSignIcon,
+  ListIcon,
   PencilIcon,
   PercentIcon,
   PlusIcon,
@@ -20,6 +21,11 @@ import { PartyUserName } from "~/components/common/participants/username";
 import { useCurrencyAmountParser } from "~/components/form/amount-utils";
 import { UserAvatarOrPlaceholder } from "~/components/pages/user/user-avatar";
 import { useUser } from "~/components/provider/users-provider";
+import {
+  ItemizedSection,
+  useItemizedCaption,
+  useReceiptCtxOptional,
+} from "~/components/receipt";
 import { ButtonV1 } from "~/components/ui/buttonv1";
 import { List } from "~/components/ui/list";
 import {
@@ -71,6 +77,13 @@ export const ParticipantsOverview = ({ onEdit, onEditPayer }: Props) => {
   );
 };
 
+/** Read-only itemized section, only mounted when a ReceiptProvider is present. */
+const ItemizedSectionGate = () => {
+  const receiptCtx = useReceiptCtxOptional();
+  if (!receiptCtx) return null;
+  return <ItemizedSection />;
+};
+
 const SplitModeTabs = () => {
   const { splitMode, setSplitMode } = useParticipantsCtx();
 
@@ -90,6 +103,9 @@ const SplitModeTabs = () => {
         <TabsTrigger value="shares" className="flex-1">
           <ChartPieIcon className="h-4 w-4" />
         </TabsTrigger>
+        <TabsTrigger value="itemized" className="flex-1">
+          <ListIcon className="h-4 w-4" />
+        </TabsTrigger>
       </TabsList>
     </Tabs>
   );
@@ -97,7 +113,7 @@ const SplitModeTabs = () => {
 
 const UsersPaidFor = () => {
   const inputRefs = useRef<HTMLInputElement[]>([]);
-  const { parties } = useParticipantsCtx();
+  const { parties, splitMode } = useParticipantsCtx();
 
   useEffect(() => {
     inputRefs.current = inputRefs.current.slice(0, parties.length);
@@ -123,6 +139,7 @@ const UsersPaidFor = () => {
           onKeyDown={onKeyDown}
         />
       ))}
+      {splitMode === "itemized" && <ItemizedSectionGate />}
     </List>
   );
 };
@@ -190,6 +207,7 @@ const UserListItem = ({
 
   const splitVal = getSplitValue(participant, splitMode);
   const isManual = splitVal.manual;
+  const isItemized = splitMode === "itemized";
 
   const placeholder = useMemo(() => {
     switch (splitMode) {
@@ -199,6 +217,8 @@ const UserListItem = ({
         return (splitVal.value / PERCENTAGE_SCALE).toFixed(2);
       case "shares":
         return splitVal.value.toString();
+      case "itemized":
+        return "";
     }
   }, [splitMode, participant.amount, splitVal.value, decimals]);
 
@@ -238,6 +258,8 @@ const UserListItem = ({
         if (!/^\d+$/.test(v)) return null;
         const int = parseInt(v, 10);
         return isNaN(int) ? null : int;
+      case "itemized":
+        return null;
     }
   };
 
@@ -266,39 +288,71 @@ const UserListItem = ({
       <ListItemBody>
         <div className="w-full truncate">
           <PartyUserName user={user} />
-          <div className="text-sm text-hint">{getShareLabel()}</div>
+          <div className="text-sm text-hint">
+            {isItemized ? (
+              <ItemizedCaption userId={participant.id} fallback={getShareLabel()} />
+            ) : (
+              getShareLabel()
+            )}
+          </div>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          {isManual && (
-            <button
-              className="flex h-8 w-8 items-center justify-center rounded-[8.91px] bg-tertiary"
-              onClick={() => {
-                setValue("");
-                resetSplitValue(participant.id);
-              }}
-            >
-              <RefreshCwIcon className="h-4 w-4 text-foreground" />
-            </button>
+          {isItemized ? (
+            <span className="px-3 text-right text-base text-foreground">
+              {participant.amount > 0
+                ? formatAmountCurrency(participant.amount, currency)
+                : "—"}
+            </span>
+          ) : (
+            <>
+              {isManual && (
+                <button
+                  className="flex h-8 w-8 items-center justify-center rounded-[8.91px] bg-tertiary"
+                  onClick={() => {
+                    setValue("");
+                    resetSplitValue(participant.id);
+                  }}
+                >
+                  <RefreshCwIcon className="h-4 w-4 text-foreground" />
+                </button>
+              )}
+              <input
+                ref={setRef}
+                className={cn(
+                  "w-20 rounded-[8.91px] bg-tertiary px-3 py-[5px] text-right text-base",
+                  isManual && invalid && "bg-red-500/20",
+                )}
+                type="number"
+                enterKeyHint="next"
+                placeholder={placeholder}
+                autoComplete="off"
+                autoCorrect="off"
+                value={value}
+                onChange={(e) => onInputChange(e.target.value)}
+                onKeyDown={onKeyDown}
+              />
+            </>
           )}
-          <input
-            ref={setRef}
-            className={cn(
-              "w-20 rounded-[8.91px] bg-tertiary px-3 py-[5px] text-right text-base",
-              isManual && invalid && "bg-red-500/20",
-            )}
-            type="number"
-            enterKeyHint="next"
-            placeholder={placeholder}
-            autoComplete="off"
-            autoCorrect="off"
-            value={value}
-            onChange={(e) => onInputChange(e.target.value)}
-            onKeyDown={onKeyDown}
-          />
         </div>
       </ListItemBody>
     </ListItem>
   );
+};
+
+interface ItemizedCaptionProps {
+  userId: string;
+  fallback: string;
+}
+
+const ItemizedCaption = ({ userId, fallback }: ItemizedCaptionProps) => {
+  const receiptCtx = useReceiptCtxOptional();
+  if (!receiptCtx) return <>{fallback}</>;
+  return <ItemizedCaptionInner userId={userId} />;
+};
+
+const ItemizedCaptionInner = ({ userId }: { userId: string }) => {
+  const caption = useItemizedCaption(userId);
+  return <>{caption}</>;
 };
 
 interface ListButtonProps {

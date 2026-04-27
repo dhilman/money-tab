@@ -229,7 +229,17 @@
       "unassigned_items_other": "{{count}} items not assigned",
       "over_total": "{{amount}} over receipt total",
       "under_total": "{{amount}} under receipt total"
-    }
+    },
+    "section_title": "Receipt items {{assigned}}/{{total}} · {{amount}}",
+    "not_assigned": "not assigned",
+    "item_count_with_extras_one": "{{count}} item {{extras}}",
+    "item_count_with_extras_other": "{{count}} items {{extras}}",
+    "plus_extras": "· share of extras",
+    "add_item": "Add item",
+    "remove_item": "Remove item",
+    "item_name": "Item name",
+    "qty": "Qty",
+    "each": "each"
   },
   "recent": "Recent",
   "recent_expenses": "Recent Expenses",
