@@ -71,8 +71,6 @@ interface ReceiptContextValue extends ReceiptState {
   totalsDifference: number;
   /** Whether all items are assigned and totals match (informational only) */
   isValid: boolean;
-  /** Whether there's at least one assignment (minimum requirement to apply) */
-  canApply: boolean;
 }
 
 // ============================================================================
@@ -294,9 +292,7 @@ export function ReceiptProvider({
   const items = useMemo(() => receipt?.items ?? [], [receipt?.items]);
 
   const personTotals = useMemo(() => {
-    if (!splitEnabled || items.length === 0) {
-      return [];
-    }
+    if (!splitEnabled || items.length === 0) return [];
     return computePersonTotals(items, assignments, extras, participantIds);
   }, [items, assignments, extras, participantIds, splitEnabled]);
 
@@ -310,16 +306,8 @@ export function ReceiptProvider({
     return validateTotals(personTotals, receipt.total);
   }, [personTotals, receipt?.total, splitEnabled]);
 
-  const isValid = useMemo(() => {
-    if (!splitEnabled) return true;
-    return unassignedItems.length === 0 && totalsDifference === 0;
-  }, [splitEnabled, unassignedItems, totalsDifference]);
-
-  // Can apply if at least one item has been assigned to someone
-  const canApply = useMemo(() => {
-    if (!splitEnabled) return false;
-    return personTotals.length > 0;
-  }, [splitEnabled, personTotals]);
+  const isValid =
+    !splitEnabled || (unassignedItems.length === 0 && totalsDifference === 0);
 
   const value = useMemo<ReceiptContextValue>(
     () => ({
@@ -343,7 +331,6 @@ export function ReceiptProvider({
       unassignedItems,
       totalsDifference,
       isValid,
-      canApply,
     }),
     [
       receipt,
@@ -365,7 +352,6 @@ export function ReceiptProvider({
       unassignedItems,
       totalsDifference,
       isValid,
-      canApply,
     ]
   );
 

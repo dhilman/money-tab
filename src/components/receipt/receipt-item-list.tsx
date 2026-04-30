@@ -35,22 +35,11 @@ export const ReceiptItemList = () => {
 
   const participantIds = parties.map((p) => p.id);
   const currencyCode = receipt.currencyCode ?? "USD";
-
-  const getSelectedForItem = (itemId: string): string[] => {
-    const assignment = assignments.find((a) => a.itemId === itemId);
-    if (!assignment) return [];
-    return Object.entries(assignment.shares)
-      .filter(([, count]) => count > 0)
-      .map(([userId]) => userId);
-  };
-
-  const isUnassigned = (itemId: string): boolean => {
-    return unassignedItems.some((item) => item.id === itemId);
-  };
+  const unassignedIds = new Set(unassignedItems.map((i) => i.id));
+  const sharesByItem = new Map(assignments.map((a) => [a.itemId, a.shares]));
 
   const handleAdd = () => {
-    const id = addItem();
-    setPendingFocusId(id);
+    setPendingFocusId(addItem());
   };
 
   return (
@@ -59,21 +48,27 @@ export const ReceiptItemList = () => {
         {t("receipt.items_count", { count: receipt.items.length })}
       </h3>
       <div className="space-y-2">
-        {receipt.items.map((item) => (
-          <ReceiptItemRow
-            key={item.id}
-            item={item}
-            currencyCode={currencyCode}
-            participantIds={participantIds}
-            selectedIds={getSelectedForItem(item.id)}
-            onToggle={(userId) => toggleItemAssignment(item.id, userId)}
-            isUnassigned={isUnassigned(item.id)}
-            onUpdate={(patch) => updateItem(item.id, patch)}
-            onRemove={() => removeItem(item.id)}
-            autoFocus={pendingFocusId === item.id}
-            onAutoFocused={() => setPendingFocusId(null)}
-          />
-        ))}
+        {receipt.items.map((item) => {
+          const shares = sharesByItem.get(item.id) ?? {};
+          const selectedIds = Object.entries(shares)
+            .filter(([, count]) => count > 0)
+            .map(([userId]) => userId);
+          return (
+            <ReceiptItemRow
+              key={item.id}
+              item={item}
+              currencyCode={currencyCode}
+              participantIds={participantIds}
+              selectedIds={selectedIds}
+              onToggle={(userId) => toggleItemAssignment(item.id, userId)}
+              isUnassigned={unassignedIds.has(item.id)}
+              onUpdate={(patch) => updateItem(item.id, patch)}
+              onRemove={() => removeItem(item.id)}
+              autoFocus={pendingFocusId === item.id}
+              onAutoFocused={() => setPendingFocusId(null)}
+            />
+          );
+        })}
       </div>
       <button
         type="button"
@@ -135,26 +130,33 @@ const ReceiptItemRow = ({
       : item.total;
 
   const handleTotalCommit = (v: number) => {
-    onUpdate(
-      quantity > 1
-        ? { total: v, unitPrice: Math.round(v / quantity) }
-        : { total: v, unitPrice: v },
-    );
+    if (quantity > 1) {
+      onUpdate({ total: v, unitPrice: Math.round(v / quantity) });
+    } else {
+      onUpdate({ total: v, unitPrice: v });
+    }
   };
 
   const handleUnitPriceCommit = (v: number) => {
+    // No-op when the user committed the same value the field was displaying
+    // (i.e. the `Math.round(total/qty)` derivation just above). Otherwise we'd
+    // silently drop the modulo-qty cents — e.g. $10.00 / qty 3 displays $3.33,
+    // and re-committing $3.33 would rewrite total to $9.99.
+    if (v === unitPrice) return;
     onUpdate({ unitPrice: v, total: v * quantity });
   };
 
   const handleQuantityChange = (q: number) => {
-    onUpdate({ quantity: q, unitPrice: Math.round(item.total / Math.max(q, 1)) });
+    onUpdate({
+      quantity: q,
+      unitPrice: Math.round(item.total / Math.max(q, 1)),
+    });
   };
 
   return (
     <div
       className={cn(
-        "rounded-lg border border-hint/10 bg-background p-3",
-        "touch-manipulation",
+        "rounded-lg border border-hint/10 bg-background p-3 touch-manipulation",
         isUnassigned && "border-orange-500/50",
       )}
     >
@@ -216,13 +218,16 @@ const ReceiptItemRow = ({
   );
 };
 
-interface QuantityFieldProps {
-  value: number;
-  onChange: (v: number) => void;
-}
-
-const QuantityField = ({ value, onChange }: QuantityFieldProps) => {
-  const { t } = useTranslation();
+/**
+ * Click-to-edit state machine. Owns the editing flag, draft string, input ref,
+ * and Enter/Escape/blur handlers. Each field renders its own JSX; this hook
+ * only handles the shared interaction plumbing.
+ */
+function useClickToEdit(options: {
+  format: () => string;
+  commit: (draft: string) => void;
+}) {
+  const { format, commit } = options;
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const ref = useRef<HTMLInputElement>(null);
@@ -235,34 +240,53 @@ const QuantityField = ({ value, onChange }: QuantityFieldProps) => {
   }, [editing]);
 
   const start = () => {
-    setDraft(String(value));
+    setDraft(format());
     setEditing(true);
   };
 
-  const commit = () => {
-    const parsed = parseInt(draft, 10);
-    if (!isNaN(parsed) && parsed > 0) {
-      onChange(parsed);
-    }
+  const finish = () => {
+    commit(draft);
     setEditing(false);
   };
 
-  if (editing) {
+  const cancel = () => setEditing(false);
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") finish();
+    else if (e.key === "Escape") cancel();
+  };
+
+  return { editing, draft, setDraft, start, finish, onKeyDown, ref };
+}
+
+interface QuantityFieldProps {
+  value: number;
+  onChange: (v: number) => void;
+}
+
+const QuantityField = ({ value, onChange }: QuantityFieldProps) => {
+  const { t } = useTranslation();
+  const edit = useClickToEdit({
+    format: () => String(value),
+    commit: (draft) => {
+      const parsed = parseInt(draft, 10);
+      if (!isNaN(parsed) && parsed > 0) onChange(parsed);
+    },
+  });
+
+  if (edit.editing) {
     return (
       <div className="flex items-center gap-1 text-xs text-hint">
         <span>{t("receipt.qty")}:</span>
         <input
-          ref={ref}
+          ref={edit.ref}
           type="number"
           min={1}
           inputMode="numeric"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onBlur={commit}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") commit();
-            else if (e.key === "Escape") setEditing(false);
-          }}
+          value={edit.draft}
+          onChange={(e) => edit.setDraft(e.target.value)}
+          onBlur={edit.finish}
+          onKeyDown={edit.onKeyDown}
           className="w-12 border-b border-primary bg-transparent text-xs text-foreground outline-none"
         />
       </div>
@@ -272,7 +296,7 @@ const QuantityField = ({ value, onChange }: QuantityFieldProps) => {
   return (
     <button
       type="button"
-      onClick={start}
+      onClick={edit.start}
       className="flex w-fit items-center gap-1 text-xs text-hint hover:text-secondary"
     >
       <span>
@@ -317,46 +341,27 @@ const AmountField = ({
   variant = "total",
   suffix,
 }: AmountFieldProps) => {
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState("");
-  const ref = useRef<HTMLInputElement>(null);
   const styles = AMOUNT_STYLES[variant];
+  const edit = useClickToEdit({
+    format: () => (value / 10 ** decimals).toFixed(decimals),
+    commit: (draft) => {
+      const parsed = parse(draft);
+      if (parsed !== null && parsed >= 0) onCommit(parsed);
+    },
+  });
 
-  useEffect(() => {
-    if (editing && ref.current) {
-      ref.current.focus();
-      ref.current.select();
-    }
-  }, [editing]);
-
-  const start = () => {
-    setDraft((value / 10 ** decimals).toFixed(decimals));
-    setEditing(true);
-  };
-
-  const commit = () => {
-    const parsed = parse(draft);
-    if (parsed !== null && parsed >= 0) {
-      onCommit(parsed);
-    }
-    setEditing(false);
-  };
-
-  if (editing) {
+  if (edit.editing) {
     return (
       <div className="flex shrink-0 items-center gap-0.5">
         <span className="text-hint">{currencySymbol}</span>
         <input
-          ref={ref}
+          ref={edit.ref}
           type="text"
           inputMode="decimal"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onBlur={commit}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") commit();
-            else if (e.key === "Escape") setEditing(false);
-          }}
+          value={edit.draft}
+          onChange={(e) => edit.setDraft(e.target.value)}
+          onBlur={edit.finish}
+          onKeyDown={edit.onKeyDown}
           className={cn(
             "border-b border-primary bg-transparent text-right outline-none",
             styles.input,
@@ -370,7 +375,7 @@ const AmountField = ({
   return (
     <button
       type="button"
-      onClick={start}
+      onClick={edit.start}
       className={cn("shrink-0", styles.text)}
     >
       {formatAmountCurrency(value, currencyCode)}

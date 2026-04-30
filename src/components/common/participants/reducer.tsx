@@ -102,7 +102,7 @@ export function useParticipantsReducer(params: Params) {
       parties: [],
       payerId: params.meId,
       groupId: "",
-      splitMode: (params.startSplitMode ?? "amount") as SplitMode,
+      splitMode: params.startSplitMode ?? "amount",
       invalid: false,
     },
     (state) => {
@@ -167,7 +167,7 @@ export function useParticipantsEditReducer(params: EditParams) {
     payerId: payer?.userId || payer?.id || params.meId,
     groupId: params.groupId || "",
     groupLocked: !!params.groupId,
-    splitMode: (params.startSplitMode ?? "amount") as SplitMode,
+    splitMode: params.startSplitMode ?? "amount",
     invalid: false,
   });
 
@@ -208,20 +208,20 @@ function reducer(state: State, action: Action): State {
     case "set_payer":
       newState = { ...state, payerId: action.id };
       break;
-    case "set_split_mode":
-      newState = { ...state, splitMode: action.mode };
-      // When entering itemized mode, seed splitItemized from current per-party amounts
-      // so the user keeps any prior values until the live receipt bridge overwrites them.
-      if (action.mode === "itemized" && state.splitMode !== "itemized") {
-        newState = {
-          ...newState,
-          parties: newState.parties.map((p) => ({
+    case "set_split_mode": {
+      // When entering itemized mode, seed splitItemized from current per-party
+      // amounts so prior values stick until the receipt bridge overwrites them.
+      const enteringItemized =
+        action.mode === "itemized" && state.splitMode !== "itemized";
+      const parties = enteringItemized
+        ? state.parties.map((p) => ({
             ...p,
             splitItemized: { value: p.amount, manual: true },
-          })),
-        };
-      }
+          }))
+        : state.parties;
+      newState = { ...state, splitMode: action.mode, parties };
       break;
+    }
     case "add_group": {
       if (state.groupId === action.groupId) {
         return state;
@@ -354,9 +354,8 @@ function recalculate(state: State): State {
 }
 
 /**
- * Itemized mode: every per-party amount is driven by splitItemized.value (which
- * is computed externally from the receipt bridge). No remainder redistribution.
- * Marks state.invalid when the parties' totals don't match state.total.
+ * Itemized mode: per-party amount is driven by splitItemized.value (computed
+ * externally by the receipt bridge), so no remainder redistribution happens here.
  */
 function recalculateItemized(state: State): State {
   const sum = state.parties.reduce((acc, p) => acc + p.splitItemized.value, 0);

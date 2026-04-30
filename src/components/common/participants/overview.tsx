@@ -77,7 +77,7 @@ export const ParticipantsOverview = ({ onEdit, onEditPayer }: Props) => {
   );
 };
 
-/** Read-only itemized section, only mounted when a ReceiptProvider is present. */
+/** Render ItemizedSection only when a ReceiptProvider is mounted; ItemizedSection's hooks would otherwise throw. */
 const ItemizedSectionGate = () => {
   const receiptCtx = useReceiptCtxOptional();
   if (!receiptCtx) return null;

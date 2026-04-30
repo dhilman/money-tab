@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { receiptDataEqual } from "~/lib/receipt";
 import { type MyContext, privateProcedure } from "~/server/api/trpc";
 import { mutate, queries } from "~/server/db";
 import type { UpdateTxParams } from "~/server/db/mutate/tx";
@@ -69,15 +70,13 @@ function transform(
     if (input.currencyCode !== tx.currencyCode) return true;
     if (input.description !== tx.description) return true;
     if (input.groupId !== tx.groupId) return true;
-    // Compare date parts
     const inputDate = input.date?.date?.getTime() ?? null;
     const txDate = tx.txDate?.getTime() ?? null;
     if (inputDate !== txDate) return true;
-    const inputTime = input.date?.time ?? null;
-    if (inputTime !== tx.txTime) return true;
-    const inputReceipt = JSON.stringify(input.receiptData ?? null);
-    const dbReceipt = JSON.stringify(tx.receiptData ?? null);
-    if (inputReceipt !== dbReceipt) return true;
+    if ((input.date?.time ?? null) !== tx.txTime) return true;
+    if (!receiptDataEqual(input.receiptData ?? null, tx.receiptData ?? null)) {
+      return true;
+    }
     return false;
   }
 

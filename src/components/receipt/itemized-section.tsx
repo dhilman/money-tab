@@ -29,10 +29,10 @@ export const ItemizedSection = () => {
   const { receipt, assignments, personTotals, setSplitEnabled } =
     useReceiptCtx();
   const participants = useParticipantsCtx();
-  const { parties } = participants;
   const txEdit = useTxEditCtx();
 
-  const hasItems = (receipt?.items.length ?? 0) > 0;
+  const items = receipt?.items ?? [];
+  const hasItems = items.length > 0;
   const personTotalsSum = useMemo(
     () => personTotals.reduce((acc, pt) => acc + pt.total, 0),
     [personTotals],
@@ -55,7 +55,7 @@ export const ItemizedSection = () => {
       txEdit.setAmount(personTotalsSum);
     }
     const totalsByUser = new Map(personTotals.map((pt) => [pt.userId, pt.total]));
-    for (const party of parties) {
+    for (const party of participants.parties) {
       const target = totalsByUser.get(party.id) ?? 0;
       if (party.splitItemized.value === target) continue;
       participants.setSplitValue(party.id, target, "amount");
@@ -63,7 +63,7 @@ export const ItemizedSection = () => {
     }
     // setSplitValue / setAmount identities change per render; depend on data only.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [personTotals, personTotalsSum, parties, hasItems]);
+  }, [personTotals, personTotalsSum, participants.parties, hasItems]);
 
   if (!hasItems) {
     return (
@@ -77,7 +77,6 @@ export const ItemizedSection = () => {
   const assignedCount = assignments.filter((a) =>
     Object.values(a.shares).some((s) => s > 0),
   ).length;
-  const totalCount = receipt?.items.length ?? 0;
   const currencyCode = receipt?.currencyCode ?? "USD";
   const total = receipt?.total ?? 0;
 
@@ -92,7 +91,7 @@ export const ItemizedSection = () => {
               <span className="text-sm font-medium">
                 {t("receipt.section_title", {
                   assigned: assignedCount,
-                  total: totalCount,
+                  total: items.length,
                   amount: formatAmountCurrency(total, currencyCode),
                 })}
               </span>

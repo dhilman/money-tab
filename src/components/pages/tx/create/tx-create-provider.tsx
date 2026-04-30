@@ -12,6 +12,10 @@ import {
   type TxEditScreen,
   useTxEditCtx,
 } from "~/components/pages/tx/form/tx-form-ctx";
+import {
+  buildReceiptDataPayload,
+  isItemizedAndInvalid,
+} from "~/components/pages/tx/form/tx-receipt-payload";
 import { useProfile } from "~/components/provider/auth/auth-provider";
 import {
   BackButton,
@@ -111,19 +115,15 @@ function TxMainButton() {
     else setScreen("main");
   }, [create, screen, setScreen]);
 
-  // Itemized mode is gated by the receipt-level validation (all items
-  // assigned + sums match receipt total). The bridge in ItemizedSection keeps
-  // the form amount aligned, so participants-level invalid is redundant.
-  const isItemizedAndInvalid =
-    splitMode === "itemized" && !(receiptCtx?.isValid ?? false);
+  // Itemized mode is gated by receipt-level validation; the ItemizedSection
+  // bridge keeps the form amount aligned with the per-party split.
+  const itemizedInvalid = isItemizedAndInvalid(splitMode, receiptCtx);
 
   return (
     <MainButton
       onClick={onClickMain}
       label={screen === "main" ? i18n.t("save") : i18n.t("done")}
-      disabled={
-        screen === "main" && (amount <= 0 || isItemizedAndInvalid)
-      }
+      disabled={screen === "main" && (amount <= 0 || itemizedInvalid)}
       isLoading={isLoading}
     />
   );
@@ -143,7 +143,6 @@ function useCreateMutation() {
 
   const { mutate, isPending: isLoading } = useMutation({
     mutationFn: async () => {
-      const isItemized = participants.splitMode === "itemized";
       const data: TxCreateReq = {
         value: state.amount,
         currencyCode: state.currency.code,
@@ -152,17 +151,8 @@ function useCreateMutation() {
         files: state.files,
         contributions: participants.getContribs(),
         groupId: participants.getGroupId(),
-        receiptData:
-          isItemized && receiptCtx?.receipt
-            ? {
-                receipt: receiptCtx.receipt,
-                assignments: receiptCtx.assignments,
-                extras: receiptCtx.extras,
-              }
-            : null,
+        receiptData: buildReceiptDataPayload(participants.splitMode, receiptCtx),
       };
-
-      console.log("create transaction", data);
 
       if (!validate(me.id, data, state.files)) {
         throw new Error("Invalid data");
