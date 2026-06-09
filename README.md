@@ -125,6 +125,16 @@ Configuring QStash will enable:
 - Create a [QStash](https://console.upstash.com/login) account and get the API key.
 - Configure all `QSTASH_` prefixed environment variables inside `.env` file
 
+## With Receipt OCR
+
+Configuring an OCR provider enables receipt scanning: image upload → structured items, totals, taxes for itemized splitting.
+
+### Setup
+
+- Create an [OpenRouter](https://openrouter.ai/) account and generate an API key (the model used is `google/gemini-3-flash-preview`).
+- Set `OPENROUTER_API_KEY` in your `.env` (locally) or in your deployment platform's secret store (e.g. Coolify's "Environment Variables" panel — the value is read at runtime via `process.env`, never baked into the Docker image).
+- Receipt scanning depends on S3 (see ["With S3"](#with-s3)). Without `OPENROUTER_API_KEY`, the `receipt.parse` endpoint returns a `PRECONDITION_FAILED` error and the rest of the app continues to work.
+
 # Architecture Overview
 
 ## Conceptual Overview

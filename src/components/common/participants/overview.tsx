@@ -1,6 +1,7 @@
 import {
   ChartPieIcon,
   DollarSignIcon,
+  ListIcon,
   PencilIcon,
   PercentIcon,
   PlusIcon,
@@ -20,6 +21,11 @@ import { PartyUserName } from "~/components/common/participants/username";
 import { useCurrencyAmountParser } from "~/components/form/amount-utils";
 import { UserAvatarOrPlaceholder } from "~/components/pages/user/user-avatar";
 import { useUser } from "~/components/provider/users-provider";
+import {
+  ItemizedSection,
+  useItemizedCaption,
+  useReceiptCtxOptional,
+} from "~/components/receipt";
 import { ButtonV1 } from "~/components/ui/buttonv1";
 import { List } from "~/components/ui/list";
 import {
@@ -39,7 +45,19 @@ interface Props {
 
 export const ParticipantsOverview = ({ onEdit, onEditPayer }: Props) => {
   const { t } = useTranslation();
-  const { parties, payerId } = useParticipantsCtx();
+  const { parties, payerId, splitMode, setSplitMode } = useParticipantsCtx();
+  const receiptCtx = useReceiptCtxOptional();
+  const itemizedAvailable =
+    parties.length >= 2 && (receiptCtx?.receipt?.items.length ?? 0) > 0;
+
+  // Itemized mode requires a scanned receipt with items and at least two
+  // participants; fall back to amount mode otherwise. Lives here (not in
+  // SplitModeTabs) so it still runs when the split UI below is unmounted.
+  useEffect(() => {
+    if (splitMode === "itemized" && !itemizedAvailable) {
+      setSplitMode("amount");
+    }
+  }, [splitMode, itemizedAvailable, setSplitMode]);
 
   if (parties.length < 2) {
     return (
@@ -65,13 +83,17 @@ export const ParticipantsOverview = ({ onEdit, onEditPayer }: Props) => {
       <List>
         <UserPaidBy userId={payerId} onEditPayer={onEditPayer} />
       </List>
-      <SplitModeTabs />
+      <SplitModeTabs itemizedAvailable={itemizedAvailable} />
       <UsersPaidFor />
     </Bento>
   );
 };
 
-const SplitModeTabs = () => {
+const SplitModeTabs = ({
+  itemizedAvailable,
+}: {
+  itemizedAvailable: boolean;
+}) => {
   const { splitMode, setSplitMode } = useParticipantsCtx();
 
   return (
@@ -90,6 +112,11 @@ const SplitModeTabs = () => {
         <TabsTrigger value="shares" className="flex-1">
           <ChartPieIcon className="h-4 w-4" />
         </TabsTrigger>
+        {itemizedAvailable && (
+          <TabsTrigger value="itemized" className="flex-1">
+            <ListIcon className="h-4 w-4" />
+          </TabsTrigger>
+        )}
       </TabsList>
     </Tabs>
   );
@@ -97,7 +124,7 @@ const SplitModeTabs = () => {
 
 const UsersPaidFor = () => {
   const inputRefs = useRef<HTMLInputElement[]>([]);
-  const { parties } = useParticipantsCtx();
+  const { parties, splitMode } = useParticipantsCtx();
 
   useEffect(() => {
     inputRefs.current = inputRefs.current.slice(0, parties.length);
@@ -123,6 +150,7 @@ const UsersPaidFor = () => {
           onKeyDown={onKeyDown}
         />
       ))}
+      {splitMode === "itemized" && <ItemizedSection />}
     </List>
   );
 };
@@ -182,6 +210,7 @@ const UserListItem = ({
   } = useParticipantsCtx();
   const { decimals, parser } = useCurrencyAmountParser(currency);
   const [value, setValue] = useState("");
+  const itemizedCaption = useItemizedCaption(participant.id);
 
   // Reset input value when split mode changes
   useEffect(() => {
@@ -190,6 +219,7 @@ const UserListItem = ({
 
   const splitVal = getSplitValue(participant, splitMode);
   const isManual = splitVal.manual;
+  const isItemized = splitMode === "itemized";
 
   const placeholder = useMemo(() => {
     switch (splitMode) {
@@ -199,6 +229,8 @@ const UserListItem = ({
         return (splitVal.value / PERCENTAGE_SCALE).toFixed(2);
       case "shares":
         return splitVal.value.toString();
+      case "itemized":
+        return "";
     }
   }, [splitMode, participant.amount, splitVal.value, decimals]);
 
@@ -238,6 +270,8 @@ const UserListItem = ({
         if (!/^\d+$/.test(v)) return null;
         const int = parseInt(v, 10);
         return isNaN(int) ? null : int;
+      case "itemized":
+        return null;
     }
   };
 
@@ -266,35 +300,49 @@ const UserListItem = ({
       <ListItemBody>
         <div className="w-full truncate">
           <PartyUserName user={user} />
-          <div className="text-sm text-hint">{getShareLabel()}</div>
+          <div className="text-sm text-hint">
+            {isItemized && itemizedCaption !== null
+              ? itemizedCaption
+              : getShareLabel()}
+          </div>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          {isManual && (
-            <button
-              className="flex h-8 w-8 items-center justify-center rounded-[8.91px] bg-tertiary"
-              onClick={() => {
-                setValue("");
-                resetSplitValue(participant.id);
-              }}
-            >
-              <RefreshCwIcon className="h-4 w-4 text-foreground" />
-            </button>
+          {isItemized ? (
+            <span className="px-3 text-right text-base text-foreground">
+              {participant.amount > 0
+                ? formatAmountCurrency(participant.amount, currency)
+                : "—"}
+            </span>
+          ) : (
+            <>
+              {isManual && (
+                <button
+                  className="flex h-8 w-8 items-center justify-center rounded-[8.91px] bg-tertiary"
+                  onClick={() => {
+                    setValue("");
+                    resetSplitValue(participant.id);
+                  }}
+                >
+                  <RefreshCwIcon className="h-4 w-4 text-foreground" />
+                </button>
+              )}
+              <input
+                ref={setRef}
+                className={cn(
+                  "w-20 rounded-[8.91px] bg-tertiary px-3 py-[5px] text-right text-base",
+                  isManual && invalid && "bg-red-500/20",
+                )}
+                type="number"
+                enterKeyHint="next"
+                placeholder={placeholder}
+                autoComplete="off"
+                autoCorrect="off"
+                value={value}
+                onChange={(e) => onInputChange(e.target.value)}
+                onKeyDown={onKeyDown}
+              />
+            </>
           )}
-          <input
-            ref={setRef}
-            className={cn(
-              "w-20 rounded-[8.91px] bg-tertiary px-3 py-[5px] text-right text-base",
-              isManual && invalid && "bg-red-500/20",
-            )}
-            type="number"
-            enterKeyHint="next"
-            placeholder={placeholder}
-            autoComplete="off"
-            autoCorrect="off"
-            value={value}
-            onChange={(e) => onInputChange(e.target.value)}
-            onKeyDown={onKeyDown}
-          />
         </div>
       </ListItemBody>
     </ListItem>

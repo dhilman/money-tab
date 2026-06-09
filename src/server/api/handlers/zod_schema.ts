@@ -2,6 +2,8 @@ import { z } from "zod";
 import { CYCLE_UNITS } from "~/lib/consts/constants";
 import { dayjsUTC } from "~/lib/dates/dates";
 
+export { ReceiptDataSchema } from "~/lib/receipt/schema";
+
 export const DateTimeStrAsDate = z
   .string()
   .transform((v) => z.coerce.date().parse(v));
@@ -40,3 +42,4 @@ export const File = z.object({
 });
 
 export const Files = z.array(File);
+

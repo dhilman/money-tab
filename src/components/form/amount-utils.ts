@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { getCurrencyPrecision, type Currency } from "~/lib/amount/currencies";
 
 export function useCurrencyAmountParser(currency: Currency) {
@@ -8,17 +8,20 @@ export function useCurrencyAmountParser(currency: Currency) {
     return { decimals, regex };
   }, [currency]);
 
-  function parser(s: string) {
-    if (!s) return 0;
+  const parser = useCallback(
+    (s: string) => {
+      if (!s) return 0;
 
-    if (!regex.test(s)) return null;
+      if (!regex.test(s)) return null;
 
-    const number = Number(s.replace(",", "."));
-    if (isNaN(number)) return null;
+      const number = Number(s.replace(",", "."));
+      if (isNaN(number)) return null;
 
-    const int = Math.round(number * 10 ** decimals);
-    return int;
-  }
+      const int = Math.round(number * 10 ** decimals);
+      return int;
+    },
+    [decimals, regex]
+  );
 
   return { decimals, parser };
 }

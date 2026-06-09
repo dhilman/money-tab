@@ -35,6 +35,9 @@ export const env = createEnv({
     QSTASH_CURRENT_SIGNING_KEY: z.string(),
     QSTASH_NEXT_SIGNING_KEY: z.string(),
 
+    // Receipt OCR (Gemini via OpenRouter)
+    OPENROUTER_API_KEY: z.string().optional(),
+
     // Old bot
     BOT_TOKEN_OLD: z.string(),
 
@@ -102,6 +105,9 @@ export const env = createEnv({
     QSTASH_TOKEN: process.env.QSTASH_TOKEN,
     QSTASH_CURRENT_SIGNING_KEY: process.env.QSTASH_CURRENT_SIGNING_KEY,
     QSTASH_NEXT_SIGNING_KEY: process.env.QSTASH_NEXT_SIGNING_KEY,
+
+    // Receipt OCR
+    OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
 
     // Public
 

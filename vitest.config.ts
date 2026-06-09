@@ -16,7 +16,8 @@ export default defineConfig({
       AUTH_SECRET: "123",
       CRON_SECRET: "123",
 
-      DATABASE_URL: "postgres://postgres:postgres@localhost:5432/money_tab_test",
+      DATABASE_URL:
+        "postgres://postgres:postgres@localhost:5432/money_tab_test",
 
       BOT_TOKEN: "123",
       WEBHOOK_SECRET: "123",
@@ -28,6 +29,8 @@ export default defineConfig({
       S3_ENDPOINT: "http://localhost:1234",
       S3_ACCESS_KEY: "123",
       S3_SECRET_KEY: "123",
+
+      OPENROUTER_API_KEY: "123",
 
       QSTASH_URL: "http://qstash.com",
       QSTASH_TOKEN: "123",

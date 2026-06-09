@@ -5,6 +5,7 @@ import { Bento, BentoContent } from "~/components/bento-box";
 import { AddDateButton, DateInputV1 } from "~/components/form/date-input-v1";
 import { FileInput, FilePreviewList } from "~/components/form/file-input";
 import { useTxEditCtx } from "~/components/pages/tx/form/tx-form-ctx";
+import { ReceiptScanInput } from "~/components/receipt";
 import { getDateYYYYMMDD } from "~/lib/dates/dates";
 
 export const TxEditOptions = () => {
@@ -16,6 +17,7 @@ export const TxEditOptions = () => {
         <BentoContent className="overflow-hidden">
           <DateInput />
           <TimeInput />
+          <ReceiptScanInput />
           <FileInput
             onUploadStart={(id) =>
               setFiles((prev) => [

@@ -23,6 +23,8 @@ interface Context extends ParticipantsState {
   setSplitMode: (mode: SplitMode) => void;
   setSplitValue: (id: string, value: number) => void;
   resetSplitValue: (id: string) => void;
+  /** Batch-write per-party itemized totals (from the receipt bridge) in one reducer pass. */
+  applyItemizedTotals: (totals: { id: string; amount: number }[]) => void;
   getContribs: () => UserContrib[];
   getGroupId: () => string | null;
 }
@@ -54,11 +56,12 @@ export const ParticipantsProvider = ({
   const groups = useGroups();
 
   const getContribs = (): UserContrib[] => {
+    const isItemized = state.splitMode === "itemized";
     return state.parties.map((p) => ({
       userId: p.type === "user" ? p.id : null,
       amountPaid: p.id === state.payerId ? state.total : 0,
-      amountOwed: p.amount,
-      manualAmountOwed: p.splitAmount.manual,
+      amountOwed: isItemized ? p.splitItemized.value : p.amount,
+      manualAmountOwed: isItemized ? false : p.splitAmount.manual,
     }));
   };
 
@@ -85,9 +88,16 @@ export const ParticipantsProvider = ({
         },
         setSplitMode: (mode) => update({ type: "set_split_mode", mode }),
         setSplitValue: (id, value) =>
-          update({ type: "set_split_value", id, value, mode: state.splitMode }),
+          update({
+            type: "set_split_value",
+            id,
+            value,
+            mode: state.splitMode,
+          }),
         resetSplitValue: (id) =>
           update({ type: "reset_split_value", id, mode: state.splitMode }),
+        applyItemizedTotals: (totals) =>
+          update({ type: "apply_itemized_totals", totals }),
         getContribs,
         getGroupId: () => state.groupId || null,
       }}

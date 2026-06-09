@@ -1,0 +1,1 @@
+ALTER TABLE "main"."transactions" ADD COLUMN "receipt_data" jsonb;

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { receiptDataEqual } from "~/lib/receipt";
 import { type MyContext, privateProcedure } from "~/server/api/trpc";
 import { mutate, queries } from "~/server/db";
 import type { UpdateTxParams } from "~/server/db/mutate/tx";
@@ -13,7 +14,12 @@ import { type NotifyDataSingle } from "~/server/notifier/schema";
 import { resolveArrayChanges } from "~/server/resolver/array-resolver";
 import { resolveTxChanges, type TxChangeset } from "~/server/resolver/contribs";
 import { validator } from "~/server/validator";
-import { Contribs, DateOrDateTimeStr, Files } from "../zod_schema";
+import {
+  Contribs,
+  DateOrDateTimeStr,
+  Files,
+  ReceiptDataSchema,
+} from "../zod_schema";
 
 const Input = z.object({
   id: z.string(),
@@ -24,6 +30,7 @@ const Input = z.object({
   date: DateOrDateTimeStr.nullable(),
   contribs: Contribs,
   files: Files,
+  receiptData: ReceiptDataSchema.nullable().optional(),
 });
 type Input = z.infer<typeof Input>;
 
@@ -53,6 +60,7 @@ function validate(ctx: MyContext, input: Input, tx: SelectTxWithContribs) {
   validator.isCreator(ctx, tx.createdById);
   validator.contribAmounts(input.amount, input.contribs);
   validator.contribUserIds(ctx, input.contribs);
+  validator.itemizedReceipt(input.amount, input.contribs, input.receiptData);
   // await validator.contactsOrInGroup(ctx, userIds, tx.groupId);
 }
 
@@ -68,12 +76,16 @@ function transform(
     if (input.currencyCode !== tx.currencyCode) return true;
     if (input.description !== tx.description) return true;
     if (input.groupId !== tx.groupId) return true;
-    // Compare date parts
     const inputDate = input.date?.date?.getTime() ?? null;
     const txDate = tx.txDate?.getTime() ?? null;
     if (inputDate !== txDate) return true;
-    const inputTime = input.date?.time ?? null;
-    if (inputTime !== tx.txTime) return true;
+    if ((input.date?.time ?? null) !== tx.txTime) return true;
+    if (
+      input.receiptData !== undefined &&
+      !receiptDataEqual(input.receiptData, tx.receiptData ?? null)
+    ) {
+      return true;
+    }
     return false;
   }
 
@@ -94,6 +106,9 @@ function transform(
       txDate: input.date?.date ?? null,
       txTime: input.date?.time ?? null,
       groupId: input.groupId,
+      ...(input.receiptData !== undefined
+        ? { receiptData: input.receiptData }
+        : {}),
     },
     contribs: resolveTxChanges({ old: tx.contribs, new: input.contribs }),
     files: resolveArrayChanges({ old: tx.files, new: inputFiles }),

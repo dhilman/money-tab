@@ -15,12 +15,21 @@ import {
   useTxEditCtx,
   type TxEditScreen,
 } from "~/components/pages/tx/form/tx-form-ctx";
+import {
+  buildReceiptDataPayload,
+  isItemizedAndInvalid,
+  persistedSplitMode,
+} from "~/components/pages/tx/form/tx-receipt-payload";
 import { useMe } from "~/components/provider/auth/auth-provider";
 import {
   BackButton,
   MainButton,
   usePlatform,
 } from "~/components/provider/platform/context";
+import {
+  ReceiptProviderWrapper,
+  useReceiptCtxOptional,
+} from "~/components/receipt";
 import { useWebAppRouter } from "~/components/router/router";
 import {
   getCurrencyByCodeWithDefault,
@@ -28,6 +37,8 @@ import {
 } from "~/lib/amount/currencies";
 import { getDateAndTimeLocalFromUTC } from "~/lib/dates/format-dates";
 import i18n from "~/lib/i18n";
+import { receiptDataEqual, type ReceiptData } from "~/lib/receipt";
+import { ReceiptDataSchema } from "~/lib/receipt/schema";
 import {
   validAmount,
   validFiles,
@@ -51,7 +62,9 @@ export const TxEditProvider = ({ tx, children }: Props) => {
     getCurrencyByCodeWithDefault(tx.currencyCode),
   );
   const [description, setDescription] = useState(tx.description || "");
-  const [dateTime, setDateTime] = useState(parseDateOrDateTime(tx.txDate, tx.txTime));
+  const [dateTime, setDateTime] = useState(
+    parseDateOrDateTime(tx.txDate, tx.txTime),
+  );
   const [files, setFiles] = useState<Attachment[]>(
     tx.files.map((v) => ({
       id: v.id,
@@ -61,11 +74,18 @@ export const TxEditProvider = ({ tx, children }: Props) => {
       type: v.type ?? "",
     })),
   );
+  const initialReceiptData = useMemo(
+    () => parseInitialReceiptData(tx.receiptData),
+    [tx.receiptData],
+  );
   const [participants, updateParticipants] = useParticipantsEditReducer({
     meId: me.id,
     amount,
     contribs: tx.contribs,
     groupId: tx.groupId,
+    startSplitMode: initialReceiptData
+      ? persistedSplitMode(initialReceiptData.splitMode)
+      : "amount",
   });
 
   return (
@@ -93,15 +113,28 @@ export const TxEditProvider = ({ tx, children }: Props) => {
         state={participants}
         update={updateParticipants}
       >
-        <BackButton
-          onClick={screen === "main" ? undefined : () => setScreen("main")}
-        />
-        {children}
-        <TxMainButton tx={tx} />
+        <ReceiptProviderWrapper initialData={initialReceiptData}>
+          <BackButton
+            onClick={screen === "main" ? undefined : () => setScreen("main")}
+          />
+          {children}
+          <TxMainButton tx={tx} />
+        </ReceiptProviderWrapper>
       </ParticipantsProvider>
     </TxEditContext.Provider>
   );
 };
+
+function parseInitialReceiptData(raw: unknown): ReceiptData | null {
+  if (raw == null) return null;
+  const result = ReceiptDataSchema.safeParse(raw);
+  if (result.success) return result.data;
+  // Defense-in-depth: writes are validated, so a parse failure here means a
+  // legacy or out-of-band row. Drop it rather than crash and treat the tx as
+  // a non-itemized split.
+  console.warn("Failed to parse tx.receiptData; ignoring", result.error);
+  return null;
+}
 
 function parseDateOrDateTime(txDate: Date | null, txTime: string | null) {
   if (!txDate) return { date: "", time: "" };
@@ -112,6 +145,8 @@ function parseDateOrDateTime(txDate: Date | null, txTime: string | null) {
 
 function TxMainButton({ tx }: { tx: Tx }) {
   const { screen, setScreen } = useTxEditCtx();
+  const { splitMode } = useParticipantsCtx();
+  const receiptCtx = useReceiptCtxOptional();
   const { mutate, isPending: isLoading } = useUpdateMutation(tx.id);
   const isEdited = useIsEdited(tx);
 
@@ -120,11 +155,15 @@ function TxMainButton({ tx }: { tx: Tx }) {
     else setScreen("main");
   }, [screen, setScreen, mutate]);
 
+  // Itemized mode is gated by receipt-level validation; the ItemizedSection
+  // bridge keeps the form amount aligned with the per-party split.
+  const itemizedInvalid = isItemizedAndInvalid(splitMode, receiptCtx);
+
   return (
     <MainButton
       onClick={onClickMain}
       label={screen === "main" ? i18n.t("save") : i18n.t("done")}
-      disabled={screen === "main" && !isEdited}
+      disabled={screen === "main" && (!isEdited || itemizedInvalid)}
       isLoading={isLoading}
     />
   );
@@ -133,7 +172,19 @@ function TxMainButton({ tx }: { tx: Tx }) {
 function useIsEdited(tx: Tx) {
   const state = useTxEditCtx();
   const parties = useParticipantsCtx();
+  const receiptCtx = useReceiptCtxOptional();
+  const receipt = receiptCtx?.receipt ?? null;
+  const assignments = receiptCtx?.assignments ?? null;
+  const extras = receiptCtx?.extras ?? null;
   const txDateTime = useRef(parseDateOrDateTime(tx.txDate, tx.txTime));
+
+  // Normalize the stored blob the same way hydration does (splitMode default
+  // plus coarsening) so an untouched form compares equal to its own rebuild.
+  const storedReceiptData = useMemo(() => {
+    const parsed = parseInitialReceiptData(tx.receiptData);
+    if (!parsed) return null;
+    return { ...parsed, splitMode: persistedSplitMode(parsed.splitMode) };
+  }, [tx.receiptData]);
 
   return useMemo(() => {
     if (state.amount !== tx.amount) return true;
@@ -148,9 +199,21 @@ function useIsEdited(tx: Tx) {
     }
 
     if (tx.groupId !== parties.getGroupId()) return true;
-    return isParticipantsEdited(tx.contribs, parties);
+    if (isParticipantsEdited(tx.contribs, parties)) return true;
+
+    const currentReceipt = buildReceiptDataPayload(
+      parties.splitMode,
+      assignments && extras ? { receipt, assignments, extras } : null,
+    );
+    if (!receiptDataEqual(currentReceipt, storedReceiptData)) return true;
+
+    return false;
   }, [
     parties,
+    receipt,
+    assignments,
+    extras,
+    storedReceiptData,
     state.amount,
     state.currency.code,
     state.date,
@@ -176,6 +239,7 @@ function useUpdateMutation(id: string) {
 
   const state = useTxEditCtx();
   const participants = useParticipantsCtx();
+  const receiptCtx = useReceiptCtxOptional();
 
   const { mutate, isPending: isLoading } = useMutation({
     mutationFn: async () => {
@@ -188,9 +252,11 @@ function useUpdateMutation(id: string) {
         groupId: participants.getGroupId(),
         contribs: participants.getContribs(),
         files: state.files,
+        receiptData: buildReceiptDataPayload(
+          participants.splitMode,
+          receiptCtx,
+        ),
       };
-
-      console.log("create transaction", data);
 
       if (!validate(me.id, data, state.files)) {
         throw new Error("Invalid data");

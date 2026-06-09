@@ -143,6 +143,7 @@ interface Resources {
       "number_too_large": "Number is too large",
       "page_load": "Failed to Load",
       "page_load_description": "Sorry, there was a problem loading the page, you can try again or contact support",
+      "receipt_scan": "Sorry, we couldn't scan the receipt",
       "reminder_exceeds_freq": "Reminder should not exceed frequency",
       "total_owed_exceeds_amount": "Sum of amounts exceed total",
       "you_must_be_involved": "You must be involved in the transaction"
@@ -241,6 +242,46 @@ interface Resources {
     "period": "Period",
     "price": "Price",
     "privacy_policy": "Privacy Policy",
+    "receipt": {
+      "add_item": "Add item",
+      "allocation": {
+        "even_all": "Even (all)",
+        "even_all_long": "Split evenly among all participants",
+        "even_involved": "Even (involved)",
+        "even_involved_long": "Split evenly among those with items",
+        "proportional": "Proportional",
+        "proportional_long": "Split proportionally to items"
+      },
+      "each": "each",
+      "extra": {
+        "discount": "Discount",
+        "service": "Service",
+        "tax": "Tax",
+        "tip": "Tip"
+      },
+      "extras": "Extras",
+      "item_count_with_extras_one": "{{count}} item {{extras}}",
+      "item_count_with_extras_other": "{{count}} items {{extras}}",
+      "item_name": "Item name",
+      "items_count_one": "{{count}} item",
+      "items_count_other": "{{count}} items",
+      "not_assigned": "not assigned",
+      "plus_extras": "· share of extras",
+      "qty": "Qty",
+      "remove_extra": "Remove",
+      "remove_item": "Remove item",
+      "scan": "Scan Receipt",
+      "scanning": "Scanning...",
+      "section_title": "Receipt items {{assigned}}/{{total}} · {{amount}}",
+      "tax_included_hint": "Remove if already included in item prices",
+      "validation": {
+        "over_total": "{{amount}} over receipt total",
+        "ready": "Ready to apply",
+        "unassigned_items_one": "{{count}} item not assigned",
+        "unassigned_items_other": "{{count}} items not assigned",
+        "under_total": "{{amount}} under receipt total"
+      }
+    },
     "recent": "Recent",
     "recent_expenses": "Recent Expenses",
     "reconnect": "Reconnect",

@@ -4,6 +4,7 @@ import {
   Contribs,
   DateOrDateTimeStr,
   Files,
+  ReceiptDataSchema,
 } from "~/server/api/handlers/zod_schema";
 import { privateProcedure, type MyContext } from "~/server/api/trpc";
 import { mutate } from "~/server/db";
@@ -19,6 +20,7 @@ const input = z.object({
   files: Files,
   contributions: Contribs,
   groupId: z.string().nullable(),
+  receiptData: ReceiptDataSchema.nullable().optional(),
 });
 type Input = z.infer<typeof input>;
 
@@ -43,6 +45,11 @@ export const txCreatehandler = privateProcedure
 const validate = async (ctx: MyContext, input: Input) => {
   validator.contribAmounts(input.value, input.contributions);
   validator.contribUserIds(ctx, input.contributions);
+  validator.itemizedReceipt(
+    input.value,
+    input.contributions,
+    input.receiptData,
+  );
   await validator.isGroupMember(ctx, input.groupId);
   // await validator.contactsOrInGroup(ctx, userIds, input.groupId)
 };
@@ -76,6 +83,7 @@ const transform = (ctx: MyContext, input: Input): CreateTxParams => {
       groupId: input.groupId,
       type: "PAYMENT",
       visibility: "RESTRICTED",
+      receiptData: input.receiptData ?? null,
     },
     contribs: input.contributions.map(mapContrib),
     files: input.files.map((a) => ({

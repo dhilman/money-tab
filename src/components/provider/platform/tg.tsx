@@ -10,33 +10,6 @@ import { URLS } from "~/lib/consts/urls";
 
 type WebAppOrNull = typeof window.Telegram.WebApp | null;
 
-export function useTgDrawerState() {
-  const [open, setOpen] = useState(false);
-  // Save the state of the main button before opening the drawer
-  const prevBtnIsVisible = useRef(false);
-
-  const onOpen = () => {
-    prevBtnIsVisible.current = window?.Telegram?.WebApp?.MainButton?.isVisible;
-    window?.Telegram?.WebApp?.MainButton?.hide();
-    window?.Telegram?.WebApp?.expand();
-    setOpen(true);
-  };
-
-  const onOpenChange = (v: boolean) => {
-    if (v) return;
-    if (prevBtnIsVisible.current) {
-      window?.Telegram?.WebApp?.MainButton?.show();
-    }
-    setOpen(false);
-  };
-
-  const onClose = () => {
-    setOpen(false);
-  };
-
-  return { open, onOpen, onClose, onOpenChange };
-}
-
 export const useTelegram = (ready: boolean): Platform | null => {
   const [tg, setTg] = useState<Telegram["WebApp"] | null>(null);
 

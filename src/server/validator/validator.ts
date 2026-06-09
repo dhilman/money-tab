@@ -2,6 +2,8 @@ import { TRPCError } from "@trpc/server";
 import { countDistinct, eq, inArray } from "drizzle-orm";
 import { env } from "~/env.mjs";
 import type { Visibility } from "~/lib/consts/types";
+import { computePersonTotals, getUnassignedItems } from "~/lib/receipt";
+import type { ReceiptData } from "~/lib/receipt/types";
 import { calcIsPublic } from "~/lib/visibility";
 import type { MyContext } from "~/server/api/trpc";
 import { schema } from "~/server/db";
@@ -103,6 +105,67 @@ export function contribAmounts(
     throw new TRPCError({
       code: "BAD_REQUEST",
       message: "Only one person can be the payer",
+    });
+  }
+}
+
+/**
+ * Checks that an itemized receipt split is consistent with the transaction:
+ * every item assigned, per-person totals matching contrib amountOwed, and the
+ * computed sum equal to the tx amount. Non-itemized receiptData is a snapshot
+ * and is not validated. Legacy blobs without splitMode could only have been
+ * saved from itemized mode, so they are validated as itemized. Placeholder
+ * participants (null userId) are assigned items under client-local party ids
+ * the server never sees, so their splits cannot be checked.
+ */
+export function itemizedReceipt(
+  total: number,
+  contribs: { userId: string | null; amountOwed: number }[],
+  receiptData: ReceiptData | null | undefined,
+) {
+  if (!receiptData || (receiptData.splitMode ?? "itemized") !== "itemized") {
+    return;
+  }
+  if (contribs.some((c) => !c.userId)) return;
+
+  const participantIds = contribs
+    .filter((c) => c.userId)
+    .map((c) => c.userId as string);
+
+  const unassigned = getUnassignedItems(
+    receiptData.receipt.items,
+    receiptData.assignments,
+    participantIds,
+  );
+  if (unassigned.length > 0) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "All receipt items must be assigned to a participant",
+    });
+  }
+
+  const personTotals = computePersonTotals(
+    receiptData.receipt.items,
+    receiptData.assignments,
+    receiptData.extras,
+    participantIds,
+  );
+  const totalByUser = new Map(personTotals.map((p) => [p.userId, p.total]));
+  for (const contrib of contribs) {
+    if (!contrib.userId) continue;
+    if (contrib.amountOwed !== (totalByUser.get(contrib.userId) ?? 0)) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Amounts owed do not match the itemized receipt split",
+      });
+    }
+  }
+
+  const sum = personTotals.reduce((acc, p) => acc + p.total, 0);
+  if (sum !== total) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Itemized receipt split does not sum to the transaction amount",
     });
   }
 }

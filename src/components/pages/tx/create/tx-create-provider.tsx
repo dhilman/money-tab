@@ -12,12 +12,20 @@ import {
   type TxEditScreen,
   useTxEditCtx,
 } from "~/components/pages/tx/form/tx-form-ctx";
+import {
+  buildReceiptDataPayload,
+  isItemizedAndInvalid,
+} from "~/components/pages/tx/form/tx-receipt-payload";
 import { useProfile } from "~/components/provider/auth/auth-provider";
 import {
   BackButton,
   MainButton,
   usePlatform,
 } from "~/components/provider/platform/context";
+import {
+  ReceiptProviderWrapper,
+  useReceiptCtxOptional,
+} from "~/components/receipt";
 import { useWebAppRouter } from "~/components/router/router";
 import { getCurrencyByCodeWithDefault } from "~/lib/amount/currencies";
 import i18n from "~/lib/i18n";
@@ -84,11 +92,13 @@ export const TxCreateProvider = ({
         state={participants}
         update={updateParticipants}
       >
-        <BackButton
-          onClick={screen === "main" ? undefined : () => setScreen("main")}
-        />
-        {children}
-        <TxMainButton />
+        <ReceiptProviderWrapper>
+          <BackButton
+            onClick={screen === "main" ? undefined : () => setScreen("main")}
+          />
+          {children}
+          <TxMainButton />
+        </ReceiptProviderWrapper>
       </ParticipantsProvider>
     </TxEditContext.Provider>
   );
@@ -96,6 +106,8 @@ export const TxCreateProvider = ({
 
 function TxMainButton() {
   const { amount, screen, setScreen } = useTxEditCtx();
+  const { splitMode } = useParticipantsCtx();
+  const receiptCtx = useReceiptCtxOptional();
   const { create, isLoading } = useCreateMutation();
 
   const onClickMain = useCallback(() => {
@@ -103,11 +115,15 @@ function TxMainButton() {
     else setScreen("main");
   }, [create, screen, setScreen]);
 
+  // Itemized mode is gated by receipt-level validation; the ItemizedSection
+  // bridge keeps the form amount aligned with the per-party split.
+  const itemizedInvalid = isItemizedAndInvalid(splitMode, receiptCtx);
+
   return (
     <MainButton
       onClick={onClickMain}
       label={screen === "main" ? i18n.t("save") : i18n.t("done")}
-      disabled={screen === "main" && amount <= 0}
+      disabled={screen === "main" && (amount <= 0 || itemizedInvalid)}
       isLoading={isLoading}
     />
   );
@@ -123,6 +139,7 @@ function useCreateMutation() {
 
   const state = useTxEditCtx();
   const participants = useParticipantsCtx();
+  const receiptCtx = useReceiptCtxOptional();
 
   const { mutate, isPending: isLoading } = useMutation({
     mutationFn: async () => {
@@ -134,9 +151,8 @@ function useCreateMutation() {
         files: state.files,
         contributions: participants.getContribs(),
         groupId: participants.getGroupId(),
+        receiptData: buildReceiptDataPayload(participants.splitMode, receiptCtx),
       };
-
-      console.log("create transaction", data);
 
       if (!validate(me.id, data, state.files)) {
         throw new Error("Invalid data");
