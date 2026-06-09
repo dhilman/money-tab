@@ -113,6 +113,7 @@ describe("transactions", () => {
   test("create tx persists receiptData and fetch round-trips it", async () => {
     const { user, caller } = await createCallerUser();
     const receiptData: ReceiptData = {
+      splitMode: "amount",
       receipt: {
         sourceUrl: "https://s3.amazonaws.com/bucket/r.jpg",
         merchant: "Joe's",
@@ -149,6 +150,7 @@ describe("transactions", () => {
   test("update tx can modify receiptData", async () => {
     const { user, caller } = await createCallerUser();
     const receiptData: ReceiptData = {
+      splitMode: "amount",
       receipt: {
         sourceUrl: "https://s3.amazonaws.com/bucket/r.jpg",
         currencyCode: "USD",
@@ -195,6 +197,261 @@ describe("transactions", () => {
     expect(reloaded.receiptData?.assignments).toEqual(
       updatedReceipt.assignments,
     );
+  });
+
+  test("update tx omitting receiptData preserves stored receipt", async () => {
+    const { user, caller } = await createCallerUser();
+    const receiptData: ReceiptData = {
+      splitMode: "amount",
+      receipt: {
+        sourceUrl: "https://s3.amazonaws.com/bucket/r.jpg",
+        currencyCode: "USD",
+        total: 500,
+        items: [{ id: "x", name: "Soda", total: 500 }],
+      },
+      assignments: [{ itemId: "x", shares: { [user.id]: 1 } }],
+      extras: [],
+    };
+
+    const txId = await caller.tx.create(
+      createTxData({
+        value: 500,
+        contributions: [createContrib(user.id, { paid: 500, owed: 0 })],
+        receiptData,
+      }),
+    );
+
+    await caller.tx.update({
+      id: txId,
+      amount: 500,
+      currencyCode: "USD",
+      description: "renamed",
+      groupId: null,
+      date: null,
+      contribs: [
+        {
+          userId: user.id,
+          amountPaid: 500,
+          amountOwed: 0,
+          manualAmountOwed: false,
+        },
+      ],
+      files: [],
+    });
+
+    const reloaded = await caller.tx.get({ id: txId });
+    expect(reloaded.description).toBe("renamed");
+    expect(reloaded.receiptData).toEqual(receiptData);
+  });
+
+  test("update tx with explicit null clears receiptData", async () => {
+    const { user, caller } = await createCallerUser();
+    const receiptData: ReceiptData = {
+      splitMode: "amount",
+      receipt: {
+        sourceUrl: "https://s3.amazonaws.com/bucket/r.jpg",
+        currencyCode: "USD",
+        total: 500,
+        items: [{ id: "x", name: "Soda", total: 500 }],
+      },
+      assignments: [],
+      extras: [],
+    };
+
+    const txId = await caller.tx.create(
+      createTxData({
+        value: 500,
+        contributions: [createContrib(user.id, { paid: 500, owed: 0 })],
+        receiptData,
+      }),
+    );
+
+    await caller.tx.update({
+      id: txId,
+      amount: 500,
+      currencyCode: "USD",
+      description: "test",
+      groupId: null,
+      date: null,
+      contribs: [
+        {
+          userId: user.id,
+          amountPaid: 500,
+          amountOwed: 0,
+          manualAmountOwed: false,
+        },
+      ],
+      files: [],
+      receiptData: null,
+    });
+
+    const reloaded = await caller.tx.get({ id: txId });
+    expect(reloaded.receiptData).toBeNull();
+  });
+
+  test("create tx rejects itemized receipt with unassigned items", async () => {
+    const { user, caller } = await createCallerUser();
+    const receiptData: ReceiptData = {
+      splitMode: "itemized",
+      receipt: {
+        sourceUrl: "https://s3.amazonaws.com/bucket/r.jpg",
+        currencyCode: "USD",
+        total: 1500,
+        items: [
+          { id: "i1", name: "Burger", total: 1000 },
+          { id: "i2", name: "Fries", total: 500 },
+        ],
+      },
+      assignments: [{ itemId: "i1", shares: { [user.id]: 1 } }],
+      extras: [],
+    };
+
+    await expect(
+      caller.tx.create(
+        createTxData({
+          value: 1500,
+          contributions: [createContrib(user.id, { paid: 1500, owed: 1500 })],
+          receiptData,
+        }),
+      ),
+    ).rejects.toThrow("All receipt items must be assigned");
+  });
+
+  test("create tx rejects itemized receipt mismatching amounts owed", async () => {
+    const { user: user1, caller: caller1 } = await createCallerUser();
+    const { user: user2 } = await createCallerUser();
+    await caller1.user.connect(user2.id);
+
+    const receiptData: ReceiptData = {
+      splitMode: "itemized",
+      receipt: {
+        sourceUrl: "https://s3.amazonaws.com/bucket/r.jpg",
+        currencyCode: "USD",
+        total: 1500,
+        items: [
+          { id: "i1", name: "Burger", total: 1000 },
+          { id: "i2", name: "Fries", total: 500 },
+        ],
+      },
+      assignments: [
+        { itemId: "i1", shares: { [user1.id]: 1 } },
+        { itemId: "i2", shares: { [user2.id]: 1 } },
+      ],
+      extras: [],
+    };
+
+    await expect(
+      caller1.tx.create(
+        createTxData({
+          value: 1500,
+          contributions: [
+            createContrib(user1.id, { paid: 1500, owed: 500 }),
+            createContrib(user2.id, { owed: 1000 }),
+          ],
+          receiptData,
+        }),
+      ),
+    ).rejects.toThrow("do not match the itemized receipt split");
+  });
+
+  test("create tx accepts consistent itemized receipt", async () => {
+    const { user: user1, caller: caller1 } = await createCallerUser();
+    const { user: user2 } = await createCallerUser();
+    await caller1.user.connect(user2.id);
+
+    const receiptData: ReceiptData = {
+      splitMode: "itemized",
+      receipt: {
+        sourceUrl: "https://s3.amazonaws.com/bucket/r.jpg",
+        currencyCode: "USD",
+        total: 1500,
+        items: [
+          { id: "i1", name: "Burger", total: 1000 },
+          { id: "i2", name: "Fries", total: 500 },
+        ],
+      },
+      assignments: [
+        { itemId: "i1", shares: { [user1.id]: 1 } },
+        { itemId: "i2", shares: { [user2.id]: 1 } },
+      ],
+      extras: [],
+    };
+
+    const txId = await caller1.tx.create(
+      createTxData({
+        value: 1500,
+        contributions: [
+          createContrib(user1.id, { paid: 1500, owed: 1000 }),
+          createContrib(user2.id, { owed: 500 }),
+        ],
+        receiptData,
+      }),
+    );
+
+    const tx = await caller1.tx.get({ id: txId });
+    expect(tx.receiptData?.splitMode).toBe("itemized");
+  });
+
+  test("create tx validates legacy receiptData without splitMode as itemized", async () => {
+    const { user, caller } = await createCallerUser();
+    const receiptData: ReceiptData = {
+      receipt: {
+        sourceUrl: "https://s3.amazonaws.com/bucket/r.jpg",
+        currencyCode: "USD",
+        total: 1500,
+        items: [
+          { id: "i1", name: "Burger", total: 1000 },
+          { id: "i2", name: "Fries", total: 500 },
+        ],
+      },
+      assignments: [{ itemId: "i1", shares: { [user.id]: 1 } }],
+      extras: [],
+    };
+
+    await expect(
+      caller.tx.create(
+        createTxData({
+          value: 1500,
+          contributions: [createContrib(user.id, { paid: 1500, owed: 1500 })],
+          receiptData,
+        }),
+      ),
+    ).rejects.toThrow("All receipt items must be assigned");
+  });
+
+  test("create tx skips itemized validation with placeholder participants", async () => {
+    const { user, caller } = await createCallerUser();
+    const receiptData: ReceiptData = {
+      splitMode: "itemized",
+      receipt: {
+        sourceUrl: "https://s3.amazonaws.com/bucket/r.jpg",
+        currencyCode: "USD",
+        total: 1500,
+        items: [
+          { id: "i1", name: "Burger", total: 1000 },
+          { id: "i2", name: "Fries", total: 500 },
+        ],
+      },
+      assignments: [
+        { itemId: "i1", shares: { [user.id]: 1 } },
+        { itemId: "i2", shares: { "local-party-id": 1 } },
+      ],
+      extras: [],
+    };
+
+    const txId = await caller.tx.create(
+      createTxData({
+        value: 1500,
+        contributions: [
+          createContrib(user.id, { paid: 1500, owed: 1000 }),
+          createContrib(null, { owed: 500 }),
+        ],
+        receiptData,
+      }),
+    );
+
+    const tx = await caller.tx.get({ id: txId });
+    expect(tx.receiptData?.splitMode).toBe("itemized");
   });
 
   test("create tx without receiptData leaves it null", async () => {

@@ -32,17 +32,33 @@ export const receiptParseHandler = privateProcedure
       });
     }
 
-    // Validate URL origin matches our S3 bucket (prevent SSRF).
-    // startsWith() would let "https://s3.amazonaws.com.evil.com/..." pass when
-    // S3_URL is "https://s3.amazonaws.com" — origin compare blocks that.
+    // Validate URL origin and path prefix match our S3 bucket (prevent SSRF).
+    // startsWith() on the raw string would let
+    // "https://s3.amazonaws.com.evil.com/..." pass when S3_URL is
+    // "https://s3.amazonaws.com" — origin compare blocks that. The path check
+    // matters for path-style buckets (e.g. MinIO) where S3_URL includes the
+    // bucket path; the prefix is slash-terminated so "/bucketevil" can't pass
+    // as "/bucket".
     let parsed: URL;
     try {
       parsed = new URL(input.fileUrl);
     } catch {
       throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid file URL" });
     }
-    if (parsed.origin !== new URL(env.S3_URL).origin) {
+    const s3Url = new URL(env.S3_URL);
+    if (parsed.origin !== s3Url.origin) {
       throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid file URL" });
+    }
+    if (s3Url.pathname !== "/") {
+      const pathPrefix = s3Url.pathname.endsWith("/")
+        ? s3Url.pathname
+        : `${s3Url.pathname}/`;
+      if (!parsed.pathname.startsWith(pathPrefix)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid file URL",
+        });
+      }
     }
 
     // Fetch the image from S3 with timeout
@@ -102,7 +118,9 @@ export const receiptParseHandler = privateProcedure
 
     // Items without a total are useless for splitting — drop them.
     const items: ReceiptItem[] = (result.receipt.items ?? [])
-      .filter((item): item is typeof item & { total: number } => item.total != null)
+      .filter(
+        (item): item is typeof item & { total: number } => item.total != null,
+      )
       .map((item) => ({
         id: createId(),
         name: item.name,

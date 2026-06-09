@@ -1,59 +1,39 @@
 /** All monetary amounts are in CENTS (integers) to avoid floating-point issues. */
 
-export interface ReceiptItem {
-  id: string;
-  name: string;
-  quantity?: number;
-  unitPrice?: number;
-  total: number;
-}
+import type { z } from "zod";
+import type {
+  ExtraChargeSchema,
+  ExtrasAllocationMethodSchema,
+  ItemAssignmentSchema,
+  ReceiptDataSchema,
+  ReceiptItemSchema,
+  ReceiptParseSchema,
+  ReceiptSplitModeSchema,
+} from "./schema";
 
-export interface ReceiptParse {
-  sourceUrl: string;
-  merchant?: string;
-  date?: string;
-  currencyCode?: string;
-  total?: number;
-  subtotal?: number;
-  tax?: number;
-  service?: number;
-  tip?: number;
-  discount?: number;
-  items: ReceiptItem[];
-  rawText?: string;
-  confidence?: number;
-}
+export type ReceiptItem = z.infer<typeof ReceiptItemSchema>;
 
-export interface ItemAssignment {
-  itemId: string;
-  shares: Record<string, number>;
-}
+export type ReceiptParse = z.infer<typeof ReceiptParseSchema>;
 
-export type ExtrasAllocationMethod =
-  | { type: "proportional_to_subtotal" }
-  | { type: "even_among_involved" }
-  | { type: "even_among_all" }
-  | { type: "custom"; shares: Record<string, number> };
+export type ItemAssignment = z.infer<typeof ItemAssignmentSchema>;
 
-export interface ExtraCharge {
-  id: "tax" | "service" | "tip" | "discount";
-  label: string;
-  amount: number;
-  method: ExtrasAllocationMethod;
-}
+export type ExtrasAllocationMethod = z.infer<
+  typeof ExtrasAllocationMethodSchema
+>;
 
-export interface ReceiptSplitState {
-  enabled: boolean;
-  assignments: ItemAssignment[];
-  extras: ExtraCharge[];
-}
+export type ExtraCharge = z.infer<typeof ExtraChargeSchema>;
+
+export type ReceiptSplitMode = z.infer<typeof ReceiptSplitModeSchema>;
 
 /**
  * Persisted itemized receipt data for a transaction.
- * Stored in transactions.receipt_data jsonb column. Presence => itemized split mode.
+ * Stored in transactions.receipt_data jsonb column. `splitMode` records the
+ * split mode chosen by the user; older rows omit it (presence then implies itemized).
  */
-export interface ReceiptData {
-  receipt: ReceiptParse;
+export type ReceiptData = z.infer<typeof ReceiptDataSchema>;
+
+export interface ReceiptSplitState {
+  enabled: boolean;
   assignments: ItemAssignment[];
   extras: ExtraCharge[];
 }

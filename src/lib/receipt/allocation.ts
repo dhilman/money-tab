@@ -25,9 +25,13 @@ import type {
  */
 export function splitAmountWeighted(
   amount: number,
-  weights: Record<string, number>
+  weights: Record<string, number>,
 ): Record<string, number> {
-  const entries = Object.entries(weights).filter(([, w]) => w > 0);
+  // Sort by userId so distribution is deterministic regardless of key order
+  // (jsonb round-trips don't preserve object key order).
+  const entries = Object.entries(weights)
+    .filter(([, w]) => w > 0)
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
   if (entries.length === 0) {
     return {};
   }
@@ -42,7 +46,11 @@ export function splitAmountWeighted(
   let distributed = 0;
 
   // First pass: give everyone their floor share
-  const remainders: Array<{ userId: string; remainder: number; weight: number }> = [];
+  const remainders: Array<{
+    userId: string;
+    remainder: number;
+    weight: number;
+  }> = [];
 
   for (const [userId, weight] of entries) {
     const exactShare = (amount * weight) / totalWeight;
@@ -63,7 +71,10 @@ export function splitAmountWeighted(
     if (b.remainder !== a.remainder) {
       return b.remainder - a.remainder;
     }
-    return b.weight - a.weight;
+    if (b.weight !== a.weight) {
+      return b.weight - a.weight;
+    }
+    return a.userId < b.userId ? -1 : 1;
   });
 
   for (const { userId } of remainders) {
@@ -84,7 +95,7 @@ export function splitAmountWeighted(
  */
 export function splitAmountEvenly(
   amount: number,
-  userIds: string[]
+  userIds: string[],
 ): Record<string, number> {
   if (userIds.length === 0) {
     return {};
@@ -136,6 +147,23 @@ export function getUnassignedItems(
 }
 
 /**
+ * Drop shares pointing at users who are no longer participants, so stale
+ * assignments allocate fully to the remaining valid assignees.
+ */
+function filterSharesToParticipants(
+  shares: Record<string, number>,
+  validParticipants: Set<string>,
+): Record<string, number> {
+  const filtered: Record<string, number> = {};
+  for (const [userId, share] of Object.entries(shares)) {
+    if (validParticipants.has(userId)) {
+      filtered[userId] = share;
+    }
+  }
+  return filtered;
+}
+
+/**
  * Compute per-person totals from item assignments and extras.
  *
  * @param items - Receipt items
@@ -148,9 +176,10 @@ export function computePersonTotals(
   items: ReceiptItem[],
   assignments: ItemAssignment[],
   extras: ExtraCharge[],
-  allParticipantIds: string[]
+  allParticipantIds: string[],
 ): PersonTotal[] {
   // Initialize totals for all participants
+  const validParticipants = new Set(allParticipantIds);
   const totals: Record<string, { items: number; extras: number }> = {};
   for (const userId of allParticipantIds) {
     totals[userId] = { items: 0, extras: 0 };
@@ -166,18 +195,20 @@ export function computePersonTotals(
     const item = itemById.get(assignment.itemId);
     if (!item) continue;
 
-    const shares = splitAmountWeighted(item.total, assignment.shares);
+    const shares = splitAmountWeighted(
+      item.total,
+      filterSharesToParticipants(assignment.shares, validParticipants),
+    );
     for (const [userId, amount] of Object.entries(shares)) {
-      if (!totals[userId]) {
-        totals[userId] = { items: 0, extras: 0 };
-      }
       totals[userId]!.items += amount;
       personItemSubtotals[userId] = (personItemSubtotals[userId] ?? 0) + amount;
     }
   }
 
   // Get involved users for "even_among_involved" allocation
-  const involvedUsers = getInvolvedUsers(assignments);
+  const involvedUsers = getInvolvedUsers(assignments).filter((userId) =>
+    validParticipants.has(userId),
+  );
 
   // Calculate extras per person
   for (const extra of extras) {
@@ -207,15 +238,15 @@ export function computePersonTotals(
       }
 
       case "custom": {
-        shares = splitAmountWeighted(extra.amount, extra.method.shares);
+        shares = splitAmountWeighted(
+          extra.amount,
+          filterSharesToParticipants(extra.method.shares, validParticipants),
+        );
         break;
       }
     }
 
     for (const [userId, amount] of Object.entries(shares)) {
-      if (!totals[userId]) {
-        totals[userId] = { items: 0, extras: 0 };
-      }
       totals[userId]!.extras += amount;
     }
   }
@@ -240,7 +271,7 @@ export function computePersonTotals(
  */
 export function validateTotals(
   personTotals: PersonTotal[],
-  receiptTotal: number
+  receiptTotal: number,
 ): number {
   const sum = personTotals.reduce((acc, p) => acc + p.total, 0);
   return sum - receiptTotal;

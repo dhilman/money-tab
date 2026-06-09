@@ -14,7 +14,12 @@ import { type NotifyDataSingle } from "~/server/notifier/schema";
 import { resolveArrayChanges } from "~/server/resolver/array-resolver";
 import { resolveTxChanges, type TxChangeset } from "~/server/resolver/contribs";
 import { validator } from "~/server/validator";
-import { Contribs, DateOrDateTimeStr, Files, ReceiptDataSchema } from "../zod_schema";
+import {
+  Contribs,
+  DateOrDateTimeStr,
+  Files,
+  ReceiptDataSchema,
+} from "../zod_schema";
 
 const Input = z.object({
   id: z.string(),
@@ -55,6 +60,7 @@ function validate(ctx: MyContext, input: Input, tx: SelectTxWithContribs) {
   validator.isCreator(ctx, tx.createdById);
   validator.contribAmounts(input.amount, input.contribs);
   validator.contribUserIds(ctx, input.contribs);
+  validator.itemizedReceipt(input.amount, input.contribs, input.receiptData);
   // await validator.contactsOrInGroup(ctx, userIds, tx.groupId);
 }
 
@@ -74,7 +80,10 @@ function transform(
     const txDate = tx.txDate?.getTime() ?? null;
     if (inputDate !== txDate) return true;
     if ((input.date?.time ?? null) !== tx.txTime) return true;
-    if (!receiptDataEqual(input.receiptData ?? null, tx.receiptData ?? null)) {
+    if (
+      input.receiptData !== undefined &&
+      !receiptDataEqual(input.receiptData, tx.receiptData ?? null)
+    ) {
       return true;
     }
     return false;
@@ -97,7 +106,9 @@ function transform(
       txDate: input.date?.date ?? null,
       txTime: input.date?.time ?? null,
       groupId: input.groupId,
-      receiptData: input.receiptData ?? null,
+      ...(input.receiptData !== undefined
+        ? { receiptData: input.receiptData }
+        : {}),
     },
     contribs: resolveTxChanges({ old: tx.contribs, new: input.contribs }),
     files: resolveArrayChanges({ old: tx.files, new: inputFiles }),

@@ -40,6 +40,22 @@ describe("receiptDataEqual", () => {
     expect(receiptDataEqual(original, reordered)).toBe(true);
   });
 
+  test("blobs differing only in splitMode are not equal", () => {
+    const base: ReceiptData = {
+      receipt: {
+        sourceUrl: "https://x",
+        items: [{ id: "i1", name: "thing", total: 1000 }],
+      },
+      assignments: [{ itemId: "i1", shares: { u1: 1 } }],
+      extras: [],
+      splitMode: "itemized",
+    };
+    expect(receiptDataEqual(base, { ...base, splitMode: "amount" })).toBe(
+      false,
+    );
+    expect(receiptDataEqual(base, { ...base })).toBe(true);
+  });
+
   test("different array order is not equal", () => {
     expect(receiptDataEqual([1, 2, 3], [3, 2, 1])).toBe(false);
   });

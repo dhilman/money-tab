@@ -5,18 +5,22 @@ import { z } from "zod";
  * code (input validation) and client code (defensive `safeParse` on hydration
  * from the API) can share a single source of truth.
  *
+ * The receipt-data types in `src/lib/receipt/types.ts` are inferred from these
+ * schemas, so schema changes propagate to consumers at compile time.
+ *
  * Monetary fields are integer cents — see `src/lib/receipt/types.ts`.
  */
 
-const ReceiptItemSchema = z.object({
+export const ReceiptItemSchema = z.object({
   id: z.string(),
   name: z.string(),
   quantity: z.number().int().positive().optional(),
   unitPrice: z.number().int().optional(),
-  total: z.number().int().nonnegative(),
+  // Negative totals are legitimate (coupon/discount line items).
+  total: z.number().int(),
 });
 
-const ReceiptParseSchema = z.object({
+export const ReceiptParseSchema = z.object({
   sourceUrl: z.string(),
   merchant: z.string().optional(),
   date: z.string().optional(),
@@ -33,12 +37,12 @@ const ReceiptParseSchema = z.object({
   confidence: z.number().optional(),
 });
 
-const ItemAssignmentSchema = z.object({
+export const ItemAssignmentSchema = z.object({
   itemId: z.string(),
   shares: z.record(z.string(), z.number().int().nonnegative()),
 });
 
-const ExtrasAllocationMethodSchema = z.discriminatedUnion("type", [
+export const ExtrasAllocationMethodSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("proportional_to_subtotal") }),
   z.object({ type: z.literal("even_among_involved") }),
   z.object({ type: z.literal("even_among_all") }),
@@ -48,7 +52,7 @@ const ExtrasAllocationMethodSchema = z.discriminatedUnion("type", [
   }),
 ]);
 
-const ExtraChargeSchema = z.object({
+export const ExtraChargeSchema = z.object({
   id: z.enum(["tax", "service", "tip", "discount"]),
   label: z.string(),
   // Discounts are stored as negative; everything else is non-negative.
@@ -56,8 +60,17 @@ const ExtraChargeSchema = z.object({
   method: ExtrasAllocationMethodSchema,
 });
 
+// Mirrors SplitMode from src/components/common/participants/reducer.tsx.
+export const ReceiptSplitModeSchema = z.enum([
+  "amount",
+  "percentage",
+  "shares",
+  "itemized",
+]);
+
 export const ReceiptDataSchema = z.object({
   receipt: ReceiptParseSchema,
   assignments: z.array(ItemAssignmentSchema),
   extras: z.array(ExtraChargeSchema),
+  splitMode: ReceiptSplitModeSchema.optional(),
 });

@@ -75,6 +75,22 @@ describe("splitAmountWeighted", () => {
     const result = splitAmountWeighted(7, { a: 2, b: 1 });
     expect(result.a! + result.b!).toBe(7);
   });
+
+  test("is insensitive to key insertion order", () => {
+    // jsonb round-trips don't preserve key order; the odd cent must land on
+    // the same user either way.
+    const forward = splitAmountWeighted(10, { a: 1, b: 1, c: 1 });
+    const reversed = splitAmountWeighted(10, { c: 1, b: 1, a: 1 });
+    expect(forward).toEqual(reversed);
+    expect(forward).toEqual({ a: 4, b: 3, c: 3 });
+  });
+
+  test("breaks equal-remainder ties by userId deterministically", () => {
+    const result1 = splitAmountWeighted(101, { b: 1, a: 1 });
+    const result2 = splitAmountWeighted(101, { a: 1, b: 1 });
+    expect(result1).toEqual({ a: 51, b: 50 });
+    expect(result2).toEqual({ a: 51, b: 50 });
+  });
 });
 
 describe("splitAmountEvenly", () => {
@@ -279,6 +295,56 @@ describe("computePersonTotals", () => {
     // Custom 3:2 split of $5 tip
     expect(result.find((p) => p.userId === "a")?.extrasTotal).toBe(300);
     expect(result.find((p) => p.userId === "b")?.extrasTotal).toBe(200);
+  });
+
+  test("ignores stale shares for users not in participant list", () => {
+    const assignments: ItemAssignment[] = [
+      { itemId: "1", shares: { a: 1, removed: 1 } },
+      { itemId: "2", shares: { a: 1 } },
+    ];
+    const result = computePersonTotals(items, assignments, [], ["a"]);
+
+    expect(result).toEqual([
+      { userId: "a", itemsSubtotal: 3000, extrasTotal: 0, total: 3000 },
+    ]);
+  });
+
+  test("excludes removed participants from extras allocation", () => {
+    const assignments: ItemAssignment[] = [
+      { itemId: "1", shares: { a: 1, removed: 1 } },
+    ];
+    const extras: ExtraCharge[] = [
+      {
+        id: "tip",
+        label: "Tip",
+        amount: 400,
+        method: { type: "even_among_involved" },
+      },
+      {
+        id: "tax",
+        label: "Tax",
+        amount: 300,
+        method: { type: "custom", shares: { a: 1, removed: 2 } },
+      },
+    ];
+    const result = computePersonTotals(items, assignments, extras, ["a", "b"]);
+
+    expect(result.find((p) => p.userId === "removed")).toBeUndefined();
+    // a is the only valid involved user / custom assignee, so a gets it all
+    expect(result.find((p) => p.userId === "a")?.extrasTotal).toBe(700);
+  });
+
+  test("produces identical totals regardless of shares key order", () => {
+    const forward: ItemAssignment[] = [
+      { itemId: "1", shares: { a: 1, b: 1, c: 1 } },
+    ];
+    const reversed: ItemAssignment[] = [
+      { itemId: "1", shares: { c: 1, b: 1, a: 1 } },
+    ];
+    const participants = ["a", "b", "c"];
+    expect(computePersonTotals(items, forward, [], participants)).toEqual(
+      computePersonTotals(items, reversed, [], participants),
+    );
   });
 
   test("handles negative discount", () => {

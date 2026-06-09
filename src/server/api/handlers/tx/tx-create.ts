@@ -45,6 +45,11 @@ export const txCreatehandler = privateProcedure
 const validate = async (ctx: MyContext, input: Input) => {
   validator.contribAmounts(input.value, input.contributions);
   validator.contribUserIds(ctx, input.contributions);
+  validator.itemizedReceipt(
+    input.value,
+    input.contributions,
+    input.receiptData,
+  );
   await validator.isGroupMember(ctx, input.groupId);
   // await validator.contactsOrInGroup(ctx, userIds, input.groupId)
 };
