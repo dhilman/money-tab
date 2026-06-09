@@ -9,8 +9,9 @@ import { useReceiptCtx } from "./receipt-context";
 /**
  * Hook to apply receipt scan results to the form. Called from the scan
  * affordance when OCR completes. Auto-fills tx-level fields, attaches the
- * receipt image, switches the participants split mode to "itemized", and
- * stores the parsed receipt in the receipt context for inline editing.
+ * receipt image, stores the parsed receipt in the receipt context for inline
+ * editing, and switches the participants split mode to "itemized" when there
+ * is more than one party (solo transactions stay in amount mode).
  */
 export function useApplyReceiptScan() {
   const txEdit = useTxEditCtx();
@@ -42,7 +43,9 @@ export function useApplyReceiptScan() {
       }
 
       setReceipt(receipt, file);
-      participants.setSplitMode("itemized");
+      if (participants.parties.length >= 2) {
+        participants.setSplitMode("itemized");
+      }
     },
     [txEdit, participants, setReceipt],
   );

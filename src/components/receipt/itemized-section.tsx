@@ -4,7 +4,7 @@ import { ReceiptIcon } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useParticipantsCtx } from "~/components/common/participants/provider";
-import { useTxEditCtx } from "~/components/pages/tx/form/tx-form-ctx";
+import { useTxEditCtxOptional } from "~/components/pages/tx/form/tx-form-ctx";
 import {
   Accordion,
   AccordionContent,
@@ -17,53 +17,58 @@ import { ReceiptExtrasSection } from "./receipt-extras-section";
 import { ReceiptItemList } from "./receipt-item-list";
 import { ReceiptScanInput } from "./receipt-scan-input";
 import { ReceiptValidationBar } from "./receipt-validation-bar";
-import { useReceiptCtx } from "./receipt-context";
+import { useReceiptCtxOptional } from "./receipt-context";
 
 /**
  * Inline expandable section rendered below the participant rows when split mode
  * is "itemized". Holds the item assignment list, extras, and validation, and
- * pushes computed per-person totals into the participants reducer.
+ * pushes computed per-person totals into the participants reducer. Renders
+ * nothing when no ReceiptProvider is mounted.
  */
 export const ItemizedSection = () => {
   const { t } = useTranslation();
-  const { receipt, assignments, personTotals, setSplitEnabled } =
-    useReceiptCtx();
+  const receiptCtx = useReceiptCtxOptional();
   const participants = useParticipantsCtx();
-  const txEdit = useTxEditCtx();
+  const txEdit = useTxEditCtxOptional();
 
+  const receipt = receiptCtx?.receipt ?? null;
+  const personTotals = receiptCtx?.personTotals;
   const items = receipt?.items ?? [];
   const hasItems = items.length > 0;
   const personTotalsSum = useMemo(
-    () => personTotals.reduce((acc, pt) => acc + pt.total, 0),
+    () => (personTotals ?? []).reduce((acc, pt) => acc + pt.total, 0),
     [personTotals],
   );
 
-  // Receipt context's `splitEnabled` flag gates personTotals computation; ensure
-  // it's on when itemized mode is active so the bridge effect below has data.
+  // Live bridge: keep the form amount and the per-party itemized bucket aligned
+  // with the computed personTotals. Users not in personTotals get explicit
+  // zeros. Form amount is locked to the personTotals sum so submission always
+  // sees a balanced split (the validation bar handles any drift from
+  // `receipt.total` separately). A zero sum means nothing is assigned yet, so
+  // the scanned total and seeded per-party values are left untouched.
+  // Value-equality guards keep the syncs from looping.
   useEffect(() => {
-    setSplitEnabled(true);
-  }, [setSplitEnabled]);
-
-  // Live bridge: keep the form amount, per-party amount bucket, and per-party
-  // itemized bucket all aligned with the computed personTotals. Users not in
-  // personTotals get explicit zeros. Form amount is locked to the personTotals
-  // sum so submission always sees a balanced split (the validation bar handles
-  // any drift from `receipt.total` separately).
-  useEffect(() => {
-    if (!hasItems || personTotalsSum === 0) return;
-    if (txEdit.amount !== personTotalsSum) {
+    if (!personTotals || !hasItems || personTotalsSum === 0) return;
+    if (txEdit && txEdit.amount !== personTotalsSum) {
       txEdit.setAmount(personTotalsSum);
     }
-    const totalsByUser = new Map(personTotals.map((pt) => [pt.userId, pt.total]));
-    for (const party of participants.parties) {
-      const target = totalsByUser.get(party.id) ?? 0;
-      if (party.splitItemized.value === target) continue;
-      participants.setSplitValue(party.id, target, "amount");
-      participants.setSplitValue(party.id, target, "itemized");
+    const totalsByUser = new Map(
+      personTotals.map((pt) => [pt.userId, pt.total]),
+    );
+    const totals = participants.parties.map((party) => ({
+      id: party.id,
+      amount: totalsByUser.get(party.id) ?? 0,
+    }));
+    const changed = participants.parties.some(
+      (party) =>
+        party.splitItemized.value !== (totalsByUser.get(party.id) ?? 0),
+    );
+    if (changed) {
+      participants.applyItemizedTotals(totals);
     }
-    // setSplitValue / setAmount identities change per render; depend on data only.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [personTotals, personTotalsSum, participants.parties, hasItems]);
+  }, [personTotals, personTotalsSum, participants, hasItems, txEdit]);
+
+  if (!receiptCtx) return null;
 
   if (!hasItems) {
     return (
@@ -74,9 +79,7 @@ export const ItemizedSection = () => {
     );
   }
 
-  const assignedCount = assignments.filter((a) =>
-    Object.values(a.shares).some((s) => s > 0),
-  ).length;
+  const assignedCount = items.length - receiptCtx.unassignedItems.length;
   const currencyCode = receipt?.currencyCode ?? "USD";
   const total = receipt?.total ?? 0;
 
@@ -108,15 +111,18 @@ export const ItemizedSection = () => {
   );
 };
 
-/** Caption for a participant in itemized mode (e.g. "2 items · share of extras"). */
+/**
+ * Caption for a participant in itemized mode (e.g. "2 items · share of extras").
+ * Returns null when no ReceiptProvider is mounted so callers can fall back.
+ */
 export const useItemizedCaption = (userId: string) => {
   const { t } = useTranslation();
-  const { assignments, extras, personTotals } = useReceiptCtx();
+  const receiptCtx = useReceiptCtxOptional();
 
   return useMemo(() => {
-    const items = assignments.filter(
-      (a) => (a.shares[userId] ?? 0) > 0,
-    ).length;
+    if (!receiptCtx) return null;
+    const { assignments, extras, personTotals } = receiptCtx;
+    const items = assignments.filter((a) => (a.shares[userId] ?? 0) > 0).length;
     const pt = personTotals.find((p) => p.userId === userId);
     const hasExtras = (pt?.extrasTotal ?? 0) !== 0 && extras.length > 0;
 
@@ -127,5 +133,5 @@ export const useItemizedCaption = (userId: string) => {
       count: items,
       extras: hasExtras ? t("receipt.plus_extras") : "",
     }).trim();
-  }, [assignments, extras, personTotals, userId, t]);
+  }, [receiptCtx, userId, t]);
 };

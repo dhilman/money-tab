@@ -45,7 +45,19 @@ interface Props {
 
 export const ParticipantsOverview = ({ onEdit, onEditPayer }: Props) => {
   const { t } = useTranslation();
-  const { parties, payerId } = useParticipantsCtx();
+  const { parties, payerId, splitMode, setSplitMode } = useParticipantsCtx();
+  const receiptCtx = useReceiptCtxOptional();
+  const itemizedAvailable =
+    parties.length >= 2 && (receiptCtx?.receipt?.items.length ?? 0) > 0;
+
+  // Itemized mode requires a scanned receipt with items and at least two
+  // participants; fall back to amount mode otherwise. Lives here (not in
+  // SplitModeTabs) so it still runs when the split UI below is unmounted.
+  useEffect(() => {
+    if (splitMode === "itemized" && !itemizedAvailable) {
+      setSplitMode("amount");
+    }
+  }, [splitMode, itemizedAvailable, setSplitMode]);
 
   if (parties.length < 2) {
     return (
@@ -71,20 +83,17 @@ export const ParticipantsOverview = ({ onEdit, onEditPayer }: Props) => {
       <List>
         <UserPaidBy userId={payerId} onEditPayer={onEditPayer} />
       </List>
-      <SplitModeTabs />
+      <SplitModeTabs itemizedAvailable={itemizedAvailable} />
       <UsersPaidFor />
     </Bento>
   );
 };
 
-/** Render ItemizedSection only when a ReceiptProvider is mounted; ItemizedSection's hooks would otherwise throw. */
-const ItemizedSectionGate = () => {
-  const receiptCtx = useReceiptCtxOptional();
-  if (!receiptCtx) return null;
-  return <ItemizedSection />;
-};
-
-const SplitModeTabs = () => {
+const SplitModeTabs = ({
+  itemizedAvailable,
+}: {
+  itemizedAvailable: boolean;
+}) => {
   const { splitMode, setSplitMode } = useParticipantsCtx();
 
   return (
@@ -103,9 +112,11 @@ const SplitModeTabs = () => {
         <TabsTrigger value="shares" className="flex-1">
           <ChartPieIcon className="h-4 w-4" />
         </TabsTrigger>
-        <TabsTrigger value="itemized" className="flex-1">
-          <ListIcon className="h-4 w-4" />
-        </TabsTrigger>
+        {itemizedAvailable && (
+          <TabsTrigger value="itemized" className="flex-1">
+            <ListIcon className="h-4 w-4" />
+          </TabsTrigger>
+        )}
       </TabsList>
     </Tabs>
   );
@@ -139,7 +150,7 @@ const UsersPaidFor = () => {
           onKeyDown={onKeyDown}
         />
       ))}
-      {splitMode === "itemized" && <ItemizedSectionGate />}
+      {splitMode === "itemized" && <ItemizedSection />}
     </List>
   );
 };
@@ -199,6 +210,7 @@ const UserListItem = ({
   } = useParticipantsCtx();
   const { decimals, parser } = useCurrencyAmountParser(currency);
   const [value, setValue] = useState("");
+  const itemizedCaption = useItemizedCaption(participant.id);
 
   // Reset input value when split mode changes
   useEffect(() => {
@@ -289,11 +301,9 @@ const UserListItem = ({
         <div className="w-full truncate">
           <PartyUserName user={user} />
           <div className="text-sm text-hint">
-            {isItemized ? (
-              <ItemizedCaption userId={participant.id} fallback={getShareLabel()} />
-            ) : (
-              getShareLabel()
-            )}
+            {isItemized && itemizedCaption !== null
+              ? itemizedCaption
+              : getShareLabel()}
           </div>
         </div>
         <div className="ml-auto flex items-center gap-2">
@@ -337,22 +347,6 @@ const UserListItem = ({
       </ListItemBody>
     </ListItem>
   );
-};
-
-interface ItemizedCaptionProps {
-  userId: string;
-  fallback: string;
-}
-
-const ItemizedCaption = ({ userId, fallback }: ItemizedCaptionProps) => {
-  const receiptCtx = useReceiptCtxOptional();
-  if (!receiptCtx) return <>{fallback}</>;
-  return <ItemizedCaptionInner userId={userId} />;
-};
-
-const ItemizedCaptionInner = ({ userId }: { userId: string }) => {
-  const caption = useItemizedCaption(userId);
-  return <>{caption}</>;
 };
 
 interface ListButtonProps {

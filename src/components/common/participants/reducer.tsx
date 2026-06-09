@@ -75,7 +75,11 @@ type PartiesAction =
   | { type: "remove_group"; groupId: string }
   | { type: "remove"; id: string }
   | { type: "set_split_value"; id: string; value: number; mode: SplitMode }
-  | { type: "reset_split_value"; id: string; mode: SplitMode };
+  | { type: "reset_split_value"; id: string; mode: SplitMode }
+  | {
+      type: "apply_itemized_totals";
+      totals: { id: string; amount: number }[];
+    };
 
 type Action =
   | PartiesAction
@@ -211,14 +215,27 @@ function reducer(state: State, action: Action): State {
     case "set_split_mode": {
       // When entering itemized mode, seed splitItemized from current per-party
       // amounts so prior values stick until the receipt bridge overwrites them.
+      // When leaving, mirror the itemized amounts into splitAmount as manual
+      // overrides so per-person amounts survive the switch instead of being
+      // redistributed by recalculateAmount. A lone participant always owes the
+      // full total, so skip the mirror there and let recalculation take over.
       const enteringItemized =
         action.mode === "itemized" && state.splitMode !== "itemized";
+      const leavingItemized =
+        action.mode !== "itemized" &&
+        state.splitMode === "itemized" &&
+        state.parties.length > 1;
       const parties = enteringItemized
         ? state.parties.map((p) => ({
             ...p,
             splitItemized: { value: p.amount, manual: true },
           }))
-        : state.parties;
+        : leavingItemized
+          ? state.parties.map((p) => ({
+              ...p,
+              splitAmount: { value: p.amount, manual: true },
+            }))
+          : state.parties;
       newState = { ...state, splitMode: action.mode, parties };
       break;
     }
@@ -302,6 +319,17 @@ function partiesReducer(
         const amount = action.mode === "amount" ? 0 : p.amount;
         return updateSplitValue({ ...p, amount }, action.mode, resetValue);
       });
+    case "apply_itemized_totals": {
+      const byId = new Map(action.totals.map((t) => [t.id, t.amount]));
+      let changed = false;
+      const next = arr.map((p) => {
+        const target = byId.get(p.id) ?? 0;
+        if (p.splitItemized.value === target) return p;
+        changed = true;
+        return { ...p, splitItemized: { value: target, manual: true } };
+      });
+      return changed ? next : arr;
+    }
   }
 }
 
@@ -359,13 +387,18 @@ function recalculate(state: State): State {
  */
 function recalculateItemized(state: State): State {
   const sum = state.parties.reduce((acc, p) => acc + p.splitItemized.value, 0);
+  const invalid = sum !== state.total;
+  let changed = false;
+  const parties = state.parties.map((p) => {
+    if (p.amount === p.splitItemized.value) return p;
+    changed = true;
+    return { ...p, amount: p.splitItemized.value };
+  });
+  if (!changed && invalid === state.invalid) return state;
   return {
     ...state,
-    invalid: sum !== state.total,
-    parties: state.parties.map((p) => ({
-      ...p,
-      amount: p.splitItemized.value,
-    })),
+    invalid,
+    parties: changed ? parties : state.parties,
   };
 }
 

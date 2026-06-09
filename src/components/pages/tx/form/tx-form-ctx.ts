@@ -38,3 +38,8 @@ export function useTxEditCtx() {
   }
   return ctx;
 }
+
+/** Optional hook that returns null if not in a tx edit context (for conditional usage) */
+export function useTxEditCtxOptional() {
+  return useContext(TxEditContext);
+}

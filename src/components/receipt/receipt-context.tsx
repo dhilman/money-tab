@@ -1,7 +1,13 @@
 "use client";
 
 import { createId } from "@paralleldrive/cuid2";
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import {
   computePersonTotals,
   getUnassignedItems,
@@ -30,8 +36,6 @@ interface ReceiptState {
   assignments: ItemAssignment[];
   /** Extra charges (tax, tip, etc.) with allocation methods */
   extras: ExtraCharge[];
-  /** Whether itemized split mode is enabled */
-  splitEnabled: boolean;
 }
 
 interface ReceiptContextValue extends ReceiptState {
@@ -59,17 +63,14 @@ interface ReceiptContextValue extends ReceiptState {
   /** Remove an extra charge entirely */
   removeExtra: (extraId: string) => void;
 
-  /** Enable/disable itemized split mode */
-  setSplitEnabled: (enabled: boolean) => void;
-
   // Computed values
   /** Computed per-person totals */
   personTotals: PersonTotal[];
   /** Items with no participants assigned */
   unassignedItems: ReceiptItem[];
-  /** Difference between person totals sum and receipt total (0 = exact match) */
+  /** Difference between person totals sum and receipt total (informational only) */
   totalsDifference: number;
-  /** Whether all items are assigned and totals match (informational only) */
+  /** Whether all items are assigned to current participants */
   isValid: boolean;
 }
 
@@ -119,7 +120,6 @@ export function ReceiptProvider({
   const [extras, setExtras] = useState<ExtraCharge[]>(
     initialData?.extras ?? [],
   );
-  const [splitEnabled, setSplitEnabled] = useState(!!initialData);
 
   // Initialize extras from receipt
   const setReceipt = useCallback(
@@ -127,7 +127,6 @@ export function ReceiptProvider({
       setReceiptState(newReceipt);
       setReceiptFile(file ?? null);
       setAssignments([]);
-      setSplitEnabled(false);
 
       if (newReceipt) {
         // Initialize extras from receipt
@@ -169,7 +168,7 @@ export function ReceiptProvider({
         setExtras([]);
       }
     },
-    []
+    [],
   );
 
   const clearReceipt = useCallback(() => {
@@ -177,7 +176,6 @@ export function ReceiptProvider({
     setReceiptFile(null);
     setAssignments([]);
     setExtras([]);
-    setSplitEnabled(false);
   }, []);
 
   const toggleItemAssignment = useCallback((itemId: string, userId: string) => {
@@ -200,7 +198,7 @@ export function ReceiptProvider({
       }
 
       return prev.map((a) =>
-        a.itemId === itemId ? { ...a, shares: newShares } : a
+        a.itemId === itemId ? { ...a, shares: newShares } : a,
       );
     });
   }, []);
@@ -222,11 +220,11 @@ export function ReceiptProvider({
         }
 
         return prev.map((a) =>
-          a.itemId === itemId ? { ...a, shares: newShares } : a
+          a.itemId === itemId ? { ...a, shares: newShares } : a,
         );
       });
     },
-    []
+    [],
   );
 
   const updateItem = useCallback(
@@ -270,20 +268,17 @@ export function ReceiptProvider({
   const setExtraMethod = useCallback(
     (extraId: string, method: ExtraCharge["method"]) => {
       setExtras((prev) =>
-        prev.map((e) => (e.id === extraId ? { ...e, method } : e))
+        prev.map((e) => (e.id === extraId ? { ...e, method } : e)),
       );
     },
-    []
+    [],
   );
 
-  const setExtraAmount = useCallback(
-    (extraId: string, amount: number) => {
-      setExtras((prev) =>
-        prev.map((e) => (e.id === extraId ? { ...e, amount } : e))
-      );
-    },
-    []
-  );
+  const setExtraAmount = useCallback((extraId: string, amount: number) => {
+    setExtras((prev) =>
+      prev.map((e) => (e.id === extraId ? { ...e, amount } : e)),
+    );
+  }, []);
 
   const removeExtra = useCallback((extraId: string) => {
     setExtras((prev) => prev.filter((e) => e.id !== extraId));
@@ -292,22 +287,20 @@ export function ReceiptProvider({
   const items = useMemo(() => receipt?.items ?? [], [receipt?.items]);
 
   const personTotals = useMemo(() => {
-    if (!splitEnabled || items.length === 0) return [];
+    if (items.length === 0) return [];
     return computePersonTotals(items, assignments, extras, participantIds);
-  }, [items, assignments, extras, participantIds, splitEnabled]);
+  }, [items, assignments, extras, participantIds]);
 
   const unassignedItems = useMemo(() => {
-    if (!splitEnabled) return [];
     return getUnassignedItems(items, assignments, participantIds);
-  }, [items, assignments, participantIds, splitEnabled]);
+  }, [items, assignments, participantIds]);
 
   const totalsDifference = useMemo(() => {
-    if (!splitEnabled || !receipt?.total) return 0;
+    if (!receipt?.total) return 0;
     return validateTotals(personTotals, receipt.total);
-  }, [personTotals, receipt?.total, splitEnabled]);
+  }, [personTotals, receipt?.total]);
 
-  const isValid =
-    !splitEnabled || (unassignedItems.length === 0 && totalsDifference === 0);
+  const isValid = unassignedItems.length === 0;
 
   const value = useMemo<ReceiptContextValue>(
     () => ({
@@ -315,7 +308,6 @@ export function ReceiptProvider({
       receiptFile,
       assignments,
       extras,
-      splitEnabled,
       setReceipt,
       clearReceipt,
       toggleItemAssignment,
@@ -326,7 +318,6 @@ export function ReceiptProvider({
       setExtraMethod,
       setExtraAmount,
       removeExtra,
-      setSplitEnabled,
       personTotals,
       unassignedItems,
       totalsDifference,
@@ -337,7 +328,6 @@ export function ReceiptProvider({
       receiptFile,
       assignments,
       extras,
-      splitEnabled,
       setReceipt,
       clearReceipt,
       toggleItemAssignment,
@@ -352,7 +342,7 @@ export function ReceiptProvider({
       unassignedItems,
       totalsDifference,
       isValid,
-    ]
+    ],
   );
 
   return (

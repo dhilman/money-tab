@@ -17,8 +17,8 @@ export const ReceiptValidationBar = () => {
 
   const currencyCode = receipt?.currencyCode ?? "USD";
 
-  // Show success state when valid
-  if (isValid) {
+  // Show success state when valid and totals line up exactly
+  if (isValid && totalsDifference === 0) {
     return (
       <div className="flex items-center gap-2 rounded-lg bg-green-500/10 px-3 py-2">
         <CheckCircleIcon className="h-4 w-4 shrink-0 text-green-500" />
