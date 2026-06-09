@@ -205,16 +205,11 @@
   "receipt": {
     "scan": "Сканировать Чек",
     "scanning": "Сканируем...",
-    "scanned": "Чек Отсканирован",
-    "use_total": "Применить",
-    "split_by_items": "Разделить по Позициям",
-    "apply_split": "Применить",
     "items_count_one": "{{count}} позиция",
     "items_count_few": "{{count}} позиции",
     "items_count_many": "{{count}} позиций",
     "items_count_other": "{{count}} позиций",
     "extras": "Дополнительно",
-    "assign_items_hint": "Нажмите на позиции чтобы назначить участников",
     "extra": {
       "tax": "Налог",
       "tip": "Чаевые",

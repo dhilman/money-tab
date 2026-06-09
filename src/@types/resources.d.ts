@@ -252,8 +252,6 @@ interface Resources {
         "proportional": "Proportional",
         "proportional_long": "Split proportionally to items"
       },
-      "apply_split": "Apply Split",
-      "assign_items_hint": "Tap items to assign participants",
       "each": "each",
       "extra": {
         "discount": "Discount",
@@ -273,12 +271,9 @@ interface Resources {
       "remove_extra": "Remove",
       "remove_item": "Remove item",
       "scan": "Scan Receipt",
-      "scanned": "Receipt Scanned",
       "scanning": "Scanning...",
       "section_title": "Receipt items {{assigned}}/{{total}} · {{amount}}",
-      "split_by_items": "Split by Items",
       "tax_included_hint": "Remove if already included in item prices",
-      "use_total": "Use",
       "validation": {
         "over_total": "{{amount}} over receipt total",
         "ready": "Ready to apply",

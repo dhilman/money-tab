@@ -16,17 +16,13 @@ import { api } from "~/utils/api";
 import { useReceiptCtxOptional } from "./receipt-context";
 import { useApplyReceiptScan } from "./use-apply-receipt";
 
-interface ReceiptScanInputProps {
-  disabled?: boolean;
-}
-
 /**
  * ListItem row for scanning receipts via camera.
  * Uploads image to S3, calls receipt.parse mutation, then applies the result
  * to the form via useApplyReceiptScan (auto-fills tx fields and switches
  * participants to itemized mode).
  */
-export const ReceiptScanInput = ({ disabled }: ReceiptScanInputProps) => {
+export const ReceiptScanInput = () => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const receiptCtx = useReceiptCtxOptional();
@@ -74,7 +70,7 @@ export const ReceiptScanInput = ({ disabled }: ReceiptScanInputProps) => {
     }
   };
 
-  const isDisabled = disabled || isLoading || !receiptCtx;
+  const isDisabled = isLoading || !receiptCtx;
 
   return (
     <ListItem

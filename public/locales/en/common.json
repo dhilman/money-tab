@@ -199,14 +199,9 @@
   "receipt": {
     "scan": "Scan Receipt",
     "scanning": "Scanning...",
-    "scanned": "Receipt Scanned",
-    "use_total": "Use",
-    "split_by_items": "Split by Items",
-    "apply_split": "Apply Split",
     "items_count_one": "{{count}} item",
     "items_count_other": "{{count}} items",
     "extras": "Extras",
-    "assign_items_hint": "Tap items to assign participants",
     "extra": {
       "tax": "Tax",
       "tip": "Tip",

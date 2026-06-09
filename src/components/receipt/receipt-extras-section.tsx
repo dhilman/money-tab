@@ -1,13 +1,11 @@
 "use client";
 
 import { MinusIcon, PlusIcon, XIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCurrencyAmountParser } from "~/components/form/amount-utils";
+import { AmountField } from "~/components/form/click-to-edit";
 import { useCurrencies } from "~/lib/amount/currencies";
-import { formatAmountCurrency } from "~/lib/amount/format-amount";
 import type { ExtraCharge, ExtrasAllocationMethod } from "~/lib/receipt";
-import { cn } from "~/lib/utils";
 import { SelectSimple } from "../ui/select-simple";
 import { useReceiptCtx } from "./receipt-context";
 
@@ -125,42 +123,8 @@ const ExtraChargeRow = ({
   const { decimals, parser } = useCurrencyAmountParser(currency);
 
   const isDiscount = extra.amount < 0;
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const label = t(extraLabels[extra.id]);
-
-  // Focus input when entering edit mode
-  useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [isEditing]);
-
-  const startEditing = () => {
-    const absAmount = Math.abs(extra.amount);
-    setEditValue((absAmount / 10 ** decimals).toFixed(decimals));
-    setIsEditing(true);
-  };
-
-  const commitEdit = () => {
-    const parsed = parser(editValue);
-    if (parsed !== null && parsed >= 0) {
-      // Preserve sign for discounts
-      onAmountChange(isDiscount ? -parsed : parsed);
-    }
-    setIsEditing(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      commitEdit();
-    } else if (e.key === "Escape") {
-      setIsEditing(false);
-    }
-  };
 
   return (
     <div className="flex items-center justify-between gap-2 rounded-lg border border-hint/10 bg-background p-3">
@@ -178,36 +142,18 @@ const ExtraChargeRow = ({
           onChange={onMethodChange}
           options={options}
         />
-        {isEditing ? (
-          <div className="flex items-center">
-            <span className="text-sm text-hint">{currency.symbol}</span>
-            <input
-              ref={inputRef}
-              type="text"
-              inputMode="decimal"
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              onBlur={commitEdit}
-              onKeyDown={handleKeyDown}
-              className={cn(
-                "w-16 bg-transparent text-right text-sm font-medium text-primary",
-                "border-b border-primary outline-none",
-              )}
-            />
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={startEditing}
-            className="text-sm font-medium text-primary hover:underline"
-          >
-            {formatAmountCurrency(Math.abs(extra.amount), currencyCode)}
-          </button>
-        )}
+        <AmountField
+          value={Math.abs(extra.amount)}
+          currencyCode={currencyCode}
+          currencySymbol={currency.symbol}
+          decimals={decimals}
+          parse={parser}
+          onCommit={(v) => onAmountChange(isDiscount ? -v : v)}
+        />
         <button
           type="button"
           onClick={onRemove}
-          className="ml-1 rounded-full p-1 text-hint hover:bg-hint/10 hover:text-secondary"
+          className="hover:text-secondary ml-1 rounded-full p-1 text-hint hover:bg-hint/10"
           aria-label={t("receipt.remove_extra")}
         >
           <XIcon className="h-4 w-4" />
