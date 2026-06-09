@@ -18,6 +18,7 @@ import {
 import {
   buildReceiptDataPayload,
   isItemizedAndInvalid,
+  persistedSplitMode,
 } from "~/components/pages/tx/form/tx-receipt-payload";
 import { useMe } from "~/components/provider/auth/auth-provider";
 import {
@@ -61,7 +62,9 @@ export const TxEditProvider = ({ tx, children }: Props) => {
     getCurrencyByCodeWithDefault(tx.currencyCode),
   );
   const [description, setDescription] = useState(tx.description || "");
-  const [dateTime, setDateTime] = useState(parseDateOrDateTime(tx.txDate, tx.txTime));
+  const [dateTime, setDateTime] = useState(
+    parseDateOrDateTime(tx.txDate, tx.txTime),
+  );
   const [files, setFiles] = useState<Attachment[]>(
     tx.files.map((v) => ({
       id: v.id,
@@ -71,13 +74,18 @@ export const TxEditProvider = ({ tx, children }: Props) => {
       type: v.type ?? "",
     })),
   );
-  const initialReceiptData = parseInitialReceiptData(tx.receiptData);
+  const initialReceiptData = useMemo(
+    () => parseInitialReceiptData(tx.receiptData),
+    [tx.receiptData],
+  );
   const [participants, updateParticipants] = useParticipantsEditReducer({
     meId: me.id,
     amount,
     contribs: tx.contribs,
     groupId: tx.groupId,
-    startSplitMode: initialReceiptData ? "itemized" : "amount",
+    startSplitMode: initialReceiptData
+      ? persistedSplitMode(initialReceiptData.splitMode)
+      : "amount",
   });
 
   return (
@@ -165,7 +173,18 @@ function useIsEdited(tx: Tx) {
   const state = useTxEditCtx();
   const parties = useParticipantsCtx();
   const receiptCtx = useReceiptCtxOptional();
+  const receipt = receiptCtx?.receipt ?? null;
+  const assignments = receiptCtx?.assignments ?? null;
+  const extras = receiptCtx?.extras ?? null;
   const txDateTime = useRef(parseDateOrDateTime(tx.txDate, tx.txTime));
+
+  // Normalize the stored blob the same way hydration does (splitMode default
+  // plus coarsening) so an untouched form compares equal to its own rebuild.
+  const storedReceiptData = useMemo(() => {
+    const parsed = parseInitialReceiptData(tx.receiptData);
+    if (!parsed) return null;
+    return { ...parsed, splitMode: persistedSplitMode(parsed.splitMode) };
+  }, [tx.receiptData]);
 
   return useMemo(() => {
     if (state.amount !== tx.amount) return true;
@@ -182,13 +201,19 @@ function useIsEdited(tx: Tx) {
     if (tx.groupId !== parties.getGroupId()) return true;
     if (isParticipantsEdited(tx.contribs, parties)) return true;
 
-    const currentReceipt = buildReceiptDataPayload(parties.splitMode, receiptCtx);
-    if (!receiptDataEqual(currentReceipt, tx.receiptData ?? null)) return true;
+    const currentReceipt = buildReceiptDataPayload(
+      parties.splitMode,
+      assignments && extras ? { receipt, assignments, extras } : null,
+    );
+    if (!receiptDataEqual(currentReceipt, storedReceiptData)) return true;
 
     return false;
   }, [
     parties,
-    receiptCtx,
+    receipt,
+    assignments,
+    extras,
+    storedReceiptData,
     state.amount,
     state.currency.code,
     state.date,
@@ -201,7 +226,6 @@ function useIsEdited(tx: Tx) {
     tx.description,
     tx.files,
     tx.groupId,
-    tx.receiptData,
   ]);
 }
 
@@ -228,7 +252,10 @@ function useUpdateMutation(id: string) {
         groupId: participants.getGroupId(),
         contribs: participants.getContribs(),
         files: state.files,
-        receiptData: buildReceiptDataPayload(participants.splitMode, receiptCtx),
+        receiptData: buildReceiptDataPayload(
+          participants.splitMode,
+          receiptCtx,
+        ),
       };
 
       if (!validate(me.id, data, state.files)) {
